@@ -670,6 +670,8 @@ function queryHWSet(db, table, query, field) {
         $('#fields_submit').on('click', function() {
             updateTable(db, logTable, $('#fields').val(), primaryKey, false);
             $('#second_key_li').show();
+            $('a.csv').addClass('disabled');
+            $('a.query').addClass('disabled');
         });
 
         // $('#mainTable > tbody > tr[iteration=' + iteration + ']').remove();
@@ -1067,6 +1069,8 @@ $(document).ready(function () {
 
     $('#fields_submit').on('click', function() {
         loadPrimary($('#fields').val());
+        $('a.csv').addClass('disabled');
+        $('a.query').addClass('disabled');
     });
 
     $('#fields').keydown(function(event) {
