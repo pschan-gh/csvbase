@@ -151,9 +151,7 @@ a {
                     </div>
                 </li>
                 <li class="nav-item" style="display:none">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Query
-                    </a>
+                    <a class="nav-link query dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Query</a>
                     <!-- <label for="query">Query: </label> -->
                     <form style="width:100%; padding:5px" div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <div class="form-row">
@@ -181,7 +179,7 @@ a {
                     </form>
                 </li> -->
                 <li class="nav-item">
-                    <a class="nav-link" data-toggle="modal" data-target="#csv">CSV</a>
+                    <a class="nav-link csv" data-toggle="modal" data-target="#csv">CSV</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link">
@@ -324,6 +322,8 @@ function initializeDB(plaintextDB, key) {
                 var contents = e.target.result;
                 updateTable(db, logTable, contents, key, false);
                 $('#second_key_li').show();
+                $('a.csv').addClass('disabled');
+                $('a.query').addClass('disabled');
             }
             reader.readAsText(e.target.files[0]);
         });
@@ -331,12 +331,11 @@ function initializeDB(plaintextDB, key) {
         $('#fields_submit').on('click', function() {
             updateTable(db, logTable, $('#fields').val(), key, false);
             $('#second_key_li').show();
+            $('a.csv').addClass('disabled');
+            $('a.query').addClass('disabled');
         });
 
         updateTable(db, logTable, plaintextDB, key, true);
-        // if (primaryFile != null) {
-        //     updateTable(db, logTable, primaryFile, true);
-        // }
     });
 
 }
@@ -386,6 +385,8 @@ function updateTable(db, table, plaintextDB, key, isPrimary) {
                 sanitizedSecondaryHeaders.push(sanitizedField);
             });
             updateRows(data, db, table, secondaryKey);
+            $('a.csv').removeClass('disabled');
+            $('a.query').removeClass('disabled');
         });
     } else {
         var secondaryKey = primaryKey;
@@ -655,6 +656,8 @@ function queryHWSet(db, table, query, field) {
         $('#secondary-file-input').off();
         $('#secondary-file-input').on('change', function(e) {
             $('#second_key_li').show();
+            $('a.csv').addClass('disabled');
+            $('a.query').addClass('disabled');
             var reader = new FileReader();
             reader.onload = function(e) {
                 var contents = e.target.result;
@@ -1001,15 +1004,19 @@ function loadPrimary(plaintextDB) {
     $('#key_div').css('display', 'inline-block');
     $('#columns_toggle').show();
     $('.math').show();
+
     $('#key_sel').on('change', function() {
 
         initializeDB(plaintextDB, $(this).val());
 
         $('#secondary-file-input').closest('li').show();
         $('#key_sel').closest('li').find('a').addClass("disabled").attr('aria-disabled', 'true');
-        $('#key_sel').css('color', 'grey');
+        // $('#key_sel').css('color', 'grey');
         $('#export').show();
+        $('a.csv').removeClass('disabled');
+        $('a.query').removeClass('disabled');
     });
+
     $('#fields').closest('li').hide();
     $('#primary-file-input').closest('li').hide();
     $('#query').closest('li').show();
@@ -1041,6 +1048,8 @@ $('#primary-file-input').change(function(e) {
         loadPrimary(contents);
     }
     reader.readAsText(e.target.files[0]);
+    $('a.csv').addClass('disabled');
+    $('a.query').addClass('disabled');
 });
 
 
