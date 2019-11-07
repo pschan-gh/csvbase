@@ -15,6 +15,8 @@
 <!-- <script src="js/lovefield.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lovefield/2.1.12/lovefield.js" integrity="sha256-f1ZTSl24OYWE/QmqScoS1soGvrNhJDF4EtjxKIjOWNA=" crossorigin="anonymous"></script>
 
+<script src="https://d3js.org/d3.v4.js"></script>
+<!-- <script src="https://d3js.org/d3-array.v2.min.js"></script> -->
 
 <script type='text/javascript'>
 var hwsets = [];
@@ -86,10 +88,14 @@ a {
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Primary File
+                        New Database
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="width:20em;">
-                        <input class="form-control-file form-control-sm" style="" type="file" id="primary-file-input"/>
+                        <label for="primary-file-input" class="dropdown-item">
+                            Open File
+                        </label>
+                        <input class="form-control-file form-control-sm dropdown-item" style="display:none" type="file" id="primary-file-input"/>
+                        <a class="pastebin dropdown-item" data-toggle="modal" data-target="#pastebin">Paste</a>
                     </div>
                 </li>
                 <li class="nav-item">
@@ -104,7 +110,11 @@ a {
                          Update with:
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="width:20em;">
-                        <input class="form-control-form form-control-sm" type="file" id="secondary-file-input"/>
+                        <label for="secondary-file-input" class="dropdown-item">
+                            Open File
+                        </label>
+                        <input style="display:none" class="form-control-form form-control-sm" type="file" id="secondary-file-input"/>
+                        <a class="pastebin dropdown-item" data-toggle="modal" data-target="#pastebin">Paste</a>
                     </div>
                 </li>
                 <li class="nav-item" id="second_key_li" style="display:none;">
@@ -137,6 +147,19 @@ a {
                     <div class="dropdown-menu" id="columns_menu" aria-labelledby="dropdownMenuButton" onclick=" event.stopPropagation();">
                     </div>
                 </li>
+                <li class="nav-item" style="display:none">
+                    <a class="nav-link query dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Query</a>
+                    <form style="width:100%; padding:5px" div class="dropdown-menu query" aria-labelledby="navbarDropdown">
+                        <div class="form-row">
+                            <div class="form-group col-md-11">
+                                <input class="form-control" style="font-family:Courier" type="text" id="query" name="query">
+                            </div>
+                            <div class="form-group col-md-1">
+                                <input id="query_submit" class="form-control" type="button" value="Submit">
+                            </div>
+                        </div>
+                    </form>
+                </li>
                 <li class="nav-item dropdown" id="export" style="display:none">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Export
@@ -150,37 +173,6 @@ a {
                         </a>
                     </div>
                 </li>
-                <li class="nav-item" style="display:none">
-                    <a class="nav-link query dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Query</a>
-                    <!-- <label for="query">Query: </label> -->
-                    <form style="width:100%; padding:5px" div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <div class="form-row">
-                            <div class="form-group col-md-11">
-                                <!-- <input class="form-control" style="font-family:Courier;width:80%;margin:auto" type="text" id="query" name="query"> -->
-                                <input class="form-control" style="font-family:Courier" type="text" id="query" name="query">
-                            </div>
-                            <div class="form-group col-md-1">
-                                <input id="query_submit" class="form-control" type="button" value="Submit">
-                            </div>
-                        </div>
-                    </form>
-                </li>
-                <!-- <li class="nav-item fields">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Fields</a>
-                    <form style="width:100%; padding:5px" div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <div class="form-row">
-                            <div class="form-group col-md-11">
-                                <input class="form-control" style="font-family:Courier" type="text" id="fields" name="fields">
-                            </div>
-                            <div class="form-group col-md-1">
-                                <input id="fields_submit" class="form-control" type="button" value="Submit">
-                            </div>
-                        </div>
-                    </form>
-                </li> -->
-                <li class="nav-item">
-                    <a class="nav-link csv" data-toggle="modal" data-target="#csv">CSV</a>
-                </li>
                 <li class="nav-item">
                     <a class="nav-link">
                         <strong id="messages"></strong>
@@ -189,11 +181,6 @@ a {
             </ul>
         </div>
     </nav>
-    <!-- <div id="fields_div" style="width:100%;text-align:center">
-        <label for="fields">Fields: </label>
-        <input style="font-family:Courier;width:80%;margin:auto" type="text" id="fields" name="fields">
-        <input id="fields_submit" type="submit" value="Submit">
-    </div> -->
     <div style="position:fixed;top:40%;width:100%;text-align:center;margin:auto;z-index:999"><center><h1><strong id="hover_msg">No Database Loaded Yet</strong></h1></center>
     </div>
     <div id="container" style="width:100%;height:87.5%;overflow-x:auto;overflow-y:hidden;position:relative">
@@ -209,11 +196,11 @@ a {
         </div>
     </div>
 
-    <div id="csv" class="modal" tabindex="-1" role="dialog" aria-labelledby="csv" aria-hidden="true">
+    <div id="pastebin" class="modal" tabindex="-1" role="dialog" aria-labelledby="pastebin" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="dialog" >
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="wb_source">CSV</h5>
+                    <h5 class="modal-title" id="plaintext_source">Paste</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -224,6 +211,32 @@ a {
                 <div class="modal-footer">
                     <input class="form-control-file form-control-sm" style="" type="file" id="paste_file"/>
                     <button id="fields_submit" class="btn btn-primary btn-sm save">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="statistics" class="modal" tabindex="-1" role="dialog" aria-labelledby="statistics" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="dialog" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="Statistics">Statistics</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="stats">
+                    </div>
+                    <div id="bars" style="text-align:center">
+                    </div>
+                    <center>
+                        <label>Bins</label>
+                        <input type="number" min="0" max="100" step="5" value="10" id="nBin"/>
+                    </center>
+                    <!-- <textarea style="width:100%;height:25em;font-family:Courier" id="fields"  name="fields" ></textarea> -->
+                </div>
+                <div class="modal-footer">
                 </div>
             </div>
         </div>
@@ -302,6 +315,7 @@ function initializeDB(plaintextDB, key) {
         $('#query_submit').on('click', function() {
             baseQuery = $('#query').val();
             queryHWSet(db, logTable, baseQuery, primaryKey);
+            $('.dropdown-toggle.query').dropdown('toggle');
         });
 
         var fieldToLf = {};
@@ -322,7 +336,7 @@ function initializeDB(plaintextDB, key) {
                 var contents = e.target.result;
                 updateTable(db, logTable, contents, key, false);
                 $('#second_key_li').show();
-                $('a.csv').addClass('disabled');
+                $('a.pastebin').addClass('disabled');
                 $('a.query').addClass('disabled');
             }
             reader.readAsText(e.target.files[0]);
@@ -331,8 +345,9 @@ function initializeDB(plaintextDB, key) {
         $('#fields_submit').on('click', function() {
             updateTable(db, logTable, $('#fields').val(), key, false);
             $('#second_key_li').show();
-            $('a.csv').addClass('disabled');
+            $('a.pastebin').addClass('disabled');
             $('a.query').addClass('disabled');
+            $('#pastebin').modal('hide')
         });
 
         updateTable(db, logTable, plaintextDB, key, true);
@@ -385,7 +400,7 @@ function updateTable(db, table, plaintextDB, key, isPrimary) {
                 sanitizedSecondaryHeaders.push(sanitizedField);
             });
             updateRows(data, db, table, secondaryKey);
-            $('a.csv').removeClass('disabled');
+            $('a.pastebin').removeClass('disabled');
             $('a.query').removeClass('disabled');
         });
     } else {
@@ -656,7 +671,7 @@ function queryHWSet(db, table, query, field) {
         $('#secondary-file-input').off();
         $('#secondary-file-input').on('change', function(e) {
             $('#second_key_li').show();
-            $('a.csv').addClass('disabled');
+            $('a.pastebin').addClass('disabled');
             $('a.query').addClass('disabled');
             var reader = new FileReader();
             reader.onload = function(e) {
@@ -670,8 +685,9 @@ function queryHWSet(db, table, query, field) {
         $('#fields_submit').on('click', function() {
             updateTable(db, logTable, $('#fields').val(), primaryKey, false);
             $('#second_key_li').show();
-            $('a.csv').addClass('disabled');
+            $('a.pastebin').addClass('disabled');
             $('a.query').addClass('disabled');
+            $('#pastebin').modal('hide')
         });
 
         // $('#mainTable > tbody > tr[iteration=' + iteration + ']').remove();
@@ -733,9 +749,20 @@ function updateButtons(db, table) {
         var array = [];
         var field = $(this).attr('field');
         $("td[field='" + field + "']").each(function() {
-            array.push($(this).text());
+            if ($(this).text() != '' && $(this).text() != null && typeof $(this).text() != typeof undefined) {
+                array.push(+($(this).text()));
+            }
         });
-        alert('MEDIAN: ' + math.median(array) + "\n" + 'MEAN: ' + math.mean(array) +  "\n" + 'Standard Deviation: ' + math.std(array));
+
+        array = array.sort(function(a, b) {
+            return +b - +a;
+        });
+        console.log(array);
+
+        $('#statistics').modal('toggle');
+
+        $('#statistics').find('.modal-body').find('.stats').html('MEDIAN: ' + math.median(array) + '<br/>' + 'MEAN: ' + math.mean(array) +  '<br/>' + 'Standard Deviation: ' + math.std(array));
+        bars(array);
     });
 
     $('.fields.hide').click(function() {
@@ -881,14 +908,14 @@ function updateKeys() {
         $('#table-container').css('width', tableWidth + 'px');
     });
 
-    $('.fields.median').click(function() {
-        var array = [];
-        var field = $(this).attr('field');
-        $("td[field='" + field + "']").each(function() {
-            array.push($(this).text());
-        });
-        alert('MEDIAN: ' + math.median(array));
-    });
+    // $('.fields.median').click(function() {
+    //     var array = [];
+    //     var field = $(this).attr('field');
+    //     $("td[field='" + field + "']").each(function() {
+    //         array.push($(this).text());
+    //     });
+    //     alert('MEDIAN: ' + math.median(array));
+    // });
     // $('.fields.mean').click(function() {
     //     var array = [];
     //     var field = $(this).attr('field');
@@ -911,7 +938,10 @@ function updateKeys() {
         $("td[field='" + field + "']").each(function() {
             array.push($(this).text());
         });
-        alert('MEDIAN: ' + math.median(array) + "\n" + 'MEAN: ' + math.mean(array) +  "\n" + 'Standard Deviation: ' + math.std(array));
+
+        $('#statistics').modal('toggle');
+
+        $('#statistics').find('.modal-body').html('MEDIAN: ' + math.median(array) + '<br/>' + 'MEAN: ' + math.mean(array) +  '<br/>' + 'Standard Deviation: ' + math.std(array));
     });
 
 }
@@ -982,7 +1012,7 @@ function loadPrimary(plaintextDB) {
         hfield = sfield;
         var $th = $("<th>", {"id" : 'th_' + hfield, 'clicked': '0', 'field': hfield, "class":'col_' + hfield});
         var html = '<a id="a_' + hfield + '" href="#" class="header" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' + hfield.replace(/_/, ' ') + '</a>';
-        html += '<div class="dropdown-menu" aria-labelledby="a_' + hfield + '"><a class="dropdown-item group_by" field="' + hfield + '" href="#">Group by</a><a class="dropdown-item fields statistics" field="' + hfield + '" href="#">Statistics</a><a class="dropdown-item fields hide" field="' + hfield + '" href="#">Hide</a></div>';
+        html += '<div class="dropdown-menu" aria-labelledby="a_' + hfield + '"><a class="dropdown-item group_by" field="' + hfield + '" href="#">Group by</a><a class="dropdown-item fields statistics" field="' + hfield + '" href="#" >Statistics</a><a class="dropdown-item fields hide" field="' + hfield + '" href="#">Hide</a></div>';
 
         html += "<div class='triangle'>&#x25BA;</div>";
         $th.html(html);
@@ -1015,7 +1045,7 @@ function loadPrimary(plaintextDB) {
         $('#key_sel').closest('li').find('a').addClass("disabled").attr('aria-disabled', 'true');
         // $('#key_sel').css('color', 'grey');
         $('#export').show();
-        $('a.csv').removeClass('disabled');
+        $('a.pastebin').removeClass('disabled');
         $('a.query').removeClass('disabled');
     });
 
@@ -1050,10 +1080,112 @@ $('#primary-file-input').change(function(e) {
         loadPrimary(contents);
     }
     reader.readAsText(e.target.files[0]);
-    $('a.csv').addClass('disabled');
+    $('a.pastebin').addClass('disabled');
     $('a.query').addClass('disabled');
 });
 
+
+var margin = {top: 10, right: 30, bottom: 30, left: 40},
+width = 460 - margin.left - margin.right,
+height = 400 - margin.top - margin.bottom;
+
+var svg = d3.select("#bars")
+.append("svg")
+.attr("width", width + margin.left + margin.right)
+.attr("height", height + margin.top + margin.bottom)
+.append("g")
+.attr("transform",
+"translate(" + margin.left + "," + margin.top + ")");
+
+// append the svg object to the body of the page
+// https://www.d3-graph-gallery.com/graph/histogram_binSize.html
+function bars(data) {
+    // d3.selectAll("svg > ").remove();
+    // var data = data.sort(function(a, b) {
+    //     return a - b;
+    // });
+    // console.log(data);
+
+    // X axis: scale and draw:
+
+
+    // A function that builds the graph for a specific value of bin
+    function update(nBin) {
+        console.log('NBIN: ' + nBin);
+
+        d3.selectAll("svg").remove();
+        var svg = d3.select("#bars")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
+
+
+        var x = d3.scaleLinear()
+        //.domain([0, 100])     // can use this instead of 1000 to have the max of data:
+         .domain([0, d3.max(data, function(d) { return +d })])
+        .range([0, width]);
+        svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+        // Y axis: initialization
+        var y = d3.scaleLinear()
+        .range([height, 0]);
+        var yAxis = svg.append("g")
+
+        // set the parameters for the histogram
+        var histogram = d3.histogram()
+        .domain(x.domain())  // then the domain of the graphic
+        .thresholds(x.ticks(nBin)); // then the numbers of bins
+
+        // And apply this function to data to get the bins
+        var bins = histogram(data.map(function(d) {return math.max(+d - 0.5, 0);}));
+        console.log('BINS');
+        console.log(bins);
+        console.log('MAX: ' + d3.max(bins, function(d) { return d.length; }));
+        // Y axis: update now that we know the domain
+        y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
+        yAxis
+        //.transition()
+        //.duration(1000)
+        .call(d3.axisLeft(y));
+
+        // Join the rect with the bins data
+        var u = svg.selectAll("rect")
+        .data(bins);
+
+        // Manage the existing bars and eventually the new ones:
+        u
+        .enter()
+        .append("rect") // Add a new rect for each new elements
+        .merge(u) // get the already existing elements as well
+        //.transition() // and apply changes to all of them
+        //.duration(1000)
+        .attr("x", 1)
+        .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
+        .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
+        .attr("height", function(d) { return height - y(d.length); })
+        .style("fill", "SteelBlue");
+
+        // If less bar in the new histogram, I delete the ones not in use anymore
+        u
+        .exit()
+        .remove();
+
+    }
+
+  // Initialize with 20 bins
+  update(+$('#nBin').val());
+
+  // Listen to the button -> update if user change it
+  $("#nBin").on('input', function() {
+      update(+$(this).val());
+  });
+
+}
 
 $(document).ready(function () {
     var $table = $('#mainTable');
@@ -1069,8 +1201,9 @@ $(document).ready(function () {
 
     $('#fields_submit').on('click', function() {
         loadPrimary($('#fields').val());
-        $('a.csv').addClass('disabled');
+        $('a.pastebin').addClass('disabled');
         $('a.query').addClass('disabled');
+        $('#pastebin').modal('hide');
     });
 
     $('#fields').keydown(function(event) {
