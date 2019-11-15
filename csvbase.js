@@ -158,8 +158,8 @@ function resetTable() {
 
     $('th').attr('clicked', 0);
 
-    colWidths['count'] = 54;
-    $('th').attr('clicked', 0);
+    // colWidths['count'] = 54;
+    // colWidths['count'] = 3;
 }
 
 function sanitize(str) {
@@ -220,7 +220,6 @@ function updateTable(db, table, plaintextDB, key, isPrimary) {
     // console.log('SECONDARY KEY SELECTED');
 
     console.log($('#key_sel').val());
-    // primaryDbKey = headerIndex[$('#key_sel').val().replace(/^\s+|\s+$/g, "").replace(/\s/g, "_").replace(/[^a-z0-9_]/ig, "").toUpperCase()];
 
     primaryDbKey = headerIndex[key];
     primaryKey = key;
@@ -234,14 +233,6 @@ function updateTable(db, table, plaintextDB, key, isPrimary) {
             resetTable();
             // var secondaryKey = $('#second_key_sel').val().replace(/^\s+|\s+$/g, "").replace(/\s/g, "_").replace(/[^a-z0-9_]/ig, "");
             var secondaryKey = sanitize($('#second_key_sel').val());
-            // var sanitizedField;
-            // secondaryHeaderNames.map(function(field, index) {
-            //     field = field.replace(/^\s+|\s+$/g, "").replace(/\s/g, "_").replace(/[^a-z0-9_]/ig, "");
-            //     field = field == '' ? 'BLANK_' + (index + 1) : field;
-            //     sanitizedField = field.toUpperCase();
-            //     sanitizedSecondaryHeaders.push(sanitizedField);
-            // });
-            // var newTable = extendTable(table, sanitizedSecondaryHeaders, primaryDbKey, secondaryKey);
             console.log(sanitizedHeaders);
             console.log(secondaryKey);
             console.log(headerIndex);
@@ -251,13 +242,6 @@ function updateTable(db, table, plaintextDB, key, isPrimary) {
             $('a.query').removeClass('disabled');
         });
     } else {
-        // var sanitizedField;
-        // secondaryHeaderNames.map(function(field, index) {
-        //     field = field.replace(/^\s+|\s+$/g, "").replace(/\s/g, "_").replace(/[^a-z0-9_]/ig, "");
-        //     field = field == '' ? 'BLANK_' + (index + 1) : field;
-        //     sanitizedField = field.toUpperCase();
-        //     sanitizedSecondaryHeaders.push(sanitizedField);
-        // });
         resetTable();
         console.log(primaryDbKey);
         updateRows(data, db, table, primaryDbKey);
@@ -265,51 +249,6 @@ function updateTable(db, table, plaintextDB, key, isPrimary) {
 
 }
 
-function extendTable(table, secondaryFields, primaryDbKey, secondaryKey) {
-    // https://stackoverflow.com/questions/3629817/getting-a-union-of-two-arrays-in-javascript
-    var obj = {};
-    var union = [];
-
-
-    for (var i = 0; i< sanitizedHeaders.length-1; i++) {
-        obj[sanitizedHeaders[i]] = sanitizedHeaders[i];
-    }
-    for (var i = 0; i < sanitizedSecondaryHeaders.length-1; i++) {
-        if (sanitizedSecondaryHeaders[i] != secondaryKey) {
-            obj[sanitizedSecondaryHeaders[i]] = sanitizedSecondaryHeaders[i];
-        }
-    }
-
-    for (var k in obj) {
-        if (obj.hasOwnProperty(k))  // <-- optional
-        union.push(obj[k]);
-    }
-
-    console.log('UNION');
-    console.log(union);
-
-    if (union.length == sanitizedHeaders) {
-        return table;
-    } else {
-        return table;
-
-        tableVersion++;
-        console.log('NEW TABLE: ' + 'LogTable' + tableVersion);
-        var tableBuilder = schemaBuilder.createTable('LogTable' + tableVersion);
-
-        console.log(headerNames);
-        for (j = 0; j < union.length; j++) {
-            field = union[j];
-            // console.log('ADD HEADER  ' + field);
-            tableBuilder = tableBuilder.addColumn(field, lf.Type.STRING);
-            // console.log('HEADER ADDED');
-            if (field == primaryDbKey) {
-                tableBuilder = tableBuilder.addprimaryDbKey([primaryDbKey]);
-            }
-        }
-    }
-
-}
 
 function updateRows(data, db, table, secondaryDbKey) {
     var str, row;
@@ -321,6 +260,14 @@ function updateRows(data, db, table, secondaryDbKey) {
     console.log(headerIndex);
     console.log(dataIndex);
 
+    // $('th').css('white-space', 'nowrap');
+    var sfield, field;
+    // sanitizedHeaders.map(function(sfield) {
+    for (var j = 0; j < sanitizedHeaders.length; j++) {
+        sfield = sanitizedHeaders[j];
+        // colWidths[sfield] = $("th[field='" + sfield + "'] > a").text().length*wscale*12 + 20;
+        // colWidths[sfield] = $("th[field='" + sfield + "'] > a").text().length;
+    }
 
     for(var i = 0; i < data.length; i++) {
         var rowObj = {};
@@ -342,28 +289,28 @@ function updateRows(data, db, table, secondaryDbKey) {
             continue;
         }
 
-        // $('th').css('white-space', 'nowrap');
-        sanitizedHeaders.map(function(sfield) {
-            colWidths[sfield] = $("th[field='" + sfield + "'] > a").text().length*wscale*12 + 20;
-        });
         // console.log('SANITIZED HEADERS');
         // console.log(sanitizedHeaders);
         if (primaryDbKeyValues.indexOf(secondaryKeyValue) <= -1 && secondaryKeyValue.trim() != '') {
             console.log('NEW PRIMARY KEY VALUE: ' + secondaryKeyValue);
             var datum = {};
-            sanitizedHeaders.map(function(sfield) {
+            for (var j = 0; j < sanitizedHeaders.length; j++) {
+                // sanitizedHeaders.map(function(sfield) {
+                sfield = sanitizedHeaders[j];
                 if (sfield in headerIndex) {
                     var field = headerIndex[sfield];
                     if (typeof rowObj[field] !== "undefined" && rowObj[field] !== null) {
                         datum[field] = rowObj[field];
-                        if (datum[field].toString().length*wscale*12 > colWidths[sfield]) {
-                            colWidths[sfield] = datum[field].toString().length*wscale*12;
-                        }
+                        // if (datum[field].toString().length*wscale*12 > colWidths[sfield]) {
+                        // if (datum[field].toString().length > colWidths[sfield]) {
+                        //     // colWidths[sfield] = datum[field].toString().length*wscale*12;
+                        //     colWidths[sfield] = datum[field].toString().length;
+                        // }
                     } else {
                         datum[field] = " ";
                     }
                 }
-            });
+            }
             for (var j = 0; j < maxCols; j++) {
                 var key = 'COL' + j.toString();
                 if (!(key in datum)) {
@@ -390,15 +337,22 @@ function updateRows(data, db, table, secondaryDbKey) {
                             console.log('UPDATED: ' + sfield + ' ' + value);
                         });
 
-                        if (wscale*12*(value.toString().length) > colWidths[sfield]) {
-                            colWidths[sfield] = wscale*12*(value.toString().length);
-                        }
+                        // if (wscale*12*(value.toString().length) > colWidths[sfield]) {
+                        // if (value.toString().length > colWidths[sfield]) {
+                        //     // colWidths[sfield] = wscale*12*(value.toString().length);
+                        //     colWidths[sfield] = value.toString().length;
+                        // }
                     }
                 }
             });
         }
     }
     console.log('NEWROWS INITIATED');
+    for (var key in colWidths) {
+        if (colWidths.hasOwnProperty(key)) {
+            colWidths[key] = colWidths[key] + 2;
+        }
+    }
     console.log(colWidths);
     console.log(newRows);
     console.log(db);
@@ -484,7 +438,7 @@ function queryHWSet(db, table, query, field) {
                 count++;
                 $(cell).addClass('branch');
                 $(tableRow).addClass('branch');
-                $(tableRow).hide();
+                // $(tableRow).hide();
             }
             $(".col_count[index='" + index + "']:not(:first)").html(count + '<strong style="float:right">&ndash;</strong>');
             $("td.root[index='" + index + "']").html(count);
@@ -567,6 +521,21 @@ function queryHWSet(db, table, query, field) {
             });
         });
 
+
+        $('#mainTable').css('width', 'auto');
+        for (var j = 0; j < sanitizedHeaders.length; j++) {
+            sfield = sanitizedHeaders[j];
+            // colWidths[sfield] = $("th[field='" + sfield + "'] > a").text().length*wscale*12 + 20;
+            colWidths[sfield] = Math.max($("td[field='" + sfield + "']").width(), $("th[field='" + sfield + "']").width());
+        }
+        colWidths['count'] = 25;
+
+        for (var key in colWidths) {
+            if (colWidths.hasOwnProperty(key)) {
+                colWidths[key] = colWidths[key] + 25;
+            }
+        }
+
         $('th, td').each(function() {
             var field = $(this).attr('field');
             if ($(".field_checkbox[field='" + field + "']").is(':checked')) {
@@ -577,21 +546,35 @@ function queryHWSet(db, table, query, field) {
 
         });
 
-        $('th, td').each(function() {
-            $(this).css('width', colWidths[$(this).attr('field')] + 'px');
-        });
-
         var tableWidth = 0;
         $('th:visible').each(function() {
             tableWidth += colWidths[$(this).attr('field')];
         });
 
-        $('#mainTable').css('width', tableWidth + 'px');
+        $('#mainTable').css('width', tableWidth);
+        $('#table-container').css('width', tableWidth + 15);
+        $('tbody tr').css('width', tableWidth);
+        $('thead tr').css('width', tableWidth);
+        $('th, td').each(function() {
+            $(this).css('width', colWidths[$(this).attr('field')]);
+        });
+        $('tbody').css('margin-top', parseInt($('th').first().css('height')));
 
-        $('#table-container').css('width', tableWidth + 18 + 'px');
-        $('tbody tr').css('width', tableWidth + 'px');
-        $('thead tr').css('width', tableWidth + 'px');
-        $('tbody').css('margin-top', parseInt($('th').first().css('height')) + 'px');
+        // var tableWidth = 0;
+        // $('th:visible').each(function() {
+        //     tableWidth += colWidths[$(this).attr('field')];
+        // });
+        // var unit = 'rem'
+        // $('#mainTable').css('width', tableWidth.toString() + unit);
+        //
+        // $('#table-container').css('width', (tableWidth + 1).toString() + unit);
+        // $('tbody tr').css('width', tableWidth.toString() + unit);
+        // $('thead tr').css('width', tableWidth.toString() + unit);
+        // $('tbody').css('margin-top', parseInt($('th').first().css('height')));
+        //
+        // $('th, td').each(function() {
+        //     $(this).css('width', colWidths[$(this).attr('field')] + 'rem');
+        // });
 
         console.log('COLWIDTHS');
         console.log(colWidths);
@@ -623,6 +606,8 @@ function queryHWSet(db, table, query, field) {
 
         updateButtons(db, logTable);
 
+        $('tr.branch').hide();
+
     });
 
 }
@@ -642,7 +627,7 @@ function updateButtons(db, table) {
 
 
     $("a.group_by[field!='count'][field!='chkbox']").on('click', function() {
-        $('th div.triangle').html('&#x25b7;');
+        $('th div.triangle').html('&#x25ba;');
         sortField = $(this).closest('th').attr('field');
         groupField = sortField;
         var sort = fieldToLf[sortField];
@@ -656,6 +641,7 @@ function updateButtons(db, table) {
         $('#query').val(query);
 
         queryHWSet(db, table, query, groupField);
+
     });
 
     $('th').find('.fields.statistics').click(function() {
@@ -677,8 +663,7 @@ function updateButtons(db, table) {
 
     $("th div.triangle").off();
     $("th div.triangle").on('click', function() {
-        console.log('CLICKED');
-        $('th div.triangle').html('&#x25b7;');
+        $('th div.triangle').html('&#x25ba;');
         sortField = $(this).closest('th').attr('field');
 
         var clicked = clickedArray[sortField];
@@ -721,6 +706,7 @@ function updateButtons(db, table) {
         } else if ($(this).closest('th').attr('clicked') == -1){
             $(this).html('&#x25BC;');
         }
+	$('tbody').css('margin-top', parseInt($('th').first().css('height')) + 'px');
     });
 
     var field;
@@ -789,11 +775,7 @@ function updateKeys() {
         var a = document.createElement("a");
         $(a).addClass("dropdown-item");
         $(a).attr('href', "#");
-        // $(a).html("<input class='field_checkbox' checked type='checkbox' field='" + field + "' id='" + field + "_checkbox'>&nbsp;<label class='form-check-label' for='" + field + "_checkbox'>" + field + "</label>" +
-        // "&nbsp;&nbsp;<a href='#' class='fields mean' field='" + field + "'>Mean</a>" +
-        // "&nbsp;&nbsp;<a href='#' class='fields median' field='" + field + "'>Median</a>" +
-        // "&nbsp;&nbsp;<a href='#' class='fields std' field='" + field + "'>Std</a>");
-        // $("#columns_menu").append(a);
+
         $(a).html("<input class='field_checkbox' checked type='checkbox' field='" + field + "' id='" + field + "_checkbox'>&nbsp;<label class='form-check-label' for='" + field + "_checkbox'>" + field + "</label>" +
         "&nbsp;&nbsp;<a href='#' class='fields statistics' field='" + field + "'>Statistics</a>");
         $("#columns_menu").append(a);
@@ -827,9 +809,9 @@ function updateKeys() {
             tableWidth += colWidths[$(this).attr('field')];
         });
 
-        console.log('TABLEWIDTH: ' + tableWidth + 'px');
-        $('#mainTable').css('width', tableWidth + 'px');
-        $('#table-container').css('width', tableWidth + 'px');
+        console.log('TABLEWIDTH: ' + tableWidth + 'em');
+        $('#mainTable').css('width', tableWidth + 'em');
+        $('#table-container').css('width', tableWidth + 'em');
     });
 
     $('#columns_menu').find('.fields.statistics').click(function() {
@@ -905,28 +887,6 @@ function loadPrimary(plaintextDB) {
     console.log(headerIndex);
     console.log(dataIndex);
 
-    // headerNames = [];
-    // $('#header_row').html('<th id="th_count" clicked="0" field="count" class="col_count header"><a href="#">#</a><div class="triangle">&#x25BA;</div></th>');
-    // var hfield;
-    // sanitizedHeaders.map(function(sfield) {
-    //     hfield = sfield;
-    //     var $th = $("<th>", {"id" : 'th_' + hfield, 'clicked': '0', 'field': hfield, "class":'col_' + hfield});
-    //     var html = '<a id="a_' + hfield + '" href="#" class="header" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' + hfield.replace(/_/, ' ') + '</a>';
-    //     html += '<div class="dropdown-menu" aria-labelledby="a_' + hfield + '"><a class="dropdown-item group_by" field="' + hfield + '" href="#">Group by</a><a class="dropdown-item fields statistics" field="' + hfield + '" href="#" >Statistics</a><a class="dropdown-item fields hide" field="' + hfield + '" href="#">Hide</a></div>';
-    //
-    //     html += "<div class='triangle'>&#x25BA;</div>";
-    //     $th.html(html);
-    //     $th.appendTo($('#header_row'));
-    // });
-    //
-    // $('th').attr('clicked', 0);
-    //
-    // colWidths['count'] = 54;
-    // sanitizedHeaders.map(function(sfield) {
-    //     colWidths[sfield] = parseInt($("th[field='" + sfield + "']").css('width'));
-    // });
-    // console.log('INIT WIDTHS');
-    // console.log(colWidths);
 
     console.log('HEADER TYPES');
     console.log(headerTypes);
