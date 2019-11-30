@@ -21,6 +21,9 @@ var tableVersion = 0;
 var schemaBuilder;
 var maxCols = 50;
 
+function report() {
+};
+
 function initializeDB(plaintextDB, key) {
     // alert('EMPTY TABLE');
     $('#mainTable').find('tbody').html('');
@@ -31,11 +34,11 @@ function initializeDB(plaintextDB, key) {
     var field;
     var dbKey = headerIndex[key];
 
-    console.log('INIT primaryKey: ' + key);
-    console.log('INIT primaryDbKey: ' + dbKey);
+    report('INIT primaryKey: ' + key);
+    report('INIT primaryDbKey: ' + dbKey);
 
     var dbName = 'csvDB' + plaintextDB.hashCode();
-    console.log('DB NAME: ' + dbName);
+    report('DB NAME: ' + dbName);
 
     indexedDB.deleteDatabase(dbName);
     // key.replace(/^\s+|\s+$/g, "").replace(/\s/g, "_").replace(/[^a-z0-9_]/ig, "").toUpperCase();
@@ -45,22 +48,22 @@ function initializeDB(plaintextDB, key) {
 
     var tableBuilder = schemaBuilder.createTable('LogTable' + tableVersion);
 
-    console.log(headerNames);
-    console.log(headerIndex);
+    report(headerNames);
+    report(headerIndex);
 
     // for (j = 0; j < sanitizedHeaders.length; j++) {
     for (var j = 0; j < maxCols; j++) {
         // field = sanitizedHeaders[j];
-        // console.log('ADD HEADER  ' + field);
+        // report('ADD HEADER  ' + field);
         tableBuilder = tableBuilder.addColumn('COL' + j.toString(), lf.Type.STRING);
         if (dbKey == 'COL' + j.toString()) {
-            console.log('DBKEY MATCH: ' + dbKey);
+            report('DBKEY MATCH: ' + dbKey);
             tableBuilder = tableBuilder.addPrimaryKey([dbKey]);
         }
     }
 
-    console.log('HEADERINDEX');
-    console.log(headerIndex);
+    report('HEADERINDEX');
+    report(headerIndex);
 
     sortField = key;
     groupField = key;
@@ -68,7 +71,7 @@ function initializeDB(plaintextDB, key) {
     primaryDbKey = dbKey;
 
     schemaBuilder.connect().then(function(db) {
-        console.log('CONNECTED');
+        report('CONNECTED');
         var row;
         var rows = [];
         var logTable = db.getSchema().table('LogTable' + tableVersion);
@@ -89,7 +92,7 @@ function initializeDB(plaintextDB, key) {
         $('#hover_msg').hide();
 
         // var field = headerNames[0];
-        // console.log('FIELD IS: ' + field);
+        // report('FIELD IS: ' + field);
 
         baseQuery = "select().from(table)";
         $('#query').val(baseQuery);
@@ -144,7 +147,7 @@ function resetTable() {
     $('#mainTable > tbody > tr').remove();
     $('#header_row').html('<th id="th_count" clicked="0" field="count" class="col_count header"><a href="#">#</a><div class="triangle">&#x25BA;</div></th>');
     var hfield;
-    console.log(sanitizedHeaders);
+    report(sanitizedHeaders);
     sanitizedHeaders.map(function(sfield) {
         hfield = sfield;
         var $th = $("<th>", {"id" : 'th_' + hfield, 'clicked': '0', 'field': hfield, "class":'col_' + hfield});
@@ -178,9 +181,9 @@ function updateTable(db, table, plaintextDB, key, isPrimary) {
         dynamicTyping: false,
     });
     // complete: function(results) {
-    console.log(results);
+    report(results);
     data = results.data;
-    console.log(data);
+    report(data);
 
     if (data.length < 1) {
         return;
@@ -190,7 +193,7 @@ function updateTable(db, table, plaintextDB, key, isPrimary) {
     var sanitizedField;
 
     headers = results.meta['fields'];
-    console.log(headers);
+    report(headers);
 
     for (var j = 0; j < headers.length; j++) {
         var field = headers[j];
@@ -210,41 +213,49 @@ function updateTable(db, table, plaintextDB, key, isPrimary) {
         dataIndex[sanitizedField] = field;
     }
 
-    console.log(headerIndex);
-    console.log(dataIndex);
+    report(headerIndex);
+    report(dataIndex);
 
     $("#second_key_sel")[0].innerHTML = '';
     updateSecondaryKeys();
 
     $('#second_key_sel').off();
-    // console.log('SECONDARY KEY SELECTED');
+    // report('SECONDARY KEY SELECTED');
 
-    console.log($('#key_sel').val());
+    report($('#key_sel').val());
 
     primaryDbKey = headerIndex[key];
     primaryKey = key;
     sortField = key;
     groupField = key;
-    console.log(primaryKey);
-    console.log(primaryDbKey);
+    report(primaryKey);
+    report(primaryDbKey);
 
     if (!isPrimary) {
         $('#second_key_sel').on('change', function() {
             resetTable();
             // var secondaryKey = $('#second_key_sel').val().replace(/^\s+|\s+$/g, "").replace(/\s/g, "_").replace(/[^a-z0-9_]/ig, "");
             var secondaryKey = sanitize($('#second_key_sel').val());
-            console.log(sanitizedHeaders);
-            console.log(secondaryKey);
-            console.log(headerIndex);
-            console.log(dataIndex);
-            updateRows(data, db, table, headerIndex[secondaryKey]);
+            report(sanitizedHeaders);
+            report(secondaryKey);
+            report(headerIndex);
+            report(dataIndex);
+            $('#messages').text('Running Query');
+            $('#query_msg').show();
+            window.setTimeout(function(){
+                updateRows(data, db, table, headerIndex[secondaryKey]);
+            }, 0);
             $('a.pastebin').removeClass('disabled');
             $('a.query').removeClass('disabled');
         });
     } else {
         resetTable();
-        console.log(primaryDbKey);
-        updateRows(data, db, table, primaryDbKey);
+        report(primaryDbKey);
+        $('#messages').text('Running Query');
+        $('#query_msg').show()
+        window.setTimeout(function(){
+            updateRows(data, db, table, primaryDbKey);
+        },0);
     }
 
 }
@@ -255,10 +266,10 @@ function updateRows(data, db, table, secondaryDbKey) {
     var newRows = [];
     var sanitizedField;
 
-    console.log('UPDATEROWS');
-    console.log(secondaryDbKey);
-    console.log(headerIndex);
-    console.log(dataIndex);
+    report('UPDATEROWS');
+    report(secondaryDbKey);
+    report(headerIndex);
+    report(dataIndex);
 
     // $('th').css('white-space', 'nowrap');
     var sfield, field;
@@ -282,17 +293,17 @@ function updateRows(data, db, table, secondaryDbKey) {
                 }
             }
         });
-        console.log(rowObj);
+        report(rowObj);
 
         var secondaryKeyValue = rowObj[secondaryDbKey];
         if (secondaryKeyValue == null || typeof secondaryKeyValue == typeof undefined) {
             continue;
         }
 
-        // console.log('SANITIZED HEADERS');
-        // console.log(sanitizedHeaders);
+        // report('SANITIZED HEADERS');
+        // report(sanitizedHeaders);
         if (primaryDbKeyValues.indexOf(secondaryKeyValue) <= -1 && secondaryKeyValue.trim() != '') {
-            console.log('NEW PRIMARY KEY VALUE: ' + secondaryKeyValue);
+            report('NEW PRIMARY KEY VALUE: ' + secondaryKeyValue);
             var datum = {};
             for (var j = 0; j < sanitizedHeaders.length; j++) {
                 // sanitizedHeaders.map(function(sfield) {
@@ -317,14 +328,14 @@ function updateRows(data, db, table, secondaryDbKey) {
                     datum[key] = " ";
                 }
             }
-            // console.log(primaryDbKey);
+            // report(primaryDbKey);
             datum[primaryDbKey] = secondaryKeyValue;
-            console.log(datum);
+            report(datum);
             newRows.push(table.createRow(datum));
             primaryDbKeyValues.push(secondaryKeyValue);
         } else {
-            // console.log('UPDATE ROW ELSE');
-            // console.log(sanitizedHeaders);
+            // report('UPDATE ROW ELSE');
+            // report(sanitizedHeaders);
             sanitizedHeaders.map(function(sfield) {
                 var field = headerIndex[sfield];
                 if (field != primaryDbKey && sanitizedSecondaryHeaders.indexOf(sfield) > -1) {
@@ -334,7 +345,7 @@ function updateRows(data, db, table, secondaryDbKey) {
                         set(table[field], value).
                         where(table[primaryDbKey].eq(rowObj[secondaryDbKey])).
                         exec().then(function() {  // Returns a Promise.
-                            console.log('UPDATED: ' + sfield + ' ' + value);
+                            report('UPDATED: ' + sfield + ' ' + value);
                         });
 
                         // if (wscale*12*(value.toString().length) > colWidths[sfield]) {
@@ -347,21 +358,21 @@ function updateRows(data, db, table, secondaryDbKey) {
             });
         }
     }
-    console.log('NEWROWS INITIATED');
+    report('NEWROWS INITIATED');
     for (var key in colWidths) {
         if (colWidths.hasOwnProperty(key)) {
             colWidths[key] = colWidths[key] + 2;
         }
     }
-    console.log(colWidths);
-    console.log(newRows);
-    console.log(db);
+    report(colWidths);
+    report(newRows);
+    report(db);
     db.insertOrReplace().into(table).values(newRows).exec().then(function() {
-        console.log('TABLE UPDATED');
-        console.log(table);
+        report('TABLE UPDATED');
+        report(table);
         baseQuery = "select().from(table)";
         $('#query').val(baseQuery);
-        console.log('SECONDARY QUERY');
+        report('SECONDARY QUERY');
         queryHWSet(db, table, baseQuery, groupField);
         $(this).val('Select Matching Key...');
     });
@@ -369,14 +380,14 @@ function updateRows(data, db, table, secondaryDbKey) {
 
 //https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
 String.prototype.hashCode = function() {
-  var hash = 0, i, chr;
-  if (this.length === 0) return hash;
-  for (i = 0; i < this.length; i++) {
-    chr   = this.charCodeAt(i);
-    hash  = ((hash << 5) - hash) + chr;
-    hash |= 0; // Convert to 32bit integer
-  }
-  return hash;
+    var hash = 0, i, chr;
+    if (this.length === 0) return hash;
+    for (i = 0; i < this.length; i++) {
+        chr   = this.charCodeAt(i);
+        hash  = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+    }
+    return hash;
 };
 
 function queryHWSet(db, table, query, field) {
@@ -390,9 +401,6 @@ function queryHWSet(db, table, query, field) {
     $('td').css('border-right', '');
     $('td').css('color', '#eee');
 
-
-    $('#hover_msg').html('Running Query... <img style="width:5em" src="Loading_icon.gif"/>');
-    $('#hover_msg').show();
 
     var logTable = table;
     var dbGroup = headerIndex[field];
@@ -410,13 +418,13 @@ function queryHWSet(db, table, query, field) {
     var index = 0;
     var count = 0;
 
-    console.log('FIELD: ' + field);
+    report('FIELD: ' + field);
 
-    console.log('QUERY: ' + query);
+    report('QUERY: ' + query);
     var queryFunc = new Function('db', 'table',  'return db.' + query + '.exec()');
 
     return queryFunc(db, logTable).then(function(rows) {
-        console.log(rows);
+        report(rows);
         // document.getElementById('mainTable').getElementsByTagName('tbody')[0].innerHTML = '';
         rows.forEach(function(row) {
             var tableRow = document.getElementById('mainTable').getElementsByTagName('tbody')[0].insertRow(-1);
@@ -465,8 +473,8 @@ function queryHWSet(db, table, query, field) {
 
         updateKeys();
 
-        $('#messages').html('<strong>Query Completed</strong>');
-        $('#hover_msg').hide();
+        $('#messages').text('Query Completed');
+        $('#query_msg').hide();
 
         $('td.root').each(function() {
             var count = $(this).html();
@@ -480,7 +488,7 @@ function queryHWSet(db, table, query, field) {
 
         // $('.col_unixtime').hide();
 
-        console.log('COLCLASS: ' + colClass);
+        report('COLCLASS: ' + colClass);
         $('td.' + colClass).css('border-left', '2px solid SteelBlue');
         $('td.' + colClass).css('border-right', '2px solid SteelBlue');
 
@@ -576,8 +584,8 @@ function queryHWSet(db, table, query, field) {
         //     $(this).css('width', colWidths[$(this).attr('field')] + 'rem');
         // });
 
-        console.log('COLWIDTHS');
-        console.log(colWidths);
+        report('COLWIDTHS');
+        report(colWidths);
 
         // $('#mainTable').show();
 
@@ -609,7 +617,6 @@ function queryHWSet(db, table, query, field) {
         $('tr.branch').hide();
 
     });
-
 }
 
 function updateButtons(db, table) {
@@ -635,7 +642,7 @@ function updateButtons(db, table) {
         var clicked = -1;
         clickedArray[sortField] = clicked;
 
-        console.log(clickedArray);
+        report(clickedArray);
 
         query = baseQuery +  ".orderBy(table." + headerIndex[sortField] + ", lf.Order.DESC)";
         $('#query').val(query);
@@ -706,7 +713,7 @@ function updateButtons(db, table) {
         } else if ($(this).closest('th').attr('clicked') == -1){
             $(this).html('&#x25BC;');
         }
-	$('tbody').css('margin-top', parseInt($('th').first().css('height')) + 'px');
+        $('tbody').css('margin-top', parseInt($('th').first().css('height')) + 'px');
     });
 
     var field;
@@ -751,15 +758,15 @@ function statistics(array, field) {
 
     $('#statistics').find('.modal-body').find('.stats').html('COUNT: ' + array.length + '<br/>MEDIAN: ' + math.median(array) + '<br/>' + 'MEAN: ' + Math.round(100*math.mean(array))/100 +  '<br/>' + 'Standard Deviation: ' + Math.round(100*math.std(array))/100);
 
-    console.log('DOMAIN MAX: ' + math.max(array));
+    report('DOMAIN MAX: ' + math.max(array));
     $('#max').val(math.max(array));
 
     bars(array);
 }
 
 function updateKeys() {
-    console.log('UPDATEKEYS');
-    console.log(sanitizedHeaders);
+    report('UPDATEKEYS');
+    report(sanitizedHeaders);
     var o = new Option("option text", "value");
     $(o).html('Select Primary Key...');
     $(o).attr('selected');
@@ -795,40 +802,52 @@ function updateKeys() {
 
     $('.field_checkbox').off();
     $('.field_checkbox').on('change', function() {
-        $('th, td').each(function() {
-            var field = $(this).attr('field');
-            if ($(".field_checkbox[field='" + field + "']").is(':checked')) {
-                $(this).show();
-            } else {
-                $(this).hide();
-            }
-        });
-
-        var tableWidth = 0;
-        $('th:visible').each(function() {
-            tableWidth += colWidths[$(this).attr('field')];
-        });
-
-        console.log('TABLEWIDTH: ' + tableWidth + 'em');
-        $('#mainTable').css('width', tableWidth + 'em');
-        $('#table-container').css('width', tableWidth + 'em');
-    });
-
-    $('#columns_menu').find('.fields.statistics').click(function() {
-        var array = [];
         var field = $(this).attr('field');
-        $("td[field='" + field + "']").each(function() {
-            array.push($(this).text());
-        });
-        statistics(array, field);
+        if ($(this).is(':checked')) {
+            $('th[field="' + field + '"], td[field="' + field + '"]').show();
+        } else {
+            $('th[field="' + field + '"], td[field="' + field + '"]').hide();
+        }
+
+        /*
+        $('th, td').each(function() {
+        var field = $(this).attr('field');
+        if ($(".field_checkbox[field='" + field + "']").is(':checked')) {
+        $(this).show();
+    } else {
+    $(this).hide();
+}
+});
+*/
+
+var tableWidth = 0;
+$('th:visible').each(function() {
+    tableWidth += colWidths[$(this).attr('field')];
+});
+
+report('TABLEWIDTH: ' + tableWidth);
+
+$('#table-container').css('width', tableWidth + 15);
+$('#mainTable').css('width', tableWidth);
+$('#mainTable > thead > tr').css('width', tableWidth);
+
+});
+
+$('#columns_menu').find('.fields.statistics').click(function() {
+    var array = [];
+    var field = $(this).attr('field');
+    $("td[field='" + field + "']").each(function() {
+        array.push($(this).text());
     });
+    statistics(array, field);
+});
 
 }
 
 function updateSecondaryKeys() {
-    console.log('UPDATEKEYS');
-    console.log(headerNames);
-    console.log(sanitizedSecondaryHeaders);
+    report('UPDATEKEYS');
+    report(headerNames);
+    report(sanitizedSecondaryHeaders);
 
     var o = new Option("option text", "value");
     $(o).html('Select Matching Key...');
@@ -883,13 +902,13 @@ function loadPrimary(plaintextDB) {
         headerIndex[sanitizedField] = 'COL' + j.toString();
         dataIndex[sanitizedField] = headers[j];
     }
-    console.log('LOADPRIMARY');
-    console.log(headerIndex);
-    console.log(dataIndex);
+    report('LOADPRIMARY');
+    report(headerIndex);
+    report(dataIndex);
 
 
-    console.log('HEADER TYPES');
-    console.log(headerTypes);
+    report('HEADER TYPES');
+    report(headerTypes);
     $("#key_sel")[0].innerHTML = '';
     $("#second_key_sel")[0].innerHTML = '';
     updateKeys();
@@ -934,7 +953,7 @@ function bars(data) {
     // var data = data.sort(function(a, b) {
     //     return a - b;
     // });
-    // console.log(data);
+    // report(data);
 
     // X axis: scale and draw:
 
@@ -967,12 +986,12 @@ function bars(data) {
         var yAxis = svg.append("g");
 
         var thresholds = [];
-        console.log(nBin);
+        report(nBin);
         for(let i = 0; i < +nBin; i++) {
             thresholds.push(i*Math.round(100*max/nBin)/100);
         }
-        console.log('THRESHOLDS');
-        console.log(thresholds);
+        report('THRESHOLDS');
+        report(thresholds);
 
         // set the parameters for the histogram
         var histo = d3.histogram()
@@ -982,9 +1001,9 @@ function bars(data) {
 
         // And apply this function to data to get the bins
         var bins = histo(data.map(function(d) {return Math.max(+d - 0.5, 0);}));
-        console.log('BINS');
-        console.log(bins);
-        console.log('MAX: ' + d3.max(bins, function(d) { return d.length; }));
+        report('BINS');
+        report(bins);
+        report('MAX: ' + d3.max(bins, function(d) { return d.length; }));
         // Y axis: update now that we know the domain
         y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
         yAxis
@@ -1016,17 +1035,17 @@ function bars(data) {
 
     }
 
-  // Initialize with 20 bins
+    // Initialize with 20 bins
 
-  update(+$('#nBin').val(), +$('#max').val());
+    update(+$('#nBin').val(), +$('#max').val());
 
-  // Listen to the button -> update if user change it
-  d3.select("#nBin").on('input', function() {
-      update(+$(this).val(), +$('#max').val());
-  });
-  d3.select("#max").on('input', function() {
-      update(+$('#nBin').val(), +$(this).val());
-  });
+    // Listen to the button -> update if user change it
+    d3.select("#nBin").on('input', function() {
+        update(+$(this).val(), +$('#max').val());
+    });
+    d3.select("#max").on('input', function() {
+        update(+$('#nBin').val(), +$(this).val());
+    });
 
 }
 
@@ -1074,12 +1093,12 @@ $(document).ready(function () {
         $('#pastebin').modal('hide');
     });
 
-    $('#fields').keydown(function(event) {
-        if (event.keyCode === 13) {
-            event.preventDefault();
-            $('#fields_submit').click();
-        }
-    });
+    // $('#fields').keydown(function(event) {
+    //     if (event.keyCode === 13) {
+    //         event.preventDefault();
+    //         $('#fields_submit').click();
+    //     }
+    // });
 
     $('#query').keydown(function(event) {
         if (event.keyCode === 13) {
