@@ -21,7 +21,7 @@ var tableVersion = 0;
 var schemaBuilder;
 var maxCols = 50;
 
-function report() {
+function report () {
 };
 
 function initializeDB(plaintextDB, key) {
