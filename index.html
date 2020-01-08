@@ -83,6 +83,10 @@ a.header {
     color:#000;
 }
 
+.nav-item.calculated_column {
+    display:none;
+}
+
 </style>
 </head>
 
@@ -128,6 +132,24 @@ a.header {
                             <option selected>Select Matching Key...</option>
                         </select>
                     </a>
+                </li>
+                <li class="nav-item calculated_column">
+                    <a class="nav-link query dropdown-toggle" href="#" id="calculated_column" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add Calculated Column</a>
+                    <form style="width:100%; padding:5px" div class="dropdown-menu query" aria-labelledby="calculated_column">
+                        <div class="field_reference" style="padding:10px">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <input class="form-control" style="font-family:Courier" type="text" id="calc_col_name" name="calc_col_name">
+                            </div>
+                            <div class="form-group col-md-8">
+                                <input class="form-control" style="font-family:Courier" type="text" id="calc_col_routine" name="calc_col_routine">
+                            </div>
+                            <div class="form-group col-md-1">
+                                <input id="calc_col_submit" class="form-control" type="button" value="Submit">
+                            </div>
+                        </div>
+                    </form>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">

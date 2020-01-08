@@ -75,6 +75,7 @@ function initializeDB(plaintextDB, key) {
         var row;
         var rows = [];
         var logTable = db.getSchema().table('LogTable' + tableVersion);
+        console.log(logTable);
 
         $('#exportJSON').show();
         $('#exportJSON').on('click', function(){
@@ -103,6 +104,25 @@ function initializeDB(plaintextDB, key) {
         $('#query_submit').on('click', function() {
             baseQuery = $('#query').val();
             queryHWSet(db, logTable, baseQuery, primaryKey);
+            $('.dropdown-toggle.query').dropdown('toggle');
+        });
+
+        $('#calc_col_submit').on('click', function() {
+            let field = $('#calc_col_name').val();
+            let routine = $('#calc_col_routine').val();
+            let sanitizedField = sanitize(field);
+            sanitizedField = sanitizedField == '' ? 'BLANK' + j.toString() : sanitizedField;
+            if (sanitizedHeaders.indexOf(sanitizedField) <= -1) {
+                if (field != '') {
+                    headerNames.push(field);
+                } else {
+                    headerNames.push(sanitizedField);
+                }
+                headerIndex[sanitizedField] = 'COL' + sanitizedHeaders.length;
+                sanitizedHeaders.push(sanitizedField);
+            }
+            dataIndex[sanitizedField] = field;
+            calculateColumn(db, logTable, sanitizedField, routine);
             $('.dropdown-toggle.query').dropdown('toggle');
         });
 
@@ -189,15 +209,13 @@ function updateTable(db, table, plaintextDB, key, isPrimary) {
         return;
     }
 
-    sanitizedSecondaryHeaders = [];
-    var sanitizedField;
-
     headers = results.meta['fields'];
     report(headers);
 
+    sanitizedSecondaryHeaders = [];
+    var sanitizedField;
     for (var j = 0; j < headers.length; j++) {
         var field = headers[j];
-        // sanitizedField = field.replace(/^\s+|\s+$/g, "").replace(/\s/g, "_").replace(/[^a-z0-9_]/ig, "").toUpperCase();
         sanitizedField = sanitize(field);
         sanitizedField = sanitizedField == '' ? 'BLANK' + j.toString() : sanitizedField;
         sanitizedSecondaryHeaders.push(sanitizedField);
@@ -260,7 +278,6 @@ function updateTable(db, table, plaintextDB, key, isPrimary) {
 
 }
 
-
 function updateRows(data, db, table, secondaryDbKey) {
     var str, row;
     var newRows = [];
@@ -271,19 +288,14 @@ function updateRows(data, db, table, secondaryDbKey) {
     report(headerIndex);
     report(dataIndex);
 
-    // $('th').css('white-space', 'nowrap');
     var sfield, field;
-    // sanitizedHeaders.map(function(sfield) {
     for (var j = 0; j < sanitizedHeaders.length; j++) {
         sfield = sanitizedHeaders[j];
-        // colWidths[sfield] = $("th[field='" + sfield + "'] > a").text().length*wscale*12 + 20;
-        // colWidths[sfield] = $("th[field='" + sfield + "'] > a").text().length;
     }
 
     for(var i = 0; i < data.length; i++) {
         var rowObj = {};
         headerNames.map(function(field) {
-            // sanitizedField = field.replace(/^\s+|\s+$/g, "").replace(/\s/g, "_").replace(/[^a-z0-9_]/ig, "").toUpperCase();
             sanitizedField = sanitize(field);
             if (sanitizedField in headerIndex) {
                 if (dataIndex[sanitizedField] in data[i]) {
@@ -300,23 +312,16 @@ function updateRows(data, db, table, secondaryDbKey) {
             continue;
         }
 
-        // report('SANITIZED HEADERS');
-        // report(sanitizedHeaders);
+        // insert new database entry
         if (primaryDbKeyValues.indexOf(secondaryKeyValue) <= -1 && secondaryKeyValue.trim() != '') {
             report('NEW PRIMARY KEY VALUE: ' + secondaryKeyValue);
             var datum = {};
             for (var j = 0; j < sanitizedHeaders.length; j++) {
-                // sanitizedHeaders.map(function(sfield) {
                 sfield = sanitizedHeaders[j];
                 if (sfield in headerIndex) {
                     var field = headerIndex[sfield];
                     if (typeof rowObj[field] !== "undefined" && rowObj[field] !== null) {
                         datum[field] = rowObj[field];
-                        // if (datum[field].toString().length*wscale*12 > colWidths[sfield]) {
-                        // if (datum[field].toString().length > colWidths[sfield]) {
-                        //     // colWidths[sfield] = datum[field].toString().length*wscale*12;
-                        //     colWidths[sfield] = datum[field].toString().length;
-                        // }
                     } else {
                         datum[field] = " ";
                     }
@@ -333,9 +338,7 @@ function updateRows(data, db, table, secondaryDbKey) {
             report(datum);
             newRows.push(table.createRow(datum));
             primaryDbKeyValues.push(secondaryKeyValue);
-        } else {
-            // report('UPDATE ROW ELSE');
-            // report(sanitizedHeaders);
+        } else { // udpate existing database entry
             sanitizedHeaders.map(function(sfield) {
                 var field = headerIndex[sfield];
                 if (field != primaryDbKey && sanitizedSecondaryHeaders.indexOf(sfield) > -1) {
@@ -347,12 +350,6 @@ function updateRows(data, db, table, secondaryDbKey) {
                         exec().then(function() {  // Returns a Promise.
                             report('UPDATED: ' + sfield + ' ' + value);
                         });
-
-                        // if (wscale*12*(value.toString().length) > colWidths[sfield]) {
-                        // if (value.toString().length > colWidths[sfield]) {
-                        //     // colWidths[sfield] = wscale*12*(value.toString().length);
-                        //     colWidths[sfield] = value.toString().length;
-                        // }
                     }
                 }
             });
@@ -375,6 +372,48 @@ function updateRows(data, db, table, secondaryDbKey) {
         report('SECONDARY QUERY');
         queryHWSet(db, table, baseQuery, groupField);
         $(this).val('Select Matching Key...');
+    });
+}
+
+function calculateColumn(db, table, sfield, routine) {
+    let functionStr = 'return db.select().from(table).exec()';
+    console.log(functionStr);
+    let queryFunc = new Function('db', 'table',  functionStr);
+
+    let routineStr = routine.replace(/@([^\s{}\(\)]+)/g, 'row[headerIndex[sanitize("$1")]]');
+    console.log(routineStr);
+    var routineFunc = new Function('row',  routineStr);
+
+    queryFunc(db, table).then(function(rows) {
+        let field = headerIndex[sfield];
+        let value = '';
+        let newRows = [];
+        rows.forEach(function(rowObj) {
+            rowObj[headerIndex[sfield]] = routineFunc(rowObj);
+            var datum = {};
+            for (var j = 0; j < sanitizedHeaders.length; j++) {
+                sfield = sanitizedHeaders[j];
+                if (sfield in headerIndex) {
+                    var field = headerIndex[sfield];
+                    if (typeof rowObj[field] !== "undefined" && rowObj[field] !== null) {
+                        datum[field] = rowObj[field];
+                    } else {
+                        datum[field] = " ";
+                    }
+                }
+            }
+            for (var j = 0; j < maxCols; j++) {
+                var key = 'COL' + j.toString();
+                if (!(key in datum)) {
+                    datum[key] = " ";
+                }
+            }
+            newRows.push(table.createRow(datum));
+        });
+        db.insertOrReplace().into(table).values(newRows).exec().then(function() {
+            report('TABLE UPDATED');
+            queryHWSet(db, table, baseQuery, primaryKey);
+        });
     });
 }
 
@@ -471,152 +510,140 @@ function queryHWSet(db, table, query, field) {
 
         });
 
-        updateKeys();
+        refreshTable(db, table, field);
+    });
+}
 
-        $('#messages').text('Query Completed');
-        $('#query_msg').hide();
+function refreshTable(db, table, field) {
+    updateKeys();
 
-        $('td.root').each(function() {
-            var count = $(this).html();
-            if (count > 1) {
-                $(this).html(count + "<strong style='color:SteelBlue;float:right'>+</strong>");
-            }
+    $('#messages').text('Query Completed');
+    $('#query_msg').hide();
+
+    $('td.root').each(function() {
+        var count = $(this).html();
+        if (count > 1) {
+            $(this).html(count + "<strong style='color:SteelBlue;float:right'>+</strong>");
+        }
+    });
+
+
+    var colClass = 'col_' + field;
+
+    // $('.col_unixtime').hide();
+
+    report('COLCLASS: ' + colClass);
+    $('td.' + colClass).css('border-left', '2px solid SteelBlue');
+    $('td.' + colClass).css('border-right', '2px solid SteelBlue');
+
+    if (field != 'unixtime') {
+        // $('td').css('color', '#ccc');
+        $('td.' + colClass).css('color', '');
+        $('td.col_count').css('color', '');
+    } else {
+        $('td').css('color', '');
+    }
+
+    $('td.col_count').on('click', function() {
+        var index = $(this).closest('tr').attr('index');
+        var clicked = 1 - parseInt($(this).closest('tr').find('td.col_count').attr('clicked'));
+        $(".col_count[index='" + index + "']").attr('clicked', clicked);
+        $(".col_count[index='" + index + "']").closest('tr').attr('clicked', clicked);
+
+        $("td").css('color', '');
+        $("td." + colClass).css('color', '');
+        $("td.col_count").css('color', '');
+        $("tbody tr[clicked=1] td").css('color', '');
+        $("tbody tr[clicked=1][index='" + index + "'] td.col_count").css('background-color', 'hsl(' + highlightHue + ', 45%, 90%');
+        highlightHue = (highlightHue + 75) % 360;
+        // $("tbody tr[clicked!=1][field!='count']").css('color', '');
+        $("tbody tr[clicked!=1] td").css('background-color', '');
+
+        $("tbody tr[clicked=1]").show();
+        $("tbody tr[clicked=1] td.col_chkbox input[type='checkbox']").prop('checked', true);
+        $("tbody tr[clicked!=1]").hide();
+        $("tbody tr[clicked!=1] td.col_chkbox input[type='checkbox']").prop('checked', false);
+        $("tbody tr.root").show();
+
+        $("td.col_count[clicked=1]").each(function() {
+            $(this).html($(this).html().replace(/\+/, '-'));
         });
+        $("td.col_count[clicked!=1]").each(function() {
+            $(this).html($(this).html().replace(/\-/, '+'));
+        });
+    });
 
 
-        var colClass = 'col_' + field;
+    $('#mainTable').css('width', 'auto');
+    var sfield;
+    for (var j = 0; j < sanitizedHeaders.length; j++) {
+        sfield = sanitizedHeaders[j];
+        colWidths[sfield] = Math.max($("td[field='" + sfield + "']").width(), $("th[field='" + sfield + "']").width());
+    }
+    colWidths['count'] = 25;
 
-        // $('.col_unixtime').hide();
+    for (var key in colWidths) {
+        if (colWidths.hasOwnProperty(key)) {
+            colWidths[key] = colWidths[key] + 25;
+        }
+    }
 
-        report('COLCLASS: ' + colClass);
-        $('td.' + colClass).css('border-left', '2px solid SteelBlue');
-        $('td.' + colClass).css('border-right', '2px solid SteelBlue');
-
-        if (field != 'unixtime') {
-            // $('td').css('color', '#ccc');
-            $('td.' + colClass).css('color', '');
-            $('td.col_count').css('color', '');
+    $('th, td').each(function() {
+        var field = $(this).attr('field');
+        if ($(".field_checkbox[field='" + field + "']").is(':checked')) {
+            $(this).show();
         } else {
-            $('td').css('color', '');
+            $(this).hide();
         }
-
-        $('td.col_count').on('click', function() {
-            var index = $(this).closest('tr').attr('index');
-            var clicked = 1 - parseInt($(this).closest('tr').find('td.col_count').attr('clicked'));
-            $(".col_count[index='" + index + "']").attr('clicked', clicked);
-            $(".col_count[index='" + index + "']").closest('tr').attr('clicked', clicked);
-
-            $("td").css('color', '');
-            $("td." + colClass).css('color', '');
-            $("td.col_count").css('color', '');
-            $("tbody tr[clicked=1] td").css('color', '');
-            $("tbody tr[clicked=1][index='" + index + "'] td.col_count").css('background-color', 'hsl(' + highlightHue + ', 45%, 90%');
-            highlightHue = (highlightHue + 75) % 360;
-            // $("tbody tr[clicked!=1][field!='count']").css('color', '');
-            $("tbody tr[clicked!=1] td").css('background-color', '');
-
-            $("tbody tr[clicked=1]").show();
-            $("tbody tr[clicked=1] td.col_chkbox input[type='checkbox']").prop('checked', true);
-            $("tbody tr[clicked!=1]").hide();
-            $("tbody tr[clicked!=1] td.col_chkbox input[type='checkbox']").prop('checked', false);
-            $("tbody tr.root").show();
-
-            $("td.col_count[clicked=1]").each(function() {
-                $(this).html($(this).html().replace(/\+/, '-'));
-            });
-            $("td.col_count[clicked!=1]").each(function() {
-                $(this).html($(this).html().replace(/\-/, '+'));
-            });
-        });
-
-
-        $('#mainTable').css('width', 'auto');
-        for (var j = 0; j < sanitizedHeaders.length; j++) {
-            sfield = sanitizedHeaders[j];
-            // colWidths[sfield] = $("th[field='" + sfield + "'] > a").text().length*wscale*12 + 20;
-            colWidths[sfield] = Math.max($("td[field='" + sfield + "']").width(), $("th[field='" + sfield + "']").width());
-        }
-        colWidths['count'] = 25;
-
-        for (var key in colWidths) {
-            if (colWidths.hasOwnProperty(key)) {
-                colWidths[key] = colWidths[key] + 25;
-            }
-        }
-
-        $('th, td').each(function() {
-            var field = $(this).attr('field');
-            if ($(".field_checkbox[field='" + field + "']").is(':checked')) {
-                $(this).show();
-            } else {
-                $(this).hide();
-            }
-
-        });
-
-        var tableWidth = 0;
-        $('th:visible').each(function() {
-            tableWidth += colWidths[$(this).attr('field')];
-        });
-
-        $('#mainTable').css('width', tableWidth);
-        $('#table-container').css('width', tableWidth + 15);
-        $('tbody tr').css('width', tableWidth);
-        $('thead tr').css('width', tableWidth);
-        $('th, td').each(function() {
-            $(this).css('width', colWidths[$(this).attr('field')]);
-        });
-        $('tbody').css('margin-top', parseInt($('th').first().css('height')));
-
-        // var tableWidth = 0;
-        // $('th:visible').each(function() {
-        //     tableWidth += colWidths[$(this).attr('field')];
-        // });
-        // var unit = 'rem'
-        // $('#mainTable').css('width', tableWidth.toString() + unit);
-        //
-        // $('#table-container').css('width', (tableWidth + 1).toString() + unit);
-        // $('tbody tr').css('width', tableWidth.toString() + unit);
-        // $('thead tr').css('width', tableWidth.toString() + unit);
-        // $('tbody').css('margin-top', parseInt($('th').first().css('height')));
-        //
-        // $('th, td').each(function() {
-        //     $(this).css('width', colWidths[$(this).attr('field')] + 'rem');
-        // });
-
-        report('COLWIDTHS');
-        report(colWidths);
-
-        // $('#mainTable').show();
-
-        $('#second_key_sel').off();
-        $('#secondary-file-input').off();
-        $('#secondary-file-input').on('change', function(e) {
-            $('#second_key_li').show();
-            $('a.pastebin').addClass('disabled');
-            $('a.query').addClass('disabled');
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var contents = e.target.result;
-                updateTable(db, logTable, contents, primaryKey, false);
-            }
-            reader.readAsText(e.target.files[0]);
-        });
-
-        $('#fields_submit').off();
-        $('#fields_submit').on('click', function() {
-            updateTable(db, logTable, $('#fields').val(), primaryKey, false);
-            $('#second_key_li').show();
-            $('a.pastebin').addClass('disabled');
-            $('a.query').addClass('disabled');
-            $('#pastebin').modal('hide')
-        });
-
-        updateButtons(db, logTable);
-
-        $('tr.branch').hide();
 
     });
+
+    var tableWidth = 0;
+    $('th:visible').each(function() {
+        tableWidth += colWidths[$(this).attr('field')];
+    });
+
+    $('#mainTable').css('width', tableWidth);
+    $('#table-container').css('width', tableWidth + 15);
+    $('tbody tr').css('width', tableWidth);
+    $('thead tr').css('width', tableWidth);
+    $('th, td').each(function() {
+        $(this).css('width', colWidths[$(this).attr('field')]);
+    });
+    $('tbody').css('margin-top', parseInt($('th').first().css('height')));
+
+    report('COLWIDTHS');
+    report(colWidths);
+
+    // $('#mainTable').show();
+
+    $('#second_key_sel').off();
+    $('#secondary-file-input').off();
+    $('#secondary-file-input').on('change', function(e) {
+        $('#second_key_li').show();
+        $('a.pastebin').addClass('disabled');
+        $('a.query').addClass('disabled');
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var contents = e.target.result;
+            updateTable(db, logTable, contents, primaryKey, false);
+        }
+        reader.readAsText(e.target.files[0]);
+    });
+
+    $('#fields_submit').off();
+    $('#fields_submit').on('click', function() {
+        updateTable(db, logTable, $('#fields').val(), primaryKey, false);
+        $('#second_key_li').show();
+        $('a.pastebin').addClass('disabled');
+        $('a.query').addClass('disabled');
+        $('#pastebin').modal('hide')
+    });
+
+    updateButtons(db, table);
+
+    $('.nav-item.calculated_column').show();
+    $('tr.branch').hide();
 }
 
 function updateButtons(db, table) {
@@ -750,11 +777,26 @@ function updateButtons(db, table) {
 
     });
 
+    $('#calculated_column').click(function() {
+        $('.field_reference').html('');
+        sanitizedHeaders.forEach(function(field) {
+            $('.field_reference').append('<button class="field btn btn-outline-info btn-sm">' + field + '</button>');
+        });
+        $('.field_reference button.field').click(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('+@' + $(this).text());
+            insertAtCursor(document.getElementById('calc_col_routine'), '+' + $(this).text());
+        });
+    });
+
 }
 
-function statistics(array, field) {
+function statistics(values, field) {
     $('#statistics').modal('toggle');
     $('.modal-title.field').text(field);
+
+    let array = values.map(value => {return isNaN(value) ? 0 : value;});
 
     $('#statistics').find('.modal-body').find('.stats').html('COUNT: ' + array.length + '<br/>MEDIAN: ' + math.median(array) + '<br/>' + 'MEAN: ' + Math.round(100*math.mean(array))/100 +  '<br/>' + 'Standard Deviation: ' + Math.round(100*math.std(array))/100);
 
@@ -855,10 +897,6 @@ function updateSecondaryKeys() {
     $("#second_key_sel").append(o);
 
     sanitizedSecondaryHeaders.map(function(field, index) {
-        // field = field.replace(/^\s+|\s+$/g, "").replace(/\s/g, "_").replace(/[^a-z0-9_]/ig, "");
-        // field = field == '' ? 'COL_' + (index + 1) : field;
-        // sanitizedField = field.toUpperCase();
-        // sanitizedSecondaryHeaders.push(sanitizedField);
         var o = new Option("option text", "value");
         $(o).html(field);
         $(o).val(field);
@@ -867,12 +905,7 @@ function updateSecondaryKeys() {
 
 }
 
-
 function loadPrimary(plaintextDB) {
-
-    // for (var j = 0; j < maxCols; j++) {
-    //     headerIndex['COL' + j.toString()] = 'COL' + j.toString();
-    // }
 
     var results = Papa.parse(plaintextDB, {
         header: true,
@@ -949,15 +982,6 @@ var svg = d3.select("#bars")
 // append the svg object to the body of the page
 // https://www.d3-graph-gallery.com/graph/histogram_binSize.html
 function bars(data) {
-    // d3.selectAll("svg > ").remove();
-    // var data = data.sort(function(a, b) {
-    //     return a - b;
-    // });
-    // report(data);
-
-    // X axis: scale and draw:
-
-
     // A function that builds the graph for a specific value of bin
     function update(nBin, max) {
 
@@ -1035,8 +1059,6 @@ function bars(data) {
 
     }
 
-    // Initialize with 20 bins
-
     update(+$('#nBin').val(), +$('#max').val());
 
     // Listen to the button -> update if user change it
@@ -1049,7 +1071,20 @@ function bars(data) {
 
 }
 
-$(document).ready(function () {
+// https://stackoverflow.com/questions/11076975/insert-text-into-textarea-at-cursor-position-javascript
+function insertAtCursor(myField, myValue) {
+    if (myField.selectionStart || myField.selectionStart == '0') {
+        var startPos = myField.selectionStart;
+        var endPos = myField.selectionEnd;
+        myField.value = myField.value.substring(0, startPos)
+            + myValue
+            + myField.value.substring(endPos, myField.value.length);
+    } else {
+        myField.value += myValue;
+    }
+}
+
+$(function () {
     var $table = $('#mainTable');
 
     $('#primary-file-input').change(function(e) {
