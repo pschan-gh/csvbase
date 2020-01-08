@@ -380,7 +380,7 @@ function calculateColumn(db, table, sfield, routine) {
     console.log(functionStr);
     let queryFunc = new Function('db', 'table',  functionStr);
 
-    let routineStr = routine.replace(/@([^\s{}\(\)]+)/g, 'row[headerIndex[sanitize("$1")]]');
+    let routineStr = routine.replace(/\(@([^\)]+)\)/g, 'row[headerIndex[sanitize("$1")]]');
     console.log(routineStr);
     var routineFunc = new Function('row',  routineStr);
 
@@ -785,7 +785,7 @@ function updateButtons(db, table) {
         $('.field_reference button.field').click(function(e) {
             e.preventDefault();
             e.stopPropagation();
-            insertAtCursor(document.getElementById('calc_col_routine'), '+@' + $(this).text());
+            insertAtCursor(document.getElementById('calc_col_routine'), '+(@' + $(this).text() + ')');
         });
     });
 
