@@ -785,8 +785,7 @@ function updateButtons(db, table) {
         $('.field_reference button.field').click(function(e) {
             e.preventDefault();
             e.stopPropagation();
-            console.log('+@' + $(this).text());
-            insertAtCursor(document.getElementById('calc_col_routine'), '+' + $(this).text());
+            insertAtCursor(document.getElementById('calc_col_routine'), '+@' + $(this).text());
         });
     });
 
@@ -1073,6 +1072,12 @@ function bars(data) {
 
 // https://stackoverflow.com/questions/11076975/insert-text-into-textarea-at-cursor-position-javascript
 function insertAtCursor(myField, myValue) {
+    //IE support
+    if (document.selection) {
+        myField.focus();
+        sel = document.selection.createRange();
+        sel.text = myValue;
+    }
     if (myField.selectionStart || myField.selectionStart == '0') {
         var startPos = myField.selectionStart;
         var endPos = myField.selectionEnd;
@@ -1082,6 +1087,7 @@ function insertAtCursor(myField, myValue) {
     } else {
         myField.value += myValue;
     }
+    myField.focus();
 }
 
 $(function () {
