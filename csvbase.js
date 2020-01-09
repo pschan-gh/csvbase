@@ -18,7 +18,7 @@ var primaryKey = '';
 var primaryFile = null;
 var tableVersion = 0;
 var schemaBuilder;
-var maxCols = 50;
+var maxCols = 100;
 
 function report () {
 };
@@ -999,8 +999,10 @@ $(function () {
 
         csv = csv.replace(/Group byStatisticsHide/g, '');
 
+        // https://stackoverflow.com/questions/42462764/javascript-export-csv-encoding-utf-8-issue/42466254
+        var universalBOM = "\uFEFF";
         window.location.href = 'data:text/csv;charset=UTF-8,'
-        + encodeURIComponent(csv);
+        + encodeURIComponent(universalBOM + csv);
     });
 
     $('#fields_submit').on('click', function() {
