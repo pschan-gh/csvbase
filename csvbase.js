@@ -213,6 +213,8 @@ function updateTable(db, table, plaintextDB, key, isPrimary) {
     sortField = key;
     groupField = key;
 
+    updateFieldsMenu();
+
     if (!isPrimary) {
         $('#second_key_sel').on('change', function() {
             resetTable();
@@ -233,6 +235,7 @@ function updateTable(db, table, plaintextDB, key, isPrimary) {
             updateRows(data, db, table, primaryDbKey);
         },0);
     }
+
 
 }
 
@@ -724,20 +727,9 @@ function statistics(values, field) {
     bars(array);
 }
 
-
-function updateKeys() {
-    var o = new Option("option text", "value");
-    $(o).html('Select Primary Key...');
-    $(o).attr('selected');
-    $("#key_sel").append(o);
-
+function updateFieldsMenu() {
     $('#columns_menu').html('');
     sanitizedHeaders.map(function(field) {
-        var o = new Option("option text", "value");
-        $(o).html(field);
-        $(o).val(field);
-        $("#key_sel").append(o);
-
         var a = document.createElement("a");
         $(a).addClass("dropdown-item");
         $(a).attr('href', "#");
@@ -758,6 +750,20 @@ function updateKeys() {
     $(a).attr('href', "#");
     $(a).html("<input class='field_checkbox' checked type='checkbox' field='count' id='count_checkbox'>&nbsp;<label class='form-check-label' for='count_checkbox'>Count</label>");
     $("#columns_menu").append(a);
+}
+
+function updateKeys() {
+    var o = new Option("option text", "value");
+    $(o).html('Select Primary Key...');
+    $(o).attr('selected');
+    $("#key_sel").append(o);
+
+    sanitizedHeaders.map(function(field) {
+        var o = new Option("option text", "value");
+        $(o).html(field);
+        $(o).val(field);
+        $("#key_sel").append(o);
+    });
 
     $('.field_checkbox').off();
     $('.field_checkbox').on('change', function() {
