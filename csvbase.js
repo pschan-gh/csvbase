@@ -724,6 +724,7 @@ function statistics(values, field) {
     bars(array);
 }
 
+
 function updateKeys() {
     var o = new Option("option text", "value");
     $(o).html('Select Primary Key...');
@@ -775,6 +776,43 @@ function updateKeys() {
         $('#table-container').css('width', tableWidth + 15);
         $('#mainTable').css('width', tableWidth);
         $('#mainTable > thead > tr').css('width', tableWidth);
+    });
+
+    // https://stackoverflow.com/questions/659508/how-can-i-shift-select-multiple-checkboxes-like-gmail
+    var $chkboxes = $('.field_checkbox');
+    var lastChecked = null;
+    $chkboxes.click(function(e) {
+        if (!lastChecked) {
+            lastChecked = this;
+            return;
+        }
+
+        if (e.shiftKey) {
+            var start = $chkboxes.index(this);
+            var end = $chkboxes.index(lastChecked);
+
+            $chkboxes.slice(Math.min(start,end), Math.max(start,end)+ 1).prop('checked', lastChecked.checked);
+
+            $chkboxes.each(function() {
+                var field = $(this).attr('field');
+                if ($(this).is(':checked')) {
+                    $('th[field="' + field + '"], td[field="' + field + '"]').show();
+                } else {
+                    $('th[field="' + field + '"], td[field="' + field + '"]').hide();
+                }
+
+                var tableWidth = 0;
+                $('th:visible').each(function() {
+                    tableWidth += colWidths[$(this).attr('field')];
+                });
+
+                $('#table-container').css('width', tableWidth + 15);
+                $('#mainTable').css('width', tableWidth);
+                $('#mainTable > thead > tr').css('width', tableWidth);
+            });
+        }
+
+        lastChecked = this;
     });
 
     $('#columns_menu').find('.fields.statistics').click(function() {
