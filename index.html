@@ -18,10 +18,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lovefield/2.1.12/lovefield.js" integrity="sha256-f1ZTSl24OYWE/QmqScoS1soGvrNhJDF4EtjxKIjOWNA=" crossorigin="anonymous"></script>
 
 <script src="https://d3js.org/d3.v4.js"></script>
-<!-- <script src="https://d3js.org/d3-array.v2.min.js"></script> -->
 
 <script src="csvbase.js" type='text/javascript'></script>
-
 
 <script>if (window.module) module = window.module;</script>
 
@@ -29,31 +27,20 @@
 
 .triangle {
     color:#aaa;
-    /* display:none; */
     float:right;
     display:inline-block;
 }
 strong {
     color: SteelBlue;
-    /* color:#aaa; */
 }
 
 .table {
-    /* display:block !important; */
     font-size:1rem;
-    /* width:100%; */
-    /* height:92.5%; */
-    /* table-layout:fixed !important; */
-    /* overflow-x:auto; */
 }
 
 
 thead {
     display:table-header-group;
-    /* color:#888; */
-    /* width:auto; */
-    /* width: calc( 100% - 1rem ); */
-    /* scrollbar is average 1em/16px width, remove it from thead width */
 }
 
 
@@ -62,17 +49,15 @@ tbody {
 }
 
 .table th, .table td {
-    /* display:table-cell !important; */
     padding: 0.25rem !important;
-    /* white-space: nowrap !important; */
     font-family:monospace;
     font-size:1rem !important;
 }
+
 .table td {
-    /* white-space: nowrap !important; */
 }
+
 .table th {
-    /* background-color: #ccccdd !important; */
 }
 
 a {
@@ -194,7 +179,7 @@ a.header {
             </ul>
         </div>
     </nav>
-    <div style="position:fixed;top:40%;width:100%;text-align:center;margin:auto;z-index:999"><center><h1><strong id="hover_msg">No Database Loaded Yet</strong></h1></center>
+    <div style="position:fixed;top:45%;width:100%;text-align:center;margin:auto;z-index:999"><center><h1><strong id="hover_msg">No Database Loaded Yet</strong></h1></center>
     </div>
     <div id="container" style="width:100%;flex:auto;overflow-x:auto;overflow-y:hidden;position:relative">
         <div id="table-container" style="height:100%; width:auto; overflow-y:auto;overflow-x:hidden;">
@@ -250,7 +235,6 @@ a.header {
                         <label>Max</label>
                         <input type="number" min="0" max="100" step="1" value="100" id="max"/>
                     </center>
-                    <!-- <textarea style="width:100%;height:25em;font-family:Courier" id="fields"  name="fields" ></textarea> -->
                 </div>
                 <div class="modal-footer">
                 </div>
@@ -258,5 +242,4 @@ a.header {
         </div>
     </div>
 </body>
-
 </html>
