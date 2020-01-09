@@ -547,7 +547,7 @@ function refreshTable(db, table, field) {
         var reader = new FileReader();
         reader.onload = function(e) {
             var contents = e.target.result;
-            updateTable(db, logTable, contents, primaryKey, false);
+            updateTable(db, table, contents, primaryKey, false);
         }
         reader.readAsText(e.target.files[0]);
     });
