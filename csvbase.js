@@ -100,6 +100,7 @@ function initializeDB(plaintextDB, key) {
             }
             dataIndex[sanitizedField] = field;
             calculateColumn(db, logTable, sanitizedField, routine);
+            addFieldToMenu(sanitizedField);
             $('.dropdown-toggle.query').dropdown('toggle');
         });
 
@@ -705,6 +706,7 @@ function updateButtons(db, table) {
         sanitizedHeaders.forEach(function(field) {
             $('.field_reference').append('<button class="field btn btn-outline-info btn-sm">' + field + '</button>');
         });
+        $('#calc_col_name').val('COL' + sanitizedHeaders.length);
         $('.field_reference button.field').click(function(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -727,29 +729,35 @@ function statistics(values, field) {
     bars(array);
 }
 
+
+function addFieldToMenu(field) {
+    var a = document.createElement("a");
+    $(a).addClass("dropdown-item");
+    $(a).attr('href', "#");
+
+    $(a).html("<input class='field_checkbox' checked type='checkbox' field='" + field + "' id='" + field + "_checkbox'>&nbsp;<label class='form-check-label' for='" + field + "_checkbox'>" + field + "</label>" +
+    "&nbsp;&nbsp;<a href='#' class='fields statistics' field='" + field + "'>Statistics</a>");
+    $("#columns_menu").append(a);
+
+    var f = document.createElement("a");
+    $(f).addClass("dropdown-item");
+    $(f).attr('href', "#");
+    $(f).html("<span class='fields_item' field='" + field + "'>" + field + "</span>");
+    $(".fields_menu").append(f);
+}
+
 function updateFieldsMenu() {
     $('#columns_menu').html('');
-    sanitizedHeaders.map(function(field) {
-        var a = document.createElement("a");
-        $(a).addClass("dropdown-item");
-        $(a).attr('href', "#");
-
-        $(a).html("<input class='field_checkbox' checked type='checkbox' field='" + field + "' id='" + field + "_checkbox'>&nbsp;<label class='form-check-label' for='" + field + "_checkbox'>" + field + "</label>" +
-        "&nbsp;&nbsp;<a href='#' class='fields statistics' field='" + field + "'>Statistics</a>");
-        $("#columns_menu").append(a);
-
-        var f = document.createElement("a");
-        $(f).addClass("dropdown-item");
-        $(f).attr('href', "#");
-        $(f).html("<span class='fields_item' field='" + field + "'>" + field + "</span>");
-        $(".fields_menu").append(f);
-
-    });
     var a = document.createElement("a");
     $(a).addClass("dropdown-item");
     $(a).attr('href', "#");
     $(a).html("<input class='field_checkbox' checked type='checkbox' field='count' id='count_checkbox'>&nbsp;<label class='form-check-label' for='count_checkbox'>Count</label>");
     $("#columns_menu").append(a);
+    
+    sanitizedHeaders.map(function(field) {
+        addFieldToMenu(field);
+    });
+
 }
 
 function updateKeys() {
