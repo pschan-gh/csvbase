@@ -558,7 +558,7 @@ function refreshTable(db, table, field) {
 
     $('#fields_submit').off();
     $('#fields_submit').on('click', function() {
-        updateTable(db, logTable, $('#fields').val(), primaryKey, false);
+        updateTable(db, table, $('#fields').val(), primaryKey, false);
         $('#second_key_li').show();
         $('a.pastebin').addClass('disabled');
         $('a.query').addClass('disabled');
@@ -753,7 +753,7 @@ function updateFieldsMenu() {
     $(a).attr('href', "#");
     $(a).html("<input class='field_checkbox' checked type='checkbox' field='count' id='count_checkbox'>&nbsp;<label class='form-check-label' for='count_checkbox'>Count</label>");
     $("#columns_menu").append(a);
-    
+
     sanitizedHeaders.map(function(field) {
         addFieldToMenu(field);
     });
