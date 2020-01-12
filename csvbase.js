@@ -488,6 +488,7 @@ function refreshTable(db, table, field) {
     $('#fields_submit').on('click', function() {
         updateTable(db, table, $('#fields').val(), primaryKey, false);
         $('#second_key_li').show();
+        $('#second_key_sel').closest('li').find('a').removeClass("disabled").attr('aria-disabled', 'false');
         $('a.pastebin').addClass('disabled');
         $('a.query').addClass('disabled');
         $('#pastebin').modal('hide')
@@ -950,7 +951,7 @@ function postInitialization(db, table) {
     $('a.pastebin').removeClass('disabled');
     $('a.query').removeClass('disabled');
 
-    $('#importJSON').hide();
+    $('#import').hide();
     $('#exportJSON').show();
     $('#columns_toggle').show();
     $('#fields').closest('li').hide();
@@ -1129,7 +1130,10 @@ $(function () {
     });
 
     $("#exportCSV").click(function () {
-        $('.triangle').html('');
+        $('th div.triangle').html('');
+
+        // var $clone = $table.clone( true );
+        // $clone.find('th div.triangle').html('');
 
         var csv = $table.table2csv('return', {
             "separator": ",",
@@ -1151,6 +1155,7 @@ $(function () {
         a.setAttribute('download', 'untitled.csv');
         a.click()
         // window.location.href = 'data:text/csv;charset=UTF-8,' + encodeURIComponent(universalBOM + csv);
+        $('th div.triangle').html('&#x25ba;');
     });
 
     $('#fields_submit').on('click', function() {
