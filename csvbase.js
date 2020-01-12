@@ -19,6 +19,7 @@ var primaryFile = null;
 var tableVersion = 0;
 var schemaBuilder;
 var maxCols = 100;
+var columnData = new Object();
 
 function report () {
 };
@@ -57,87 +58,7 @@ function initializeDB(plaintextDB, key) {
         var rows = [];
         var logTable = db.getSchema().table('LogTable' + tableVersion);
 
-        $('#exportJSON').show();
-        $('#exportJSON').on('click', function(){
-            db.export().then(function(data) {
-                console.log(JSON.stringify(data));
-                var a = document.createElement('a');
-                a.setAttribute('href', 'data:text/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(data)));
-                a.setAttribute('download', 'database.json');
-                a.click()
-                // window.location.href = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
-            });
-        });
-
-        $('#messages').html('<strong>Database Loaded.</strong>');
-        $('#hover_msg').hide();
-
-        baseQuery = "select().from(table)";
-        $('#query').val(baseQuery);
-
-        $('#messages').html('<strong>Database Loaded.</strong>');
-        $('#hover_msg').hide();
-
-        $('#query_submit').on('click', function() {
-            baseQuery = $('#query').val();
-            queryHWSet(db, logTable, baseQuery, primaryKey);
-            $('.dropdown-toggle.query').dropdown('toggle');
-        })
-
-        $('#calc_col_submit').on('click', function() {
-            let field = $('#calc_col_name').val();
-            let routine = $('#calc_col_routine').val();
-            let sanitizedField = sanitize(field);
-            sanitizedField = sanitizedField == '' ? 'BLANK' + headerNames.length : sanitizedField;
-            if (sanitizedHeaders.indexOf(sanitizedField) <= -1) {
-                if (field != '') {
-                    headerNames.push(field);
-                } else {
-                    headerNames.push(sanitizedField);
-                }
-                headerIndex[sanitizedField] = 'COL' + sanitizedHeaders.length;
-                sanitizedHeaders.push(sanitizedField);
-            }
-            dataIndex[sanitizedField] = field;
-            $('#messages').html('Adding Column<img class="loading" src="./Loading_icon.gif"/>');
-            window.setTimeout(function(){
-                calculateColumn(db, logTable, sanitizedField, routine);
-                addFieldToMenu(sanitizedField);
-            }, 0);
-            $('.dropdown-toggle.query').dropdown('toggle');
-        });
-
-        var fieldToLf = {};
-        sanitizedHeaders.map(function(field) {
-            fieldToLf[field] = 'table.' + field;
-            if (!(clickedArray.hasOwnProperty(field))) {
-                clickedArray[field] = 0;
-            }
-        });
-        clickedArray['count'] = 0;
-
-        updateButtons(db, logTable);
-        $('#secondary-file-input').off();
-        $('#secondary-file-input').on('change', function(e) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var contents = e.target.result;
-                updateTable(db, logTable, contents, key, false);
-                $('#second_key_li').show();
-                $('a.pastebin').addClass('disabled');
-                $('a.query').addClass('disabled');
-            }
-            reader.readAsText(e.target.files[0]);
-        });
-        $('#fields_submit').off();
-        $('#fields_submit').on('click', function() {
-            updateTable(db, logTable, $('#fields').val(), key, false);
-            $('#second_key_li').show();
-            $('a.pastebin').addClass('disabled');
-            $('a.query').addClass('disabled');
-            $('#pastebin').modal('hide')
-        });
-
+        postInitialization(db, logTable);
         updateTable(db, logTable, plaintextDB, primaryKey, true);
     });
 
@@ -204,6 +125,8 @@ function updateTable(db, table, plaintextDB, key, isPrimary) {
             headerIndex[sanitizedField] = 'COL' + sanitizedHeaders.length;
             sanitizedHeaders.push(sanitizedField);
         }
+        // columnData[headerIndex[sanitizedField]]['name'] = sanitizedField;
+        columnData[headerIndex[sanitizedField]]['routine'] = '';
         dataIndex[sanitizedField] = field;
     }
 
@@ -320,6 +243,7 @@ function updateRows(data, db, table, secondaryDbKey) {
 }
 
 function calculateColumn(db, table, sfield, routine) {
+
     let functionStr = 'return db.select().from(table).exec()';
     console.log(functionStr);
     let queryFunc = new Function('db', 'table',  functionStr);
@@ -382,8 +306,6 @@ function queryHWSet(db, table, query, field) {
     $('td').css('border-right', '');
     $('td').css('color', '#eee');
 
-
-    var logTable = table;
     var dbGroup = headerIndex[field];
 
     resetTable();
@@ -401,8 +323,9 @@ function queryHWSet(db, table, query, field) {
 
     $('#messages').html('Running Query<img class="loading" src="./Loading_icon.gif"/>');
     window.setTimeout(function(){
-        return queryFunc(db, logTable).then(function(rows) {
+        return queryFunc(db, table).then(function(rows) {
             rows.forEach(function(row) {
+                // console.log(row);
                 var tableRow = document.getElementById('mainTable').getElementsByTagName('tbody')[0].insertRow(-1);
 
                 var cell;
@@ -449,6 +372,7 @@ function queryHWSet(db, table, query, field) {
 }
 
 function refreshTable(db, table, field) {
+    console.log('REFRESHTABLE');
     updateKeys();
 
     $('#messages').text('Query Completed');
@@ -873,6 +797,10 @@ function loadPrimary(plaintextDB) {
     headerNames = [];
     sanitizedHeaders = [];
     colWidths = {};
+    for (var i = 0; i < maxCols; i++) {
+        columnData['COL' + i] = {};
+    }
+
     for (j = 0; j < headers.length; j++) {
         field = headers[j].replace(/^\s+|\s+$/g, "");
         field = field == '' ? 'BLANK' + (j + 1) : field;
@@ -881,6 +809,8 @@ function loadPrimary(plaintextDB) {
         sanitizedHeaders.push(sanitizedField);
         headerTypes[sanitizedField] = lf.Type.STRING;
         headerIndex[sanitizedField] = 'COL' + j.toString();
+        // columnData[headerIndex[sanitizedField]]['name'] = sanitizedField;
+        columnData[headerIndex[sanitizedField]]['routine'] = '';
         dataIndex[sanitizedField] = headers[j];
     }
 
@@ -888,23 +818,10 @@ function loadPrimary(plaintextDB) {
     $("#second_key_sel")[0].innerHTML = '';
     updateKeys();
     $('#key_div').css('display', 'inline-block');
-    $('#columns_toggle').show();
-    $('.math').show();
 
     $('#key_sel').on('change', function() {
-
         initializeDB(plaintextDB, sanitize($(this).val()));
-
-        $('#secondary-file-input').closest('li').show();
-        $('#key_sel').closest('li').find('a').addClass("disabled").attr('aria-disabled', 'true');
-        $('#export').show();
-        $('a.pastebin').removeClass('disabled');
-        $('a.query').removeClass('disabled');
     });
-
-    $('#fields').closest('li').hide();
-    $('#primary-file-input').closest('li').hide();
-    $('#query').closest('li').show();
 }
 
 
@@ -1026,6 +943,111 @@ function insertAtCursor(myField, myValue) {
     myField.focus();
 }
 
+function postInitialization(db, table) {
+    $('#secondary-file-input').closest('li').show();
+    $('#key_sel').closest('li').find('a').addClass("disabled").attr('aria-disabled', 'true');
+    $('#export').show();
+    $('a.pastebin').removeClass('disabled');
+    $('a.query').removeClass('disabled');
+
+    $('#importJSON').hide();
+    $('#exportJSON').show();
+    $('#columns_toggle').show();
+    $('#fields').closest('li').hide();
+    $('#primary-file-input').closest('li').hide();
+    $('#query').closest('li').show();
+
+    $('#exportJSON').on('click', function(){
+        console.log(headerIndex);
+        db.export().then(function(data) {
+            for (let key in headerIndex){
+                if(headerIndex.hasOwnProperty(key)){
+                    columnData[headerIndex[key]]['name'] = key;
+                }
+            }
+            var jsonObj = {'primaryDbKey': primaryDbKey, 'columns': columnData, 'database' : data};
+            console.log(jsonObj);
+            // console.log(JSON.stringify(jsonObj));
+            var a = document.createElement('a');
+            a.setAttribute('href', 'data:text/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(jsonObj)));
+            a.setAttribute('download', 'database.json');
+            a.click()
+            // window.location.href = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+        });
+    });
+
+    $('#messages').html('<strong>Database Loaded.</strong>');
+    $('#hover_msg').hide();
+
+    baseQuery = "select().from(table)";
+    $('#query').val(baseQuery);
+
+    $('#messages').html('<strong>Database Loaded.</strong>');
+    $('#hover_msg').hide();
+
+    $('#query_submit').on('click', function() {
+        baseQuery = $('#query').val();
+        queryHWSet(db, table, baseQuery, primaryKey);
+        $('.dropdown-toggle.query').dropdown('toggle');
+    })
+
+    $('#calc_col_submit').on('click', function() {
+        let field = $('#calc_col_name').val();
+        let routine = $('#calc_col_routine').val();
+        let sanitizedField = sanitize(field);
+        sanitizedField = sanitizedField == '' ? 'BLANK' + headerNames.length : sanitizedField;
+        if (sanitizedHeaders.indexOf(sanitizedField) <= -1) {
+            if (field != '') {
+                headerNames.push(field);
+            } else {
+                headerNames.push(sanitizedField);
+            }
+            headerIndex[sanitizedField] = 'COL' + sanitizedHeaders.length;
+            sanitizedHeaders.push(sanitizedField);
+        }
+        dataIndex[sanitizedField] = field;
+        // columnData[headerIndex[sanitizedField]]['name'] = sanitizedField;
+        columnData[headerIndex[sanitizedField]]['routine'] = routine;
+        $('#messages').html('Adding Column<img class="loading" src="./Loading_icon.gif"/>');
+        window.setTimeout(function(){
+            calculateColumn(db, table, sanitizedField, routine);
+            addFieldToMenu(sanitizedField);
+        }, 0);
+        $('.dropdown-toggle.query').dropdown('toggle');
+    });
+
+    var fieldToLf = {};
+    sanitizedHeaders.map(function(field) {
+        fieldToLf[field] = 'table.' + field;
+        if (!(clickedArray.hasOwnProperty(field))) {
+            clickedArray[field] = 0;
+        }
+    });
+    clickedArray['count'] = 0;
+
+    updateButtons(db, table);
+    $('#secondary-file-input').off();
+    $('#secondary-file-input').on('change', function(e) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var contents = e.target.result;
+            updateTable(db, table, contents, key, false);
+            $('#second_key_li').show();
+            $('a.pastebin').addClass('disabled');
+            $('a.query').addClass('disabled');
+        }
+        reader.readAsText(e.target.files[0]);
+    });
+    $('#fields_submit').off();
+    $('#fields_submit').on('click', function() {
+        updateTable(db, table, $('#fields').val(), key, false);
+        $('#second_key_li').show();
+        $('a.pastebin').addClass('disabled');
+        $('a.query').addClass('disabled');
+        $('#pastebin').modal('hide')
+    });
+}
+
 $(function () {
     var $table = $('#mainTable');
 
@@ -1038,6 +1060,72 @@ $(function () {
         reader.readAsText(e.target.files[0]);
         $('a.pastebin').addClass('disabled');
         $('a.query').addClass('disabled');
+    });
+
+    $('#importJSON').change(function(e) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $('a.pastebin').addClass('disabled');
+            $('a.query').addClass('disabled');
+            $('#mainTable').find('tbody').html('');
+
+            var jsonObj = JSON.parse(e.target.result);
+            console.log(jsonObj);
+            var row;
+            var rows = [];
+            var field;
+            var dbKey = jsonObj.primaryDbKey;
+            var dbName = jsonObj.database.name;
+            primaryDbKey = dbKey;
+
+            indexedDB.deleteDatabase(dbName);
+            schemaBuilder = lf.schema.create(dbName, jsonObj.database.version);
+
+            var tableBuilder = schemaBuilder.createTable('LogTable0');
+
+            for (var j = 0; j < maxCols; j++) {
+                tableBuilder = tableBuilder.addColumn('COL' + j.toString(), lf.Type.STRING);
+                if (dbKey == 'COL' + j.toString()) {
+                    tableBuilder = tableBuilder.addPrimaryKey([dbKey]);
+                }
+            }
+
+            dataIndex = {};
+            headerIndex = {};
+            sanitizedHeaders = [];
+            for (let key in jsonObj.columns) {
+                if(jsonObj.columns.hasOwnProperty(key)){
+                    if (jsonObj.columns[key].name != null && jsonObj.columns[key].name != '' && typeof jsonObj.columns[key].name !== typeof undefined) {
+                        dataIndex[key] = jsonObj.columns[key].name;
+                        headerIndex[jsonObj.columns[key].name] = key;
+                        sanitizedHeaders.push(jsonObj.columns[key].name);
+                    }
+                }
+            }
+            console.log(headerIndex);
+            console.log(sanitizedHeaders);
+            primaryKey = dataIndex[primaryDbKey];
+
+            colWidths = {};
+            for (var i = 0; i < maxCols; i++) {
+                columnData['COL' + i] = {};
+            }
+
+            updateFieldsMenu();
+
+            schemaBuilder.connect().then(function(db) {
+                db.import(jsonObj.database);
+                console.log(db);
+                var logTable = db.getSchema().table('LogTable0');
+                baseQuery = "select().from(table)";
+                postInitialization(db, logTable);
+                queryHWSet(db, logTable, baseQuery, primaryKey);
+                $('#import').hide();
+                $('#messages').html('');
+                $('#hover_msg').hide();
+            });
+        }
+        reader.readAsText(e.target.files[0]);
     });
 
     $("#exportCSV").click(function () {
@@ -1057,8 +1145,12 @@ $(function () {
 
         // https://stackoverflow.com/questions/42462764/javascript-export-csv-encoding-utf-8-issue/42466254
         var universalBOM = "\uFEFF";
-        window.location.href = 'data:text/csv;charset=UTF-8,'
-        + encodeURIComponent(universalBOM + csv);
+        var a = document.createElement('a');
+        a.setAttribute('href', 'data:text/csv;charset=UTF-8,'
+        + encodeURIComponent(universalBOM + csv));
+        a.setAttribute('download', 'untitled.csv');
+        a.click()
+        // window.location.href = 'data:text/csv;charset=UTF-8,' + encodeURIComponent(universalBOM + csv);
     });
 
     $('#fields_submit').on('click', function() {
