@@ -155,7 +155,6 @@ function updateTable(db, table, plaintextDB, key, isPrimary) {
         updateRows(data, db, table, primaryDbKey);
     }
 
-
 }
 
 function updateRows(data, db, table, secondaryDbKey) {
@@ -264,39 +263,42 @@ function addColumn(db, table, field, routine) {
     addFieldToMenu(sanitizedField);
 }
 
-function recalculateColumn(db, table, sanitizedField) {
+function recalculateColumn(db, table, sfield) {
 
     let functionStr = 'return db.select().from(table).exec()';
     console.log(functionStr);
     let queryFunc = new Function('db', 'table',  functionStr);
 
-    let routine = columnData[headerIndex[sanitizedField]]['routine'];
+    let routine = columnData[headerIndex[sfield]]['routine'];
     let routineStr = routine.replace(/\(@([^\)]+)\)/g, 'row[headerIndex[sanitize("$1")]]');
     console.log(routineStr);
     var routineFunc = new Function('row',  routineStr);
 
+    console.log(sfield);
+    console.log(headerIndex[sfield]);
     queryFunc(db, table).then(function(rows) {
-        let field = headerIndex[sanitizedField];
         let value = '';
         let newRows = [];
+        let sanitizedField;
+        let dbField;
         rows.forEach(function(rowObj) {
-            rowObj[headerIndex[sanitizedField]] = routineFunc(rowObj);
+            rowObj[headerIndex[sfield]] = routineFunc(rowObj);
             var datum = {};
             for (var j = 0; j < sanitizedHeaders.length; j++) {
                 sanitizedField = sanitizedHeaders[j];
                 if (sanitizedField in headerIndex) {
-                    var field = headerIndex[sanitizedField];
-                    if (typeof rowObj[field] !== "undefined" && rowObj[field] !== null) {
-                        datum[field] = rowObj[field];
+                    dbField = headerIndex[sanitizedField];
+                    if (typeof rowObj[dbField] !== "undefined" && rowObj[dbField] !== null) {
+                        datum[dbField] = rowObj[dbField];
                     } else {
-                        datum[field] = " ";
+                        datum[dbField] = "";
                     }
                 }
             }
             for (var j = 0; j < maxCols; j++) {
                 var key = 'COL' + j.toString();
                 if (!(key in datum)) {
-                    datum[key] = " ";
+                    datum[key] = "";
                 }
             }
             newRows.push(table.createRow(datum));
@@ -577,6 +579,7 @@ function updateButtons(db, table) {
         // console.log($('#column_routine').text());
         columnData[headerIndex[sfield]]['routine'] = $('#column_routine').val();
         console.log(columnData[headerIndex[sfield]]['routine']);
+        console.log(sfield);
         recalculateColumn(db, table, sfield);
     });
 
@@ -1058,7 +1061,7 @@ function postInitialization(db, table) {
         var reader = new FileReader();
         reader.onload = function(e) {
             var contents = e.target.result;
-            updateTable(db, table, contents, key, false);
+            updateTable(db, table, contents, primaryKey, false);
             $('#second_key_li').show();
             $('a.pastebin').addClass('disabled');
             $('a.query').addClass('disabled');
