@@ -74,7 +74,7 @@ function resetTable() {
         hfield = sfield;
         var $th = $("<th>", {"id" : 'th_' + hfield, 'clicked': '0', 'field': hfield, "class":'col_' + hfield});
         var html = '<a id="a_' + hfield + '" href="#" class="header" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' + hfield.replace(/_/, ' ') + '</a>';
-        html += '<div class="dropdown-menu" aria-labelledby="a_' + hfield + '"><a class="dropdown-item group_by" field="' + hfield + '" href="#">Group by</a><a class="dropdown-item fields statistics" field="' + hfield + '" href="#" >Statistics</a><a class="dropdown-item fields hide" field="' + hfield + '" href="#">Hide</a></div>';
+        html += '<div class="dropdown-menu" aria-labelledby="a_' + hfield + '"><a class="dropdown-item group_by" field="' + hfield + '" href="#">Group by</a><a class="dropdown-item fields statistics" field="' + hfield + '" href="#" >Statistics</a><a class="dropdown-item recalculate fields" data-toggle="modal" data-target="#column_bin" field="' + hfield + '" href="#">Recalculate</a><a class="dropdown-item fields hide" field="' + hfield + '" href="#">Hide</a></div>';
 
         html += "<div class='triangle'>&#x25BA;</div>";
         $th.html(html);
@@ -242,27 +242,50 @@ function updateRows(data, db, table, secondaryDbKey) {
     }, 0);
 }
 
-function calculateColumn(db, table, sfield, routine) {
+function addColumn(db, table, field, routine) {
+
+    let sanitizedField = sanitize(field);
+    sanitizedField = sanitizedField == '' ? 'BLANK' + headerNames.length : sanitizedField;
+
+    if (sanitizedHeaders.indexOf(sanitizedField) <= -1) {
+        if (field != '') {
+            headerNames.push(field);
+        } else {
+            headerNames.push(sanitizedField);
+        }
+        headerIndex[sanitizedField] = 'COL' + sanitizedHeaders.length;
+        sanitizedHeaders.push(sanitizedField);
+    }
+    dataIndex[sanitizedField] = field;
+
+    columnData[headerIndex[sanitizedField]]['routine'] = routine;
+
+    recalculateColumn(db, table, sanitizedField);
+    addFieldToMenu(sanitizedField);
+}
+
+function recalculateColumn(db, table, sanitizedField) {
 
     let functionStr = 'return db.select().from(table).exec()';
     console.log(functionStr);
     let queryFunc = new Function('db', 'table',  functionStr);
 
+    let routine = columnData[headerIndex[sanitizedField]]['routine'];
     let routineStr = routine.replace(/\(@([^\)]+)\)/g, 'row[headerIndex[sanitize("$1")]]');
     console.log(routineStr);
     var routineFunc = new Function('row',  routineStr);
 
     queryFunc(db, table).then(function(rows) {
-        let field = headerIndex[sfield];
+        let field = headerIndex[sanitizedField];
         let value = '';
         let newRows = [];
         rows.forEach(function(rowObj) {
-            rowObj[headerIndex[sfield]] = routineFunc(rowObj);
+            rowObj[headerIndex[sanitizedField]] = routineFunc(rowObj);
             var datum = {};
             for (var j = 0; j < sanitizedHeaders.length; j++) {
-                sfield = sanitizedHeaders[j];
-                if (sfield in headerIndex) {
-                    var field = headerIndex[sfield];
+                sanitizedField = sanitizedHeaders[j];
+                if (sanitizedField in headerIndex) {
+                    var field = headerIndex[sanitizedField];
                     if (typeof rowObj[field] !== "undefined" && rowObj[field] !== null) {
                         datum[field] = rowObj[field];
                     } else {
@@ -538,6 +561,23 @@ function updateButtons(db, table) {
         });
 
         statistics(array, field);
+    });
+
+    $('.fields.recalculate').off();
+    $('.fields.recalculate').click(function() {
+        let sfield = $(this).attr('field');
+        $('#column_bin').find('.column_name').text(sfield);
+        $('#column_routine').val('');
+        $('#column_routine').val(columnData[headerIndex[sfield]]['routine']);
+    });
+
+    $('#column_submit').off();
+    $('#column_submit').click(function() {
+        let sfield = $('#column_bin').find('.column_name').text();
+        // console.log($('#column_routine').text());
+        columnData[headerIndex[sfield]]['routine'] = $('#column_routine').val();
+        console.log(columnData[headerIndex[sfield]]['routine']);
+        recalculateColumn(db, table, sfield);
     });
 
     $('.fields.hide').off();
@@ -995,24 +1035,10 @@ function postInitialization(db, table) {
     $('#calc_col_submit').on('click', function() {
         let field = $('#calc_col_name').val();
         let routine = $('#calc_col_routine').val();
-        let sanitizedField = sanitize(field);
-        sanitizedField = sanitizedField == '' ? 'BLANK' + headerNames.length : sanitizedField;
-        if (sanitizedHeaders.indexOf(sanitizedField) <= -1) {
-            if (field != '') {
-                headerNames.push(field);
-            } else {
-                headerNames.push(sanitizedField);
-            }
-            headerIndex[sanitizedField] = 'COL' + sanitizedHeaders.length;
-            sanitizedHeaders.push(sanitizedField);
-        }
-        dataIndex[sanitizedField] = field;
         // columnData[headerIndex[sanitizedField]]['name'] = sanitizedField;
-        columnData[headerIndex[sanitizedField]]['routine'] = routine;
         $('#messages').html('Adding Column<img class="loading" src="./Loading_icon.gif"/>');
         window.setTimeout(function(){
-            calculateColumn(db, table, sanitizedField, routine);
-            addFieldToMenu(sanitizedField);
+            addColumn(db, table, field, routine);
         }, 0);
         $('.dropdown-toggle.query').dropdown('toggle');
     });
@@ -1145,7 +1171,7 @@ $(function () {
             "filename": "table.csv"
         });
 
-        csv = csv.replace(/Group byStatisticsHide/g, '');
+        csv = csv.replace(/Group byStatisticsRecalculateHide/g, '');
 
         // https://stackoverflow.com/questions/42462764/javascript-export-csv-encoding-utf-8-issue/42466254
         var universalBOM = "\uFEFF";

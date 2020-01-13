@@ -85,7 +85,7 @@ img.loading {
 </style>
 </head>
 
-<body style="margin:10px">
+<body style="margin:0 10 10 10">
 <div style="position:relative;width:100%;height:100%;display:flex;flex-direction:column">
     <nav class="navbar navbar-expand-md">
         <div class="navbar-collapse collapse">
@@ -96,10 +96,12 @@ img.loading {
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="width:20em;">
                         <label for="primary-file-input" class="dropdown-item">
-                            Open File
+                            Import CSV
                         </label>
                         <input class="form-control-file form-control-sm dropdown-item" style="display:none" type="file" id="primary-file-input"/>
-                        <a class="pastebin dropdown-item" data-toggle="modal" data-target="#pastebin">Paste</a>
+                        <a class="pastebin dropdown-item" data-toggle="modal" data-target="#pastebin">Paste CSV</a>
+                        <label id="import" for="importJSON" class="dropdown-item">Open JSON</label>
+                        <input class="form-control-file form-control-sm dropdown-item" type="file" style="display:none" id="importJSON"/>
                     </div>
                 </li>
                 <li class="nav-item">
@@ -168,12 +170,6 @@ img.loading {
                         </div>
                     </form>
                 </li>
-                <li class="nav-item" id="import">
-                    <a class="nav-link" href="#">
-                        <label for="importJSON">Import</label>
-                    </a>
-                    <input class="form-control-file form-control-sm dropdown-item" type="file" style="display:none" id="importJSON"/>
-                </li>
                 <li class="nav-item dropdown" id="export" style="display:none">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Export
@@ -225,6 +221,25 @@ img.loading {
                 <div class="modal-footer">
                     <input class="form-control-file form-control-sm" style="" type="file" id="paste_file"/>
                     <button id="fields_submit" class="btn btn-primary btn-sm save">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="column_bin" class="modal" tabindex="-1" role="dialog" aria-labelledby="column_bin" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="dialog" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Recalculate Column <span class="column_name"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <textarea style="width:100%;height:25em;font-family:Courier" id="column_routine"  name="column_routine" ></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button id="column_submit" class="btn btn-primary btn-sm save">Submit</button>
                 </div>
             </div>
         </div>
