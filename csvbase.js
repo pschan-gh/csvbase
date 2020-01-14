@@ -257,19 +257,18 @@ function addColumn(db, table, field, routine) {
     }
     dataIndex[sanitizedField] = field;
 
-    columnData[headerIndex[sanitizedField]]['routine'] = routine;
-
-    recalculateColumn(db, table, sanitizedField);
+    recalculateColumn(db, table, sanitizedField, routine);
     addFieldToMenu(sanitizedField);
 }
 
-function recalculateColumn(db, table, sfield) {
+function recalculateColumn(db, table, sfield, routine) {
+
+    columnData[headerIndex[sfield]]['routine'] = routine;
 
     let functionStr = 'return db.select().from(table).exec()';
     console.log(functionStr);
     let queryFunc = new Function('db', 'table',  functionStr);
 
-    let routine = columnData[headerIndex[sfield]]['routine'];
     let routineStr = routine.replace(/\(@([^\)]+)\)/g, 'row[headerIndex[sanitize("$1")]]');
     console.log(routineStr);
     var routineFunc = new Function('row',  routineStr);
@@ -534,6 +533,97 @@ function updateButtons(db, table) {
         }
     });
 
+    $('#exportJSON').on('click', function(){
+        console.log(headerIndex);
+        db.export().then(function(data) {
+            for (let key in headerIndex){
+                if(headerIndex.hasOwnProperty(key)){
+                    columnData[headerIndex[key]]['name'] = key;
+                }
+            }
+            var jsonObj = {'primaryDbKey': primaryDbKey, 'columns': columnData, 'database' : data};
+            console.log(jsonObj);
+            // console.log(JSON.stringify(jsonObj));
+            var a = document.createElement('a');
+            a.setAttribute('href', 'data:text/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(jsonObj)));
+            a.setAttribute('download', 'database.json');
+            a.click()
+            // window.location.href = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+        });
+    });
+
+    $('.field_reference').html('');
+    sanitizedHeaders.forEach(function(field) {
+        $('.field_reference').append('<button class="field btn btn-outline-info btn-sm">' + field + '</button>');
+    });
+
+    $('.field_reference button.field').off();
+    $('.field_reference button.field').click(function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log(e);
+        insertAtCursor(document.getElementById('column_routine'), '+(@' + $(this).text() + ')');
+    });
+    $('#calculated_column').off();
+    $('#calculated_column').click(function() {
+        $('#column_bin').find('.column_name').val('COL' + sanitizedHeaders.length);
+    });
+
+    $('#query_submit').off();
+    $('#query_submit').on('click', function() {
+        baseQuery = $('#query').val();
+        queryHWSet(db, table, baseQuery, primaryKey);
+        $('.dropdown-toggle.query').dropdown('toggle');
+    })
+
+    $('#column_submit').off();
+    $('#column_submit').on('click', function() {
+        let field = $('#column_bin').find('.column_name').val();
+        let routine = $('#column_routine').val();
+        // columnData[headerIndex[sanitizedField]]['name'] = sanitizedField;
+        // $('.dropdown-toggle.query').dropdown('toggle');
+        $('#messages').html('Adding Column<img class="loading" src="./Loading_icon.gif"/>');
+        window.setTimeout(function(){
+            if (sanitizedHeaders.indexOf(field) <= -1) {
+                addColumn(db, table, field, routine);
+            } else {
+                recalculateColumn(db, table, field, routine);
+            }
+            $('#column_bin').modal('hide');
+        }, 0);
+
+    });
+    // $('#column_submit').off();
+    // $('#column_submit').click(function() {
+    //     let sfield = $('#column_bin').find('.column_name').val();
+    //     // console.log($('#column_routine').text());
+    //     columnData[headerIndex[sfield]]['routine'] = $('#column_routine').val();
+    //     console.log(columnData[headerIndex[sfield]]['routine']);
+    //     console.log(sfield);
+    //     recalculateColumn(db, table, sfield);
+    // });
+
+    $('#secondary-file-input').off();
+    $('#secondary-file-input').on('change', function(e) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var contents = e.target.result;
+            updateTable(db, table, contents, primaryKey, false);
+            $('#second_key_li').show();
+            $('a.pastebin').addClass('disabled');
+            $('a.query').addClass('disabled');
+        }
+        reader.readAsText(e.target.files[0]);
+    });
+    $('#fields_submit').off();
+    $('#fields_submit').on('click', function() {
+        updateTable(db, table, $('#fields').val(), key, false);
+        $('#second_key_li').show();
+        $('a.pastebin').addClass('disabled');
+        $('a.query').addClass('disabled');
+        $('#pastebin').modal('hide')
+    });
+
     $("th a").off();
 
     $("a.group_by[field!='count'][field!='chkbox']").off();
@@ -568,19 +658,9 @@ function updateButtons(db, table) {
     $('.fields.recalculate').off();
     $('.fields.recalculate').click(function() {
         let sfield = $(this).attr('field');
-        $('#column_bin').find('.column_name').text(sfield);
+        $('#column_bin').find('.column_name').val(sfield);
         $('#column_routine').val('');
         $('#column_routine').val(columnData[headerIndex[sfield]]['routine']);
-    });
-
-    $('#column_submit').off();
-    $('#column_submit').click(function() {
-        let sfield = $('#column_bin').find('.column_name').text();
-        // console.log($('#column_routine').text());
-        columnData[headerIndex[sfield]]['routine'] = $('#column_routine').val();
-        console.log(columnData[headerIndex[sfield]]['routine']);
-        console.log(sfield);
-        recalculateColumn(db, table, sfield);
     });
 
     $('.fields.hide').off();
@@ -670,20 +750,6 @@ function updateButtons(db, table) {
         var query = 'select().from(table).where(lf.op.and(table.' + headerIndex[$(this).attr('field')] + ".eq('" + $(this).text() + "')))";
         $('#query').val(query);
 
-    });
-
-    $('#calculated_column').off();
-    $('#calculated_column').click(function() {
-        $('.field_reference').html('');
-        sanitizedHeaders.forEach(function(field) {
-            $('.field_reference').append('<button class="field btn btn-outline-info btn-sm">' + field + '</button>');
-        });
-        $('#calc_col_name').val('COL' + sanitizedHeaders.length);
-        $('.field_reference button.field').click(function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            insertAtCursor(document.getElementById('calc_col_routine'), '+(@' + $(this).text() + ')');
-        });
     });
 
 }
@@ -828,6 +894,10 @@ function updateSecondaryKeys() {
 }
 
 function loadPrimary(plaintextDB) {
+    colWidths = {};
+    for (var i = 0; i < maxCols; i++) {
+        columnData['COL' + i] = {};
+    }
 
     var results = Papa.parse(plaintextDB, {
         header: true,
@@ -841,9 +911,6 @@ function loadPrimary(plaintextDB) {
     headerNames = [];
     sanitizedHeaders = [];
     colWidths = {};
-    for (var i = 0; i < maxCols; i++) {
-        columnData['COL' + i] = {};
-    }
 
     for (j = 0; j < headers.length; j++) {
         field = headers[j].replace(/^\s+|\s+$/g, "");
@@ -988,6 +1055,8 @@ function insertAtCursor(myField, myValue) {
 }
 
 function postInitialization(db, table) {
+    console.log('POSTINIT');
+
     $('#secondary-file-input').closest('li').show();
     $('#key_sel').closest('li').find('a').addClass("disabled").attr('aria-disabled', 'true');
     $('#export').show();
@@ -1000,26 +1069,6 @@ function postInitialization(db, table) {
     $('#fields').closest('li').hide();
     $('#primary-file-input').closest('li').hide();
     $('#query').closest('li').show();
-
-    $('#exportJSON').on('click', function(){
-        console.log(headerIndex);
-        db.export().then(function(data) {
-            for (let key in headerIndex){
-                if(headerIndex.hasOwnProperty(key)){
-                    columnData[headerIndex[key]]['name'] = key;
-                }
-            }
-            var jsonObj = {'primaryDbKey': primaryDbKey, 'columns': columnData, 'database' : data};
-            console.log(jsonObj);
-            // console.log(JSON.stringify(jsonObj));
-            var a = document.createElement('a');
-            a.setAttribute('href', 'data:text/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(jsonObj)));
-            a.setAttribute('download', 'database.json');
-            a.click()
-            // window.location.href = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
-        });
-    });
-
     $('#messages').html('<strong>Database Loaded.</strong>');
     $('#hover_msg').hide();
 
@@ -1028,23 +1077,6 @@ function postInitialization(db, table) {
 
     $('#messages').html('<strong>Database Loaded.</strong>');
     $('#hover_msg').hide();
-
-    $('#query_submit').on('click', function() {
-        baseQuery = $('#query').val();
-        queryHWSet(db, table, baseQuery, primaryKey);
-        $('.dropdown-toggle.query').dropdown('toggle');
-    })
-
-    $('#calc_col_submit').on('click', function() {
-        let field = $('#calc_col_name').val();
-        let routine = $('#calc_col_routine').val();
-        // columnData[headerIndex[sanitizedField]]['name'] = sanitizedField;
-        $('#messages').html('Adding Column<img class="loading" src="./Loading_icon.gif"/>');
-        window.setTimeout(function(){
-            addColumn(db, table, field, routine);
-        }, 0);
-        $('.dropdown-toggle.query').dropdown('toggle');
-    });
 
     var fieldToLf = {};
     sanitizedHeaders.map(function(field) {
@@ -1056,29 +1088,11 @@ function postInitialization(db, table) {
     clickedArray['count'] = 0;
 
     updateButtons(db, table);
-    $('#secondary-file-input').off();
-    $('#secondary-file-input').on('change', function(e) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            var contents = e.target.result;
-            updateTable(db, table, contents, primaryKey, false);
-            $('#second_key_li').show();
-            $('a.pastebin').addClass('disabled');
-            $('a.query').addClass('disabled');
-        }
-        reader.readAsText(e.target.files[0]);
-    });
-    $('#fields_submit').off();
-    $('#fields_submit').on('click', function() {
-        updateTable(db, table, $('#fields').val(), key, false);
-        $('#second_key_li').show();
-        $('a.pastebin').addClass('disabled');
-        $('a.query').addClass('disabled');
-        $('#pastebin').modal('hide')
-    });
+
 }
 
 $(function () {
+
     var $table = $('#mainTable');
 
     $('#primary-file-input').change(function(e) {
@@ -1120,6 +1134,11 @@ $(function () {
                 }
             }
 
+            colWidths = {};
+            for (var i = 0; i < maxCols; i++) {
+                columnData['COL' + i] = {};
+            }
+
             dataIndex = {};
             headerIndex = {};
             sanitizedHeaders = [];
@@ -1129,6 +1148,7 @@ $(function () {
                         dataIndex[key] = jsonObj.columns[key].name;
                         headerIndex[jsonObj.columns[key].name] = key;
                         sanitizedHeaders.push(jsonObj.columns[key].name);
+                        columnData[key]['routine'] = jsonObj.columns[key].routine;
                     }
                 }
             }
@@ -1136,10 +1156,6 @@ $(function () {
             console.log(sanitizedHeaders);
             primaryKey = dataIndex[primaryDbKey];
 
-            colWidths = {};
-            for (var i = 0; i < maxCols; i++) {
-                columnData['COL' + i] = {};
-            }
 
             updateFieldsMenu();
 
