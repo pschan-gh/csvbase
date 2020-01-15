@@ -19,6 +19,8 @@
 
 <script src="https://d3js.org/d3.v4.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.4/xlsx.full.min.js" integrity="sha256-w4FbLoep/QMisX0AubgVd6NdLz1IBt9b1DATsT+hP2c=" crossorigin="anonymous"></script>
+
 <script src="csvbase.js" type='text/javascript'></script>
 
 <script>if (window.module) module = window.module;</script>
@@ -98,10 +100,12 @@ img.loading {
                         <label for="primary-file-input" class="dropdown-item">
                             Import CSV
                         </label>
-                        <input class="form-control-file form-control-sm dropdown-item" style="display:none" type="file" id="primary-file-input"/>
+                        <input class="form-control-file form-control-sm dropdown-item" style="display:none" type="file" id="primary-file-input" accept=".csv, .txt, .lst"/>
                         <a class="pastebin dropdown-item" data-toggle="modal" data-target="#pastebin">Paste CSV</a>
                         <label id="import" for="importJSON" class="dropdown-item">Open JSON</label>
-                        <input class="form-control-file form-control-sm dropdown-item" type="file" style="display:none" id="importJSON"/>
+                        <input class="form-control-file form-control-sm dropdown-item" type="file" style="display:none" id="importJSON" accept=".json"/>
+                        <label id="import" for="importXLSX" class="dropdown-item">Import XLSX</label>
+                        <input class="form-control-file form-control-sm dropdown-item" type="file" style="display:none" id="importXLSX" accept=".xlsx"/>
                     </div>
                 </li>
                 <li class="nav-item">
@@ -117,9 +121,9 @@ img.loading {
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="width:20em;">
                         <label for="secondary-file-input" class="dropdown-item">
-                            Open File
+                            Open CSV
                         </label>
-                        <input style="display:none" class="form-control-form form-control-sm" type="file" id="secondary-file-input"/>
+                        <input style="display:none" class="form-control-form form-control-sm" type="file" id="secondary-file-input" accept=".csv, .txt, .lst"/>
                         <a class="pastebin dropdown-item" data-toggle="modal" data-target="#pastebin">Paste</a>
                     </div>
                 </li>

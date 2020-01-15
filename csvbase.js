@@ -24,14 +24,14 @@ var columnData = new Object();
 function report () {
 };
 
-function initializeDB(plaintextDB, key) {
+function initializeDB(data, headers, key) {
     $('#mainTable').find('tbody').html('');
 
     var row;
     var rows = [];
     var field;
     var dbKey = headerIndex[key];
-    var dbName = 'csvDB' + plaintextDB.hashCode();
+    var dbName = 'csvDB' + JSON.stringify(data).hashCode();
 
     console.log('DB NAME: ' + dbName);
 
@@ -59,7 +59,18 @@ function initializeDB(plaintextDB, key) {
         var logTable = db.getSchema().table('LogTable' + tableVersion);
 
         postInitialization(db, logTable);
-        updateTable(db, logTable, plaintextDB, primaryKey, true);
+        // var results = Papa.parse(plaintextDB, {
+        //     header: true,
+        //     dynamicTyping: false,
+        // });
+        // console.log(results);
+        // data = results.data;
+        // if (data.length < 1) {
+        //     return;
+        // }
+        // headers = results.meta['fields'];
+        // console.log(headers);
+        updateTable(db, logTable, data, headers, primaryKey, true);
     });
 
 }
@@ -91,23 +102,7 @@ function sanitize(str) {
     return str;
 }
 
-function updateTable(db, table, plaintextDB, key, isPrimary) {
-
-    var data = [];
-    var headers = [];
-
-    var results = Papa.parse(plaintextDB, {
-        header: true,
-        dynamicTyping: false,
-    });
-    data = results.data;
-
-    if (data.length < 1) {
-        return;
-    }
-
-    headers = results.meta['fields'];
-    console.log(headers);
+function updateTable(db, table, data, headers, key, isPrimary) {
 
     sanitizedSecondaryHeaders = [];
     var sanitizedField;
@@ -182,13 +177,16 @@ function updateRows(data, db, table, secondaryDbKey) {
                 }
             });
 
-            var secondaryKeyValue = rowObj[secondaryDbKey];
+            let secondaryKeyValue = rowObj[secondaryDbKey];
+            if (isNaN(secondaryKeyValue)) {
+                secondaryKeyValue = secondaryKeyValue.trim();
+            }
             if (secondaryKeyValue == null || typeof secondaryKeyValue == typeof undefined) {
                 continue;
             }
 
             // insert new database entry
-            if (primaryDbKeyValues.indexOf(secondaryKeyValue) <= -1 && secondaryKeyValue.trim() != '') {
+            if (primaryDbKeyValues.indexOf(secondaryKeyValue) <= -1 && secondaryKeyValue != '') {
                 var datum = {};
                 for (var j = 0; j < sanitizedHeaders.length; j++) {
                     sfield = sanitizedHeaders[j];
@@ -492,32 +490,6 @@ function refreshTable(db, table, field) {
     });
     $('tbody').css('margin-top', parseInt($('th').first().css('height')));
 
-    $('#second_key_sel').off();
-    $('#second_key_sel').closest('li').find('a').addClass("disabled").attr('aria-disabled', 'true');
-    $('#secondary-file-input').off();
-    $('#secondary-file-input').on('change', function(e) {
-        $('#second_key_li').show();
-        $('#second_key_sel').closest('li').find('a').removeClass("disabled").attr('aria-disabled', 'false');
-        $('a.pastebin').addClass('disabled');
-        $('a.query').addClass('disabled');
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            var contents = e.target.result;
-            updateTable(db, table, contents, primaryKey, false);
-        }
-        reader.readAsText(e.target.files[0]);
-    });
-
-    $('#fields_submit').off();
-    $('#fields_submit').on('click', function() {
-        updateTable(db, table, $('#fields').val(), primaryKey, false);
-        $('#second_key_li').show();
-        $('#second_key_sel').closest('li').find('a').removeClass("disabled").attr('aria-disabled', 'false');
-        $('a.pastebin').addClass('disabled');
-        $('a.query').addClass('disabled');
-        $('#pastebin').modal('hide')
-    });
-
     updateButtons(db, table);
 
     $('.nav-item.calculated_column').show();
@@ -607,8 +579,19 @@ function updateButtons(db, table) {
     $('#secondary-file-input').on('change', function(e) {
         var reader = new FileReader();
         reader.onload = function(e) {
-            var contents = e.target.result;
-            updateTable(db, table, contents, primaryKey, false);
+            var results = Papa.parse(e.target.result, {
+                        header: true,
+                        dynamicTyping: false,
+                    });
+                    console.log(results);
+                    data = results.data;
+                    if (data.length < 1) {
+                        return;
+                    }
+                    headers = results.meta['fields'];
+                    console.log(headers);
+            // var contents = e.target.result;
+            updateTable(db, table, data, headers, primaryKey, false);
             $('#second_key_li').show();
             $('a.pastebin').addClass('disabled');
             $('a.query').addClass('disabled');
@@ -617,7 +600,18 @@ function updateButtons(db, table) {
     });
     $('#fields_submit').off();
     $('#fields_submit').on('click', function() {
-        updateTable(db, table, $('#fields').val(), key, false);
+        var results = Papa.parse($('#fields').val(), {
+            header: true,
+            dynamicTyping: false,
+        });
+        console.log(results);
+        data = results.data;
+        if (data.length < 1) {
+            return;
+        }
+        headers = results.meta['fields'];
+        console.log(headers);
+        updateTable(db, table, data, headers, primaryKey, false);
         $('#second_key_li').show();
         $('a.pastebin').addClass('disabled');
         $('a.query').addClass('disabled');
@@ -893,20 +887,14 @@ function updateSecondaryKeys() {
 
 }
 
-function loadPrimary(plaintextDB) {
+function loadPrimary(data, headers) {
     colWidths = {};
     for (var i = 0; i < maxCols; i++) {
         columnData['COL' + i] = {};
     }
 
-    var results = Papa.parse(plaintextDB, {
-        header: true,
-        dynamicTyping: false,
-    });
-
     var field;
     var sanitizedField;
-    var headers = results.meta['fields'];
 
     headerNames = [];
     sanitizedHeaders = [];
@@ -929,9 +917,10 @@ function loadPrimary(plaintextDB) {
     $("#second_key_sel")[0].innerHTML = '';
     updateKeys();
     $('#key_div').css('display', 'inline-block');
+    $('#hover_msg').text('Please Set the Primary Key');
 
     $('#key_sel').on('change', function() {
-        initializeDB(plaintextDB, sanitize($(this).val()));
+        initializeDB(data, headers, sanitize($(this).val()));
     });
 }
 
@@ -1098,8 +1087,18 @@ $(function () {
     $('#primary-file-input').change(function(e) {
         var reader = new FileReader();
         reader.onload = function(e) {
-            var contents = e.target.result;
-            loadPrimary(contents);
+            let plaintextDB = e.target.result;
+            let results = Papa.parse(plaintextDB, {
+                header: true,
+                dynamicTyping: false,
+            });
+            console.log(results);
+            data = results.data;
+                if (data.length < 1) {
+                    return;
+                }
+            let headers = results.meta['fields'];
+            loadPrimary(data, headers);
         }
         reader.readAsText(e.target.files[0]);
         $('a.pastebin').addClass('disabled');
@@ -1174,6 +1173,39 @@ $(function () {
         reader.readAsText(e.target.files[0]);
     });
 
+    $('#importXLSX').change(function(e) {
+        // https://stackoverflow.com/questions/8238407/how-to-parse-excel-file-in-javascript-html5
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var data = e.target.result;
+            var workbook = XLSX.read(data, {
+                type: 'binary'
+            });
+
+            // console.log(workbook.SheetNames);
+            let sheetName = workbook.SheetNames[0];
+            var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+            console.log(XL_row_object);
+            var json_object = JSON.stringify(XL_row_object);
+            // console.log(json_object);
+            // workbook.SheetNames.forEach(function(sheetName) {
+            //     // Here is your object
+            //     var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+            //     var json_object = JSON.stringify(XL_row_object);
+            //     console.log(json_object);
+            //
+            // })
+            let headers = Object.keys(XL_row_object[0]);
+            console.log(headers);
+            loadPrimary(XL_row_object, headers);
+        };
+
+        reader.onerror = function(ex) {
+            console.log(ex);
+        };
+        reader.readAsBinaryString(e.target.files[0]);
+    });
+
     $("#exportCSV").click(function () {
         $('th div.triangle').html('');
 
@@ -1204,7 +1236,17 @@ $(function () {
     });
 
     $('#fields_submit').on('click', function() {
-        loadPrimary($('#fields').val());
+        let results = Papa.parse($('#fields').val(), {
+            header: true,
+            dynamicTyping: false,
+        });
+        console.log(results);
+        data = results.data;
+            if (data.length < 1) {
+                return;
+            }
+        let headers = results.meta['fields'];
+        loadPrimary(data, headers);
         $('a.pastebin').addClass('disabled');
         $('a.query').addClass('disabled');
         $('#pastebin').modal('hide');
