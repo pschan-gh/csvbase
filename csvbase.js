@@ -178,15 +178,18 @@ function updateRows(data, db, table, secondaryDbKey) {
             });
 
             let secondaryKeyValue = rowObj[secondaryDbKey];
-            if (isNaN(secondaryKeyValue)) {
-                secondaryKeyValue = secondaryKeyValue.trim();
-            }
-            if (secondaryKeyValue == null || typeof secondaryKeyValue == typeof undefined) {
+            // console.log('SECONDDARY KEY: ' + secondaryKeyValue);
+            if (secondaryKeyValue == null || typeof secondaryKeyValue == typeof undefined || secondaryKeyValue == '') {
                 continue;
             }
+            secondaryKeyValue = secondaryKeyValue.toString().trim();
+            // if (isNaN(secondaryKeyValue)) {
+            //     secondaryKeyValue = secondaryKeyValue.trim();
+            // }
 
             // insert new database entry
             if (primaryDbKeyValues.indexOf(secondaryKeyValue) <= -1 && secondaryKeyValue != '') {
+                // console.log('NEW ENTRY');
                 var datum = {};
                 for (var j = 0; j < sanitizedHeaders.length; j++) {
                     sfield = sanitizedHeaders[j];
@@ -207,8 +210,9 @@ function updateRows(data, db, table, secondaryDbKey) {
                 }
                 datum[primaryDbKey] = secondaryKeyValue;
                 newRows.push(table.createRow(datum));
-                primaryDbKeyValues.push(secondaryKeyValue);
+                primaryDbKeyValues.push(secondaryKeyValue.toString());
             } else { // udpate existing database entry
+                // console.log('UPDATE');
                 sanitizedHeaders.map(function(sfield) {
                     var field = headerIndex[sfield];
                     if (field != primaryDbKey && sanitizedSecondaryHeaders.indexOf(sfield) > -1) {
@@ -533,7 +537,7 @@ function updateButtons(db, table) {
     $('.field_reference button.field').click(function(e) {
         e.preventDefault();
         e.stopPropagation();
-        console.log(e);
+        // console.log(e);
         insertAtCursor(document.getElementById('column_routine'), '+(@' + $(this).text() + ')');
     });
     $('#calculated_column').off();
@@ -576,27 +580,27 @@ function updateButtons(db, table) {
     // });
 
     $('#secondary-file-input').off();
-    $('#secondary-file-input').on('change', function(e) {
+    $('#secondary-file-input').on('change', function(event) {
         var reader = new FileReader();
         reader.onload = function(e) {
             var results = Papa.parse(e.target.result, {
-                        header: true,
-                        dynamicTyping: false,
-                    });
-                    console.log(results);
-                    data = results.data;
-                    if (data.length < 1) {
-                        return;
-                    }
-                    headers = results.meta['fields'];
-                    console.log(headers);
+                header: true,
+                dynamicTyping: false,
+            });
+            console.log(results);
+            data = results.data;
+            if (data.length < 1) {
+                return;
+            }
+            headers = results.meta['fields'];
+            console.log(headers);
             // var contents = e.target.result;
             updateTable(db, table, data, headers, primaryKey, false);
             $('#second_key_li').show();
             $('a.pastebin').addClass('disabled');
             $('a.query').addClass('disabled');
         }
-        reader.readAsText(e.target.files[0]);
+        reader.readAsText(event.target.files[0]);
     });
     $('#fields_submit').off();
     $('#fields_submit').on('click', function() {
