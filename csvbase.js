@@ -120,15 +120,8 @@ function updateTable(db, table, data, headers, key, isPrimary) {
             headerIndex[sanitizedField] = 'COL' + sanitizedHeaders.length;
             sanitizedHeaders.push(sanitizedField);
         }
-        // columnData[headerIndex[sanitizedField]]['name'] = sanitizedField;
-        columnData[headerIndex[sanitizedField]]['routine'] = '';
-        dataIndex[sanitizedField] = field;
+        columnData[headerIndex[sanitizedField]]['name'] = sanitizedField;
     }
-
-    $("#second_key_sel")[0].innerHTML = '';
-    updateSecondaryKeys();
-
-    $('#second_key_sel').off();
 
     primaryDbKey = headerIndex[key];
     primaryKey = key;
@@ -137,6 +130,10 @@ function updateTable(db, table, data, headers, key, isPrimary) {
 
     updateFieldsMenu();
 
+    $("#second_key_sel")[0].innerHTML = '';
+    updateSecondaryKeys();
+
+    $('#second_key_sel').off();
     if (!isPrimary) {
         $('#second_key_sel').on('change', function() {
             resetTable();
@@ -149,7 +146,6 @@ function updateTable(db, table, data, headers, key, isPrimary) {
         resetTable();
         updateRows(data, db, table, primaryDbKey);
     }
-
 }
 
 function updateRows(data, db, table, secondaryDbKey) {
@@ -161,6 +157,16 @@ function updateRows(data, db, table, secondaryDbKey) {
     for (var j = 0; j < sanitizedHeaders.length; j++) {
         sfield = sanitizedHeaders[j];
     }
+    let columnsWithRoutines = [];
+    for (let key in columnData) {
+        if (columnData.hasOwnProperty(key)) {
+            if (columnData[key].hasOwnProperty('routine') && columnData[key].routine != "") {
+                columnsWithRoutines.push(columnData[key]);
+            }
+        }
+    }
+    console.log(columnData);
+    console.log(columnsWithRoutines);
 
     $('#messages').html('Updating Database<img class="loading" src="./Loading_icon.gif"/>');
     window.setTimeout(function(){
@@ -175,6 +181,14 @@ function updateRows(data, db, table, secondaryDbKey) {
                         rowObj[headerIndex[sanitizedField]] = " ";
                     }
                 }
+            });
+            columnsWithRoutines.forEach(col => {
+                let sfield = col.name;
+                let routine = col.routine;
+                columnData[headerIndex[sfield]]['routine'] = routine;
+                let routineStr = routine.replace(/\(@([^\)]+)\)/g, 'row[headerIndex[sanitize("$1")]]');
+                let routineFunc = new Function('row',  routineStr);
+                rowObj[headerIndex[sfield]] = routineFunc(rowObj);
             });
 
             let secondaryKeyValue = rowObj[secondaryDbKey];
@@ -259,8 +273,60 @@ function addColumn(db, table, field, routine) {
     }
     dataIndex[sanitizedField] = field;
 
-    recalculateColumn(db, table, sanitizedField, routine);
+    recalculateColumns(db, table, [{name: sanitizedField, routine: routine}]);
     addFieldToMenu(sanitizedField);
+}
+
+function recalculateColumns(db, table, columns) {
+
+    var newRows = [];
+    let functionStr = 'return db.select().from(table).exec()';
+    console.log(functionStr);
+
+    let queryFunc = new Function('db', 'table',  functionStr);
+    queryFunc(db, table).then(function(rows) {
+        // let value = '';
+        let sanitizedField;
+        let dbField;
+        rows.forEach(function(rowObj) {
+            columns.forEach(col => {
+                let sfield = col.name;
+                let routine = col.routine;
+                // console.log(sfield);
+                // console.log(routine);
+                // console.log(headerIndex[sfield]);
+                columnData[headerIndex[sfield]]['routine'] = routine;
+                let routineStr = routine.replace(/\(@([^\)]+)\)/g, 'row[headerIndex[sanitize("$1")]]');
+                // console.log(routineStr);
+                let routineFunc = new Function('row',  routineStr);
+                // console.log(sfield);
+                // console.log(headerIndex[sfield]);
+                rowObj[headerIndex[sfield]] = routineFunc(rowObj);
+            });
+            var datum = {};
+            for (var j = 0; j < sanitizedHeaders.length; j++) {
+                sanitizedField = sanitizedHeaders[j];
+                if (sanitizedField in headerIndex) {
+                    dbField = headerIndex[sanitizedField];
+                    if (typeof rowObj[dbField] !== "undefined" && rowObj[dbField] !== null) {
+                        datum[dbField] = rowObj[dbField];
+                    } else {
+                        datum[dbField] = "";
+                    }
+                }
+            }
+            for (var j = 0; j < maxCols; j++) {
+                var key = 'COL' + j.toString();
+                if (!(key in datum)) {
+                    datum[key] = "";
+                }
+            }
+            newRows.push(table.createRow(datum));
+        });
+        db.insertOrReplace().into(table).values(newRows).exec().then(function() {
+            queryHWSet(db, table, baseQuery, primaryKey);
+        });
+    });
 }
 
 function recalculateColumn(db, table, sfield, routine) {
@@ -509,6 +575,37 @@ function updateButtons(db, table) {
         }
     });
 
+    $("#exportCSV").off();
+    $("#exportCSV").click(function () {
+        $('th div.triangle').html('');
+
+        // var $clone = $table.clone( true );
+        // $clone.find('th div.triangle').html('');
+
+        var csv = $table.table2csv('return', {
+            "separator": ",",
+            "newline": "\n",
+            "quoteFields": true,
+            "excludeColumns": ".col_chkbox, .col_count",
+            "excludeRows": "",
+            "trimContent": true,
+            "filename": "table.csv"
+        });
+
+        csv = csv.replace(/Group byStatisticsRecalculateHide/g, '');
+
+        // https://stackoverflow.com/questions/42462764/javascript-export-csv-encoding-utf-8-issue/42466254
+        var universalBOM = "\uFEFF";
+        var a = document.createElement('a');
+        a.setAttribute('href', 'data:text/csv;charset=UTF-8,'
+        + encodeURIComponent(universalBOM + csv));
+        a.setAttribute('download', 'untitled.csv');
+        a.click()
+        // window.location.href = 'data:text/csv;charset=UTF-8,' + encodeURIComponent(universalBOM + csv);
+        $('th div.triangle').html('&#x25ba;');
+    });
+
+    $('#exportJSON').off();
     $('#exportJSON').on('click', function(){
         console.log(headerIndex);
         db.export().then(function(data) {
@@ -554,32 +651,23 @@ function updateButtons(db, table) {
 
     $('#column_submit').off();
     $('#column_submit').on('click', function() {
-        let field = $('#column_bin').find('.column_name').val();
+        let sfield = $('#column_bin').find('.column_name').val();
         let routine = $('#column_routine').val();
         // columnData[headerIndex[sanitizedField]]['name'] = sanitizedField;
         // $('.dropdown-toggle.query').dropdown('toggle');
         $('#messages').html('Adding Column<img class="loading" src="./Loading_icon.gif"/>');
         window.setTimeout(function(){
-            if (sanitizedHeaders.indexOf(field) <= -1) {
-                addColumn(db, table, field, routine);
+            if (sanitizedHeaders.indexOf(sfield) <= -1) {
+                addColumn(db, table, sfield, routine);
             } else {
-                recalculateColumn(db, table, field, routine);
+                recalculateColumn(db, table, [{name: sfield, routine: routine}]);
             }
             $('#column_bin').modal('hide');
         }, 0);
 
     });
-    // $('#column_submit').off();
-    // $('#column_submit').click(function() {
-    //     let sfield = $('#column_bin').find('.column_name').val();
-    //     // console.log($('#column_routine').text());
-    //     columnData[headerIndex[sfield]]['routine'] = $('#column_routine').val();
-    //     console.log(columnData[headerIndex[sfield]]['routine']);
-    //     console.log(sfield);
-    //     recalculateColumn(db, table, sfield);
-    // });
 
-    $('#secondary-file-input').off();
+    $('.secondary-input').off();
     $('#secondary-file-input').on('change', function(event) {
         var reader = new FileReader();
         reader.onload = function(e) {
@@ -602,6 +690,58 @@ function updateButtons(db, table) {
         }
         reader.readAsText(event.target.files[0]);
     });
+    $('#secondary-json-input').on('change', function(event) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var jsonObj = JSON.parse(e.target.result);
+            console.log(jsonObj);
+            let data = jsonObj.database.tables.LogTable0;
+            if (data.length < 1) {
+                return;
+            }
+
+            let headers = [];
+            for (let key in jsonObj.columns) {
+                if(jsonObj.columns.hasOwnProperty(key)){
+                    if (jsonObj.columns[key].name != null && jsonObj.columns[key].name != '' && typeof jsonObj.columns[key].name !== typeof undefined) {
+                        headers.push(jsonObj.columns[key].name);
+                        columnData[key]['routine'] = jsonObj.columns[key].routine;
+                    }
+                }
+            }
+            console.log(headers);
+            // var contents = e.target.result;
+            updateTable(db, table, data, headers, primaryKey, false);
+            $('#second_key_li').show();
+            $('a.pastebin').addClass('disabled');
+            $('a.query').addClass('disabled');
+        }
+        reader.readAsText(event.target.files[0]);
+    });
+    $('#secondary-xlsx-input').on('change', function(event) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var data = e.target.result;
+          console.log(data);
+          var workbook = XLSX.read(data, {
+              type: 'binary'
+          });
+
+          // console.log(workbook.SheetNames);
+          let sheetName = workbook.SheetNames[0];
+          var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+          console.log(XL_row_object);
+          var json_object = JSON.stringify(XL_row_object);
+          let headers = Object.keys(XL_row_object[0]);
+            console.log(headers);
+            updateTable(db, table, data, headers, primaryKey, false);
+            $('#second_key_li').show();
+            $('a.pastebin').addClass('disabled');
+            $('a.query').addClass('disabled');
+        }
+        reader.readAsBinaryString(event.target.files[0]);
+    });
+
     $('#fields_submit').off();
     $('#fields_submit').on('click', function() {
         var results = Papa.parse($('#fields').val(), {
@@ -917,14 +1057,16 @@ function loadPrimary(data, headers) {
         dataIndex[sanitizedField] = headers[j];
     }
 
-    $("#key_sel")[0].innerHTML = '';
-    $("#second_key_sel")[0].innerHTML = '';
+    $("#key_sel").html('');
+    $("#second_key_sel").html('');
     updateKeys();
     $('#key_div').css('display', 'inline-block');
     $('#hover_msg').text('Please Set the Primary Key');
+    $("#key_sel").tooltip('show');
 
     $('#key_sel').on('change', function() {
         initializeDB(data, headers, sanitize($(this).val()));
+        $("#key_sel").tooltip('hide');
     });
 }
 
@@ -1050,7 +1192,7 @@ function insertAtCursor(myField, myValue) {
 function postInitialization(db, table) {
     console.log('POSTINIT');
 
-    $('#secondary-file-input').closest('li').show();
+    $('.nav-item.dropdown.update').show();
     $('#key_sel').closest('li').find('a').addClass("disabled").attr('aria-disabled', 'true');
     $('#export').show();
     $('a.pastebin').removeClass('disabled');
@@ -1210,35 +1352,6 @@ $(function () {
         reader.readAsBinaryString(e.target.files[0]);
     });
 
-    $("#exportCSV").click(function () {
-        $('th div.triangle').html('');
-
-        // var $clone = $table.clone( true );
-        // $clone.find('th div.triangle').html('');
-
-        var csv = $table.table2csv('return', {
-            "separator": ",",
-            "newline": "\n",
-            "quoteFields": true,
-            "excludeColumns": ".col_chkbox, .col_count",
-            "excludeRows": "",
-            "trimContent": true,
-            "filename": "table.csv"
-        });
-
-        csv = csv.replace(/Group byStatisticsRecalculateHide/g, '');
-
-        // https://stackoverflow.com/questions/42462764/javascript-export-csv-encoding-utf-8-issue/42466254
-        var universalBOM = "\uFEFF";
-        var a = document.createElement('a');
-        a.setAttribute('href', 'data:text/csv;charset=UTF-8,'
-        + encodeURIComponent(universalBOM + csv));
-        a.setAttribute('download', 'untitled.csv');
-        a.click()
-        // window.location.href = 'data:text/csv;charset=UTF-8,' + encodeURIComponent(universalBOM + csv);
-        $('th div.triangle').html('&#x25ba;');
-    });
-
     $('#fields_submit').on('click', function() {
         let results = Papa.parse($('#fields').val(), {
             header: true,
@@ -1271,4 +1384,6 @@ $(function () {
         }
         reader.readAsText(e.target.files[0]);
     });
+
+     $('[data-toggle="tooltip"]').tooltip()
 })

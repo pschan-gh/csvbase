@@ -110,20 +110,22 @@ img.loading {
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="key_div" style="display:none;">
-                        <select id="key_sel" name="key_sel" class="form-control form-control-sm">
+                        <select id="key_sel" name="key_sel" class="form-control form-control-sm" data-toggle="tooltip" data-placement="bottom" title="Set Primary Key">
                             <option selected>Select Primary Key...</option>
                         </select>
                     </a>
                 </li>
-                <li class="nav-item dropdown" style="display:none">
+                <li class="nav-item dropdown update" style="display:none">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                          Update with:
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="width:20em;">
-                        <label for="secondary-file-input" class="dropdown-item">
-                            Open CSV
-                        </label>
+                        <label for="secondary-file-input" class="dropdown-item secondary-input">Open CSV</label>
                         <input style="display:none" class="form-control-form form-control-sm" type="file" id="secondary-file-input" accept=".csv, .txt, .lst"/>
+                        <label for="secondary-json-input" class="dropdown-item secondary-input">Open JSON</label>
+                        <input style="display:none" class="form-control-form form-control-sm" type="file" id="secondary-json-input" accept=".json"/>
+                        <label for="secondary-xlsx-input" class="dropdown-item secondary-input">Open XLSX</label>
+                        <input style="display:none" class="form-control-form form-control-sm" type="file" id="secondary-xlsx-input" accept=".xlsx"/>
                         <a class="pastebin dropdown-item" data-toggle="modal" data-target="#pastebin">Paste</a>
                     </div>
                 </li>
@@ -234,9 +236,8 @@ img.loading {
         <div class="modal-dialog modal-lg" role="dialog" >
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Calculate Column
-                        <input class="form-control column_name" style="font-family:Courier" type="text" id="calc_col_name" name="calc_col_name">
-                    </h5>
+                    <h5 style="display:inline" class="modal-title">Calculate Column</h5>
+                    <input style="display:inline" class="form-control column_name" style="font-family:Courier" type="text" id="calc_col_name" name="calc_col_name"/>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
