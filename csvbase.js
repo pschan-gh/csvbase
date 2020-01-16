@@ -191,7 +191,7 @@ function updateRows(data, db, table, secondaryDbKey) {
 
             // insert new database entry
             if (primaryDbKeyValues.indexOf(secondaryKeyValue) <= -1 && secondaryKeyValue != '') {
-                console.log('NEW ENTRY');
+                // console.log('NEW ENTRY');
                 var datum = {};
                 for (var j = 0; j < maxCols; j++) {
                     var key = 'COL' + j.toString();
@@ -215,8 +215,8 @@ function updateRows(data, db, table, secondaryDbKey) {
                 newRows.push(table.createRow(datum));
                 primaryDbKeyValues.push(secondaryKeyValue.toString());
             } else { // udpate existing database entry
-                console.log('UPDATE');
-                console.log(secondaryDbKey);
+                // console.log('UPDATE');
+                // console.log(secondaryDbKey);
                 let sfield;
                 sanitizedHeaders.map(function(sfield) {
                     let dbField = headerIndex[sfield];
@@ -299,6 +299,7 @@ function recalculateColumns(db, table, columns) {
             // console.log(sfield);
             // console.log(routine);
             // console.log(headerIndex[sfield]);
+            columnData[headerIndex[sfield]].routine = routine;
 
             rows.forEach(function(rowObj) {
 
@@ -857,7 +858,7 @@ function updateButtons(db, table) {
             tbody.find('tr').sort(function(a, b) {
                 aContent = $('td[field="' + sortField + '"]', a).html();
                 bContent = $('td[field="' + sortField + '"]', b).html();
-                
+
                 aContent = typeof aContent !== typeof undefined ? aContent : '';
                 bContent = typeof bContent !== typeof undefined ? bContent : '';
 
