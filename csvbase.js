@@ -103,15 +103,17 @@ function sanitize(str) {
 }
 
 function updateTable(db, table, data, headers, key, isPrimary) {
-
+    console.log(data);
     sanitizedSecondaryHeaders = [];
     var sanitizedField;
+    console.log(sanitizedHeaders);
     for (var j = 0; j < headers.length; j++) {
         var field = headers[j];
         sanitizedField = sanitize(field);
         sanitizedField = sanitizedField == '' ? 'BLANK' + j.toString() : sanitizedField;
         sanitizedSecondaryHeaders.push(sanitizedField);
         if (sanitizedHeaders.indexOf(sanitizedField) <= -1) {
+            console.log('ADDING HEADER ' + sanitizedField);
             if (field != '') {
                 headerNames.push(field);
             } else {
@@ -119,8 +121,8 @@ function updateTable(db, table, data, headers, key, isPrimary) {
             }
             headerIndex[sanitizedField] = 'COL' + sanitizedHeaders.length;
             sanitizedHeaders.push(sanitizedField);
+            columnData[headerIndex[sanitizedField]]['name'] = sanitizedField;
         }
-        columnData[headerIndex[sanitizedField]]['name'] = sanitizedField;
     }
 
     primaryDbKey = headerIndex[key];
@@ -154,46 +156,32 @@ function updateRows(data, db, table, secondaryDbKey) {
     var sanitizedField;
     var sfield, field;
 
-    for (var j = 0; j < sanitizedHeaders.length; j++) {
-        sfield = sanitizedHeaders[j];
-    }
-    let columnsWithRoutines = [];
-    for (let key in columnData) {
-        if (columnData.hasOwnProperty(key)) {
-            if (columnData[key].hasOwnProperty('routine') && columnData[key].routine != "") {
-                columnsWithRoutines.push(columnData[key]);
-            }
-        }
-    }
-    console.log(columnData);
-    console.log(columnsWithRoutines);
-
     $('#messages').html('Updating Database<img class="loading" src="./Loading_icon.gif"/>');
+    console.log(data);
+    console.log(headerIndex);
+    console.log(sanitizedHeaders);
     window.setTimeout(function(){
-        for(var i = 0; i < data.length; i++) {
+        let sanitizedField;
+        let dataRow;
+        for (let i = 0; i < data.length; i++) {
+            dataRow = data[i];
             var rowObj = {};
-            headerNames.map(function(field) {
-                sanitizedField = sanitize(field);
-                if (sanitizedField in headerIndex) {
-                    if (dataIndex[sanitizedField] in data[i]) {
-                        rowObj[headerIndex[sanitizedField]] = data[i][dataIndex[sanitizedField]];
-                    } else {
-                        rowObj[headerIndex[sanitizedField]] = " ";
+            for (key in dataRow) {
+                if (dataRow.hasOwnProperty(key)) {
+                    // console.log(field);
+                    sanitizedField = sanitize(key);
+                    console.log(sanitizedField);
+                    if (sanitizedField in headerIndex) {
+                        rowObj[headerIndex[sanitizedField]] = dataRow[key];
                     }
                 }
-            });
-            columnsWithRoutines.forEach(col => {
-                let sfield = col.name;
-                let routine = col.routine;
-                columnData[headerIndex[sfield]]['routine'] = routine;
-                let routineStr = routine.replace(/\(@([^\)]+)\)/g, 'row[headerIndex[sanitize("$1")]]');
-                let routineFunc = new Function('row',  routineStr);
-                rowObj[headerIndex[sfield]] = routineFunc(rowObj);
-            });
+            }
+            console.log(rowObj);
 
             let secondaryKeyValue = rowObj[secondaryDbKey];
             // console.log('SECONDDARY KEY: ' + secondaryKeyValue);
             if (secondaryKeyValue == null || typeof secondaryKeyValue == typeof undefined || secondaryKeyValue == '') {
+                console.log('INVALID KEY: ' + secondaryDbKey);
                 continue;
             }
             secondaryKeyValue = secondaryKeyValue.toString().trim();
@@ -203,37 +191,39 @@ function updateRows(data, db, table, secondaryDbKey) {
 
             // insert new database entry
             if (primaryDbKeyValues.indexOf(secondaryKeyValue) <= -1 && secondaryKeyValue != '') {
-                // console.log('NEW ENTRY');
+                console.log('NEW ENTRY');
                 var datum = {};
-                for (var j = 0; j < sanitizedHeaders.length; j++) {
-                    sfield = sanitizedHeaders[j];
-                    if (sfield in headerIndex) {
-                        var field = headerIndex[sfield];
-                        if (typeof rowObj[field] !== "undefined" && rowObj[field] !== null) {
-                            datum[field] = rowObj[field];
-                        } else {
-                            datum[field] = " ";
-                        }
-                    }
-                }
                 for (var j = 0; j < maxCols; j++) {
                     var key = 'COL' + j.toString();
                     if (!(key in datum)) {
                         datum[key] = " ";
                     }
                 }
+                sanitizedHeaders.forEach(sfield => {
+                    if (sfield in headerIndex) {
+                        let dbField = headerIndex[sfield];
+                        if (typeof rowObj[dbField] !== "undefined" && rowObj[dbField] !== null) {
+                            datum[dbField] = rowObj[dbField];
+                        } else {
+                            datum[dbField] = " ";
+                        }
+                    }
+                });
+
                 datum[primaryDbKey] = secondaryKeyValue;
+                // console.log(datum);
                 newRows.push(table.createRow(datum));
                 primaryDbKeyValues.push(secondaryKeyValue.toString());
             } else { // udpate existing database entry
-                // console.log('UPDATE');
+                console.log('UPDATE');
+                console.log(secondaryDbKey);
                 sanitizedHeaders.map(function(sfield) {
-                    var field = headerIndex[sfield];
-                    if (field != primaryDbKey && sanitizedSecondaryHeaders.indexOf(sfield) > -1) {
-                        var value = rowObj[field];
+                    let dbField = headerIndex[sfield];
+                    if (dbField != primaryDbKey) {
+                        let value = rowObj[dbField];
                         if (value != null && typeof value != typeof undefined) {
                             db.update(table).
-                            set(table[field], value).
+                            set(table[dbField], value).
                             where(table[primaryDbKey].eq(rowObj[secondaryDbKey])).
                             exec().then(function() {  // Returns a Promise.
                                 report('UPDATED: ' + sfield + ' ' + value);
@@ -248,11 +238,21 @@ function updateRows(data, db, table, secondaryDbKey) {
                 colWidths[key] = colWidths[key] + 2;
             }
         }
+        console.log('INSERT INTO TABLE');
         db.insertOrReplace().into(table).values(newRows).exec().then(function() {
             baseQuery = "select().from(table)";
             $('#query').val(baseQuery);
             queryHWSet(db, table, baseQuery, groupField);
             $(this).val('Select Matching Key...');
+            // let columnsWithRoutines = [];
+            // for (let key in columnData) {
+            //     if (columnData.hasOwnProperty(key)) {
+            //         if (columnData[key].hasOwnProperty('routine') && columnData[key].routine != "") {
+            //             columnsWithRoutines.push(columnData[key]);
+            //         }
+            //     }
+            // }
+            // recalculateColumns(db, table, columnsWithRoutines);
         });
     }, 0);
 }
@@ -260,19 +260,22 @@ function updateRows(data, db, table, secondaryDbKey) {
 function addColumn(db, table, field, routine) {
 
     let sanitizedField = sanitize(field);
-    sanitizedField = sanitizedField == '' ? 'BLANK' + headerNames.length : sanitizedField;
+    sanitizedField = sanitizedField == '' ? 'BLANK' + sanitizedHeaders.length : sanitizedField;
 
     if (sanitizedHeaders.indexOf(sanitizedField) <= -1) {
+        // sanitizedHeaders.push(sanitizedField);
         if (field != '') {
             headerNames.push(field);
         } else {
             headerNames.push(sanitizedField);
         }
-        headerIndex[sanitizedField] = 'COL' + sanitizedHeaders.length;
         sanitizedHeaders.push(sanitizedField);
+        headerIndex[sanitizedField] = 'COL' + sanitizedHeaders.length;
     }
     dataIndex[sanitizedField] = field;
 
+    columnData[headerIndex[sfield]]['name'] = sanitizedField;
+    columnData[headerIndex[sfield]]['routine'] = routine;
     recalculateColumns(db, table, [{name: sanitizedField, routine: routine}]);
     addFieldToMenu(sanitizedField);
 }
@@ -282,46 +285,47 @@ function recalculateColumns(db, table, columns) {
     var newRows = [];
     let functionStr = 'return db.select().from(table).exec()';
     console.log(functionStr);
-
+    console.log(columnData);
     let queryFunc = new Function('db', 'table',  functionStr);
     queryFunc(db, table).then(function(rows) {
         // let value = '';
         let sanitizedField;
         let dbField;
-        rows.forEach(function(rowObj) {
-            columns.forEach(col => {
-                let sfield = col.name;
-                let routine = col.routine;
-                // console.log(sfield);
-                // console.log(routine);
-                // console.log(headerIndex[sfield]);
-                columnData[headerIndex[sfield]]['routine'] = routine;
+        columns.forEach(col => {
+            let sfield = col.name;
+            let routine = col.routine;
+            // console.log(sfield);
+            // console.log(routine);
+            // console.log(headerIndex[sfield]);
+
+            rows.forEach(function(rowObj) {
+
                 let routineStr = routine.replace(/\(@([^\)]+)\)/g, 'row[headerIndex[sanitize("$1")]]');
                 // console.log(routineStr);
                 let routineFunc = new Function('row',  routineStr);
                 // console.log(sfield);
                 // console.log(headerIndex[sfield]);
                 rowObj[headerIndex[sfield]] = routineFunc(rowObj);
-            });
-            var datum = {};
-            for (var j = 0; j < sanitizedHeaders.length; j++) {
-                sanitizedField = sanitizedHeaders[j];
-                if (sanitizedField in headerIndex) {
-                    dbField = headerIndex[sanitizedField];
-                    if (typeof rowObj[dbField] !== "undefined" && rowObj[dbField] !== null) {
-                        datum[dbField] = rowObj[dbField];
-                    } else {
-                        datum[dbField] = "";
+                var datum = {};
+                for (var j = 0; j < sanitizedHeaders.length; j++) {
+                    sanitizedField = sanitizedHeaders[j];
+                    if (sanitizedField in headerIndex) {
+                        dbField = headerIndex[sanitizedField];
+                        if (typeof rowObj[dbField] !== "undefined" && rowObj[dbField] !== null) {
+                            datum[dbField] = rowObj[dbField];
+                        } else {
+                            datum[dbField] = "";
+                        }
                     }
                 }
-            }
-            for (var j = 0; j < maxCols; j++) {
-                var key = 'COL' + j.toString();
-                if (!(key in datum)) {
-                    datum[key] = "";
+                for (var j = 0; j < maxCols; j++) {
+                    var key = 'COL' + j.toString();
+                    if (!(key in datum)) {
+                        datum[key] = "";
+                    }
                 }
-            }
-            newRows.push(table.createRow(datum));
+                newRows.push(table.createRow(datum));
+            });
         });
         db.insertOrReplace().into(table).values(newRows).exec().then(function() {
             queryHWSet(db, table, baseQuery, primaryKey);
@@ -660,7 +664,7 @@ function updateButtons(db, table) {
             if (sanitizedHeaders.indexOf(sfield) <= -1) {
                 addColumn(db, table, sfield, routine);
             } else {
-                recalculateColumn(db, table, [{name: sfield, routine: routine}]);
+                recalculateColumns(db, table, [{name: sfield, routine: routine}]);
             }
             $('#column_bin').modal('hide');
         }, 0);
@@ -690,22 +694,44 @@ function updateButtons(db, table) {
         }
         reader.readAsText(event.target.files[0]);
     });
+
     $('#secondary-json-input').on('change', function(event) {
         var reader = new FileReader();
         reader.onload = function(e) {
             var jsonObj = JSON.parse(e.target.result);
             console.log(jsonObj);
-            let data = jsonObj.database.tables.LogTable0;
-            if (data.length < 1) {
+            let dataOriginal = jsonObj.database.tables.LogTable0;
+            if (dataOriginal.length < 1) {
                 return;
             }
 
+            let data = dataOriginal.map(datum => {
+                let newDatum = {};
+                for (key in datum) {
+                    if (datum.hasOwnProperty(key)) {
+                        newDatum[jsonObj.columns[key].name] = datum[key];
+                    }
+                }
+                return newDatum;
+            });
+            // console.log(data);
+
             let headers = [];
+            let sfield;
             for (let key in jsonObj.columns) {
                 if(jsonObj.columns.hasOwnProperty(key)){
                     if (jsonObj.columns[key].name != null && jsonObj.columns[key].name != '' && typeof jsonObj.columns[key].name !== typeof undefined) {
-                        headers.push(jsonObj.columns[key].name);
-                        columnData[key]['routine'] = jsonObj.columns[key].routine;
+                        sfield = jsonObj.columns[key].name;
+                        headers.push(sfield);
+                        if (sanitizedHeaders.indexOf(sfield) <= -1) {
+                            console.log('ADDING HEADER ' + sfield);
+                            headerIndex[sfield] = 'COL' + sanitizedHeaders.length;
+                            sanitizedHeaders.push(sfield);
+                            columnData[headerIndex[sfield]]['name'] = sfield;
+                        }
+                    }
+                    if ('routine' in jsonObj.columns[key]) {
+                        columnData[headerIndex[sfield]]['routine'] = jsonObj.columns[key].routine;
                     }
                 }
             }
@@ -722,7 +748,6 @@ function updateButtons(db, table) {
         var reader = new FileReader();
         reader.onload = function(e) {
           var data = e.target.result;
-          console.log(data);
           var workbook = XLSX.read(data, {
               type: 'binary'
           });
@@ -734,7 +759,7 @@ function updateButtons(db, table) {
           var json_object = JSON.stringify(XL_row_object);
           let headers = Object.keys(XL_row_object[0]);
             console.log(headers);
-            updateTable(db, table, data, headers, primaryKey, false);
+            updateTable(db, table, XL_row_object, headers, primaryKey, false);
             $('#second_key_li').show();
             $('a.pastebin').addClass('disabled');
             $('a.query').addClass('disabled');
@@ -1228,6 +1253,10 @@ function postInitialization(db, table) {
 
 $(function () {
 
+    $('input[type=file]').click(function () {
+        this.value = null;
+    });
+
     var $table = $('#mainTable');
 
     $('#primary-file-input').change(function(e) {
@@ -1292,6 +1321,7 @@ $(function () {
                     if (jsonObj.columns[key].name != null && jsonObj.columns[key].name != '' && typeof jsonObj.columns[key].name !== typeof undefined) {
                         dataIndex[key] = jsonObj.columns[key].name;
                         headerIndex[jsonObj.columns[key].name] = key;
+                        headerNames.push(jsonObj.columns[key].name);
                         sanitizedHeaders.push(jsonObj.columns[key].name);
                         columnData[key]['routine'] = jsonObj.columns[key].routine;
                     }
