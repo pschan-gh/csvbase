@@ -170,13 +170,13 @@ function updateRows(data, db, table, secondaryDbKey) {
                 if (dataRow.hasOwnProperty(key)) {
                     // console.log(field);
                     sanitizedField = sanitize(key);
-                    console.log(sanitizedField);
+                    // console.log(sanitizedField);
                     if (sanitizedField in headerIndex) {
                         rowObj[headerIndex[sanitizedField]] = dataRow[key];
                     }
                 }
             }
-            console.log(rowObj);
+            // console.log(rowObj);
 
             let secondaryKeyValue = rowObj[secondaryDbKey];
             // console.log('SECONDDARY KEY: ' + secondaryKeyValue);
@@ -217,6 +217,7 @@ function updateRows(data, db, table, secondaryDbKey) {
             } else { // udpate existing database entry
                 console.log('UPDATE');
                 console.log(secondaryDbKey);
+                let sfield;
                 sanitizedHeaders.map(function(sfield) {
                     let dbField = headerIndex[sfield];
                     if (dbField != primaryDbKey) {
@@ -242,17 +243,18 @@ function updateRows(data, db, table, secondaryDbKey) {
         db.insertOrReplace().into(table).values(newRows).exec().then(function() {
             baseQuery = "select().from(table)";
             $('#query').val(baseQuery);
-            queryHWSet(db, table, baseQuery, groupField);
+            // queryHWSet(db, table, baseQuery, groupField);
             $(this).val('Select Matching Key...');
-            // let columnsWithRoutines = [];
-            // for (let key in columnData) {
-            //     if (columnData.hasOwnProperty(key)) {
-            //         if (columnData[key].hasOwnProperty('routine') && columnData[key].routine != "") {
-            //             columnsWithRoutines.push(columnData[key]);
-            //         }
-            //     }
-            // }
-            // recalculateColumns(db, table, columnsWithRoutines);
+            let columnsWithRoutines = [];
+            for (let key in columnData) {
+                if (columnData.hasOwnProperty(key)) {
+                    if (columnData[key].hasOwnProperty('routine') && columnData[key].routine != "") {
+                        columnsWithRoutines.push(columnData[key]);
+                    }
+                }
+            }
+            console.log(columnData);
+            recalculateColumns(db, table, columnsWithRoutines);
         });
     }, 0);
 }
@@ -328,57 +330,57 @@ function recalculateColumns(db, table, columns) {
             });
         });
         db.insertOrReplace().into(table).values(newRows).exec().then(function() {
-            queryHWSet(db, table, baseQuery, primaryKey);
+            queryHWSet(db, table, baseQuery, groupField);
         });
     });
 }
 
-function recalculateColumn(db, table, sfield, routine) {
-
-    columnData[headerIndex[sfield]]['routine'] = routine;
-
-    let functionStr = 'return db.select().from(table).exec()';
-    console.log(functionStr);
-    let queryFunc = new Function('db', 'table',  functionStr);
-
-    let routineStr = routine.replace(/\(@([^\)]+)\)/g, 'row[headerIndex[sanitize("$1")]]');
-    console.log(routineStr);
-    var routineFunc = new Function('row',  routineStr);
-
-    console.log(sfield);
-    console.log(headerIndex[sfield]);
-    queryFunc(db, table).then(function(rows) {
-        let value = '';
-        let newRows = [];
-        let sanitizedField;
-        let dbField;
-        rows.forEach(function(rowObj) {
-            rowObj[headerIndex[sfield]] = routineFunc(rowObj);
-            var datum = {};
-            for (var j = 0; j < sanitizedHeaders.length; j++) {
-                sanitizedField = sanitizedHeaders[j];
-                if (sanitizedField in headerIndex) {
-                    dbField = headerIndex[sanitizedField];
-                    if (typeof rowObj[dbField] !== "undefined" && rowObj[dbField] !== null) {
-                        datum[dbField] = rowObj[dbField];
-                    } else {
-                        datum[dbField] = "";
-                    }
-                }
-            }
-            for (var j = 0; j < maxCols; j++) {
-                var key = 'COL' + j.toString();
-                if (!(key in datum)) {
-                    datum[key] = "";
-                }
-            }
-            newRows.push(table.createRow(datum));
-        });
-        db.insertOrReplace().into(table).values(newRows).exec().then(function() {
-            queryHWSet(db, table, baseQuery, primaryKey);
-        });
-    });
-}
+// function recalculateColumn(db, table, sfield, routine) {
+//
+//     columnData[headerIndex[sfield]]['routine'] = routine;
+//
+//     let functionStr = 'return db.select().from(table).exec()';
+//     console.log(functionStr);
+//     let queryFunc = new Function('db', 'table',  functionStr);
+//
+//     let routineStr = routine.replace(/\(@([^\)]+)\)/g, 'row[headerIndex[sanitize("$1")]]');
+//     console.log(routineStr);
+//     var routineFunc = new Function('row',  routineStr);
+//
+//     console.log(sfield);
+//     console.log(headerIndex[sfield]);
+//     queryFunc(db, table).then(function(rows) {
+//         let value = '';
+//         let newRows = [];
+//         let sanitizedField;
+//         let dbField;
+//         rows.forEach(function(rowObj) {
+//             rowObj[headerIndex[sfield]] = routineFunc(rowObj);
+//             var datum = {};
+//             for (var j = 0; j < sanitizedHeaders.length; j++) {
+//                 sanitizedField = sanitizedHeaders[j];
+//                 if (sanitizedField in headerIndex) {
+//                     dbField = headerIndex[sanitizedField];
+//                     if (typeof rowObj[dbField] !== "undefined" && rowObj[dbField] !== null) {
+//                         datum[dbField] = rowObj[dbField];
+//                     } else {
+//                         datum[dbField] = "";
+//                     }
+//                 }
+//             }
+//             for (var j = 0; j < maxCols; j++) {
+//                 var key = 'COL' + j.toString();
+//                 if (!(key in datum)) {
+//                     datum[key] = "";
+//                 }
+//             }
+//             newRows.push(table.createRow(datum));
+//         });
+//         db.insertOrReplace().into(table).values(newRows).exec().then(function() {
+//             queryHWSet(db, table, baseQuery, primaryKey);
+//         });
+//     });
+// }
 
 //https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
 String.prototype.hashCode = function() {
@@ -695,6 +697,7 @@ function updateButtons(db, table) {
         reader.readAsText(event.target.files[0]);
     });
 
+    $('#secondary-json-input').off();
     $('#secondary-json-input').on('change', function(event) {
         var reader = new FileReader();
         reader.onload = function(e) {
@@ -744,6 +747,8 @@ function updateButtons(db, table) {
         }
         reader.readAsText(event.target.files[0]);
     });
+
+    $('#secondary-xlsx-input').off();
     $('#secondary-xlsx-input').on('change', function(event) {
         var reader = new FileReader();
         reader.onload = function(e) {
@@ -1323,6 +1328,7 @@ $(function () {
                         headerIndex[jsonObj.columns[key].name] = key;
                         headerNames.push(jsonObj.columns[key].name);
                         sanitizedHeaders.push(jsonObj.columns[key].name);
+                        columnData[key]['name'] = jsonObj.columns[key].name;
                         columnData[key]['routine'] = jsonObj.columns[key].routine;
                     }
                 }
@@ -1331,6 +1337,13 @@ $(function () {
             console.log(sanitizedHeaders);
             primaryKey = dataIndex[primaryDbKey];
 
+            let o = new Option("option text", "value");
+            $(o).html(primaryKey);
+            $(o).attr('selected');
+            $("#key_sel").html('');
+            $("#key_sel").append(o);
+            $('#key_div').css('display', 'inline-block');
+            $('#key_sel').closest('li').find('a').addClass("disabled").attr('aria-disabled', 'true');
 
             updateFieldsMenu();
 
