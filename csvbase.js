@@ -330,6 +330,7 @@ function recalculateColumns(db, table, columns) {
             });
         });
         db.insertOrReplace().into(table).values(newRows).exec().then(function() {
+            console.log(groupField);
             queryHWSet(db, table, baseQuery, groupField);
         });
     });
@@ -851,10 +852,15 @@ function updateButtons(db, table) {
         var aContent, bContent;
         var tbody = $('#mainTable').find('tbody');
 
+        console.log(groupField);
         if (sortField != groupField && sortField != 'count' && groupField != primaryKey) {
             tbody.find('tr').sort(function(a, b) {
                 aContent = $('td[field="' + sortField + '"]', a).html();
                 bContent = $('td[field="' + sortField + '"]', b).html();
+                
+                aContent = typeof aContent !== typeof undefined ? aContent : '';
+                bContent = typeof bContent !== typeof undefined ? bContent : '';
+
                 if (isNaN(aContent) || isNaN(bContent)) {
                     return ($('td[field="' + groupField + '"]', a).html().localeCompare($('td[field="' + groupField + '"]', b).html())) || clicked*(aContent.localeCompare(bContent));
                 } else {
@@ -1336,6 +1342,8 @@ $(function () {
             console.log(headerIndex);
             console.log(sanitizedHeaders);
             primaryKey = dataIndex[primaryDbKey];
+            sortField = primaryKey;
+            groupField = primaryKey;
 
             let o = new Option("option text", "value");
             $(o).html(primaryKey);
