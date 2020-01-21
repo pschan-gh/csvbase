@@ -424,7 +424,7 @@ function queryHWSet(db, table, query, field) {
     $('#messages').html('Running Query<img class="loading" src="./Loading_icon.gif"/>');
     window.setTimeout(function(){
         return queryFunc(db, table).then(function(rows) {
-            rows.forEach(function(row) {
+            rows.forEach(function(row, rowIndex) {
                 // console.log(row);
                 var tableRow = document.getElementById('mainTable').getElementsByTagName('tbody')[0].insertRow(-1);
 
@@ -453,10 +453,11 @@ function queryHWSet(db, table, query, field) {
                 $(cell).attr('clicked', 0);
                 cell.textContent = count ;
 
-                var cell;
-
                 sanitizedHeaders.map(function(hfield) {
-                    var $td = $("<td>", {'field': hfield, "class":'col_' + hfield});
+                    var $td = $("<td>", {
+                        'field': hfield,
+                        'class':'col_' + hfield
+                    });
                     $td.text(row[headerIndex[hfield]]);
                     $td.appendTo($(tableRow));
                 });
@@ -879,6 +880,12 @@ function updateButtons(db, table) {
                 }
             }).appendTo(tbody);
         }
+        tbody.find('tr').each(function(rowIndex) {
+            $(this).find('td[field=' + sortField+ ']')
+                .attr('data-toggle', 'tooltip')
+                .attr('data-placement', 'bottom')
+                .attr('title', 'rank ' + (rowIndex + 1).toString());
+        });
 
         tbody.find('tr.branch').each(function() {
             var index = $(this).closest('th').attr('index');
