@@ -34,9 +34,10 @@ function initializeDB(data, headers, key) {
     var dbName = 'csvDB' + JSON.stringify(data).hashCode();
 
     console.log('DB NAME: ' + dbName);
-
     indexedDB.deleteDatabase(dbName);
-    schemaBuilder = lf.schema.create(dbName, 1);
+    console.log(dbName + ' DELETED');
+
+    schemaBuilder = lf.schema.create(dbName + Math.random().toString(), 1);
 
     var tableBuilder = schemaBuilder.createTable('LogTable' + tableVersion);
 
@@ -59,17 +60,7 @@ function initializeDB(data, headers, key) {
         var logTable = db.getSchema().table('LogTable' + tableVersion);
 
         postInitialization(db, logTable);
-        // var results = Papa.parse(plaintextDB, {
-        //     header: true,
-        //     dynamicTyping: false,
-        // });
-        // console.log(results);
-        // data = results.data;
-        // if (data.length < 1) {
-        //     return;
-        // }
-        // headers = results.meta['fields'];
-        // console.log(headers);
+
         updateTable(db, logTable, data, headers, primaryKey, true);
     });
 
@@ -1108,6 +1099,7 @@ function loadPrimary(data, headers) {
     $('#hover_msg').text('Please Set the Primary Key');
     $("#key_sel").tooltip('show');
 
+    $('#key_sel').off();
     $('#key_sel').on('change', function() {
         initializeDB(data, headers, sanitize($(this).val()));
         $("#key_sel").tooltip('hide');
@@ -1253,9 +1245,6 @@ function postInitialization(db, table) {
 
     baseQuery = "select().from(table)";
     $('#query').val(baseQuery);
-
-    $('#messages').html('<strong>Database Loaded.</strong>');
-    $('#hover_msg').hide();
 
     var fieldToLf = {};
     sanitizedHeaders.map(function(field) {
@@ -1444,5 +1433,47 @@ $(function () {
         reader.readAsText(e.target.files[0]);
     });
 
-     $('[data-toggle="tooltip"]').tooltip()
+     $('[data-toggle="tooltip"]').tooltip();
+
+     $('#reset').click(function() {
+         $('.nav-item.dropdown.update').hide();
+         $('#key_sel').closest('li').find('a').removeClass("disabled").attr('aria-disabled', 'false');
+         $('#export').hide();
+         $('a.pastebin').addClass('disabled');
+         $('a.query').add('disabled');
+
+         $('#import').show();
+         $('#exportJSON').hide();
+         $('#columns_toggle').hide();
+         $('#fields').closest('li').show();
+         $('#primary-file-input').closest('li').show();
+         $('#query').closest('li').hide();
+         $('#messages').html('');
+         $('#hover_msg').html('No Database Loaded Yet').show();
+
+         $('#table-container').css('width', '100%');
+         $('#mainTable').css('width', '100%');
+         $('#mainTable thead tr').html('');
+         $('#mainTable tbody').html('').css('margin-top', '');
+         sortField = 'undefined';
+         groupField = 'undefined';
+         headerNames = [];
+         sanitizedHeaders = [];
+         secondaryHeaderNames = [];
+         sanitizedSecondaryHeaders = [];
+         headerTypes = {};
+         baseQuery = '';
+         clickedArray = {};
+         colWidths = {};
+         primaryDbKeyValues = [];
+         headerIndex = {};
+         dataIndex = {};
+         highlightHue = 0;
+         primaryDbKey = '';
+         primaryKey = '';
+         primaryFile = null;
+         schemaBuilder = null;
+         maxCols = 100;
+         columnData = new Object();
+     });
 })
