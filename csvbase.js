@@ -267,8 +267,8 @@ function addColumn(db, table, field, routine) {
     }
     dataIndex[sanitizedField] = field;
 
-    columnData[headerIndex[sfield]]['name'] = sanitizedField;
-    columnData[headerIndex[sfield]]['routine'] = routine;
+    columnData[headerIndex[sanitizedField]]['name'] = sanitizedField;
+    columnData[headerIndex[sanitizedField]]['routine'] = routine;
     recalculateColumns(db, table, [{name: sanitizedField, routine: routine}]);
     addFieldToMenu(sanitizedField);
 }
@@ -522,7 +522,7 @@ function refreshTable(db, table, field) {
     });
 
 
-    $('#mainTable').css('width', 'auto');
+
     var sfield;
     for (var j = 0; j < sanitizedHeaders.length; j++) {
         sfield = sanitizedHeaders[j];
@@ -551,6 +551,7 @@ function refreshTable(db, table, field) {
         tableWidth += colWidths[$(this).attr('field')];
     });
 
+    // $('#mainTable').css('width', 'auto');
     $('#mainTable').css('width', tableWidth);
     $('#table-container').css('width', tableWidth + 15);
     $('tbody tr').css('width', tableWidth);
@@ -560,10 +561,23 @@ function refreshTable(db, table, field) {
     });
     $('tbody').css('margin-top', parseInt($('th').first().css('height')));
 
-    updateButtons(db, table);
-
     $('.nav-item.calculated_column').show();
     $('tr.branch').hide();
+
+    // var gridViewScroll = new GridViewScroll({
+    //     elementID : "mainTable", // Target element id
+    //     width : '100%', // Integer or String(Percentage)
+    //     height : '100%', // Integer or String(Percentage)
+    //     freezeColumn : true, // Boolean
+    //     freezeFooter : false, // Boolean
+    //     freezeColumnCssClass : "col_count", // String
+    //     freezeFooterCssClass : "", // String
+    //     freezeHeaderRowCount : 1, // Integer
+    //     freezeColumnCount : 1, // Integer
+    //     // onscroll: function (scrollTop, scrollLeft) // onscroll event callback
+    // });
+    // gridViewScroll.enhance();
+    updateButtons(db, table);
 }
 
 function updateButtons(db, table) {
@@ -582,6 +596,7 @@ function updateButtons(db, table) {
         // var $clone = $table.clone( true );
         // $clone.find('th div.triangle').html('');
 
+        var $table = $('#mainTable');
         var csv = $table.table2csv('return', {
             "separator": ",",
             "newline": "\n",

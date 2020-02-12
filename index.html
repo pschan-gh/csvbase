@@ -22,6 +22,8 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.4/xlsx.full.min.js" integrity="sha256-w4FbLoep/QMisX0AubgVd6NdLz1IBt9b1DATsT+hP2c=" crossorigin="anonymous"></script>
 
+<!-- <script type="text/javascript" src="js/gridviewscroll.js"></script> -->
+
 <script src="csvbase.js" type='text/javascript'></script>
 
 <script>if (window.module) module = window.module;</script>
@@ -209,9 +211,10 @@ img.loading {
     </div>
     <div id="container" style="width:100%;flex:auto;overflow-x:auto;overflow-y:hidden;position:relative">
         <div id="table-container" style="height:100%; width:auto; overflow-y:auto;overflow-x:hidden;">
-            <table id="mainTable"  class="table table-bordered table-hover" style="overflow-y:auto">
+            <table id="mainTable"  class="table table-bordered table-hover" style="overflow-y:auto;overflow-x:hidden">
                 <thead>
                     <tr id="header_row" class="table-secondary" style="position:absolute;top:0;left:0;width:100%">
+                    <!-- <tr id="header_row" class="table-secondary" style="width:100%"> -->
                     </tr>
                 </thead>
                 <tbody style="max-height:100%;">
