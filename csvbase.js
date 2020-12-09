@@ -570,22 +570,33 @@ function updateButtons(db, table) {
         $('th div.triangle').html('&#x25ba;');
     });
 
-    $('#exportJSON').off();
-    $('#exportJSON').on('click', function(){
+    $('#exportSqlite').off();
+    $('#exportSqlite').on('click', function(){
         // console.log(headerIndex);
-        db.export().then(function(data) {
-            sanitizedHeaders.forEach(sfield => {
-                columnData[sfield]['name'] = sfield;
-            });
-            var jsonObj = {'primaryDbKey': primaryDbKey, 'columns': columnData, 'database' : data};
-            console.log(jsonObj);
-            // console.log(JSON.stringify(jsonObj));
-            var a = document.createElement('a');
-            a.setAttribute('href', 'data:text/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(jsonObj)));
-            a.setAttribute('download', 'database.json');
-            a.click()
-            // window.location.href = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
-        });
+        // db.export().then(function(data) {
+        //     sanitizedHeaders.forEach(sfield => {
+        //         columnData[sfield]['name'] = sfield;
+        //     });
+        //     var jsonObj = {'primaryDbKey': primaryDbKey, 'columns': columnData, 'database' : data};
+        //     console.log(jsonObj);
+        //     // console.log(JSON.stringify(jsonObj));
+        //     var a = document.createElement('a');
+        //     a.setAttribute('href', 'data:text/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(jsonObj)));
+        //     a.setAttribute('download', 'database.json');
+        //     a.click()
+        //     // window.location.href = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+        // });
+        // https://stackoverflow.com/questions/23451726/saving-binary-data-as-file-using-javascript-from-a-browser
+        var a = document.createElement('a');
+        document.body.appendChild(a);
+        a.style = "display: none";
+        let data = db.export();
+        let blob = new Blob(data, {type: "octet/stream"}),
+            url = window.URL.createObjectURL(blob);
+        a.href = url;
+        a.download = 'database.sqlite';
+        a.click();
+        window.URL.revokeObjectURL(url);
     });
 
     $('.field_reference').html('');
@@ -1359,17 +1370,31 @@ $(function () {
             var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
             console.log(XL_row_object);
             var json_object = JSON.stringify(XL_row_object);
-            // console.log(json_object);
-            // workbook.SheetNames.forEach(function(sheetName) {
-            //     // Here is your object
-            //     var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
-            //     var json_object = JSON.stringify(XL_row_object);
-            //     console.log(json_object);
-            //
-            // })
             let headers = Object.keys(XL_row_object[0]);
             console.log(headers);
             loadPrimary(XL_row_object, headers);
+        };
+
+        reader.onerror = function(ex) {
+            console.log(ex);
+        };
+        reader.readAsBinaryString(e.target.files[0]);
+    });
+
+    $('#importSqlite').change(function(e) {
+        // https://stackoverflow.com/questions/8238407/how-to-parse-excel-file-in-javascript-html5
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var data = e.target.result;
+
+            config = {
+                locateFile: filename => `js/${filename}`
+            }
+            initSqlJs(config).then(function(SQL){
+                // Load the db
+                let db = new SQL.Database(data);
+                console.log(db);
+            });
         };
 
         reader.onerror = function(ex) {

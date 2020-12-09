@@ -114,10 +114,12 @@ img.loading {
                         </label>
                         <input class="form-control-file form-control-sm dropdown-item" style="display:none" type="file" id="primary-file-input" accept=".csv, .txt, .lst"/>
                         <a class="pastebin dropdown-item" data-toggle="modal" data-target="#pastebin">Paste CSV</a>
-                        <label id="import" for="importJSON" class="dropdown-item">Open JSON</label>
-                        <input class="form-control-file form-control-sm dropdown-item" type="file" style="display:none" id="importJSON" accept=".json"/>
+                        <!-- <label id="import" for="importJSON" class="dropdown-item">Open JSON</label> -->
+                        <!-- <input class="form-control-file form-control-sm dropdown-item" type="file" style="display:none" id="importJSON" accept=".json"/> -->
                         <label id="import" for="importXLSX" class="dropdown-item">Import XLSX</label>
                         <input class="form-control-file form-control-sm dropdown-item" type="file" style="display:none" id="importXLSX" accept=".xlsx, .xls"/>
+                        <label for="importSqlite" class="dropdown-item">Import Sqlite</label>
+                        <input class="form-control-file form-control-sm dropdown-item" type="file" style="display:none" id="importSqlite" accept=".sqlite"/>
                     </div>
                 </li>
                 <li class="nav-item">
@@ -196,8 +198,8 @@ img.loading {
                         <a id="exportCSV" class="dropdown-item">
                             Export to CSV
                         </a>
-                        <a id="exportJSON" class="dropdown-item">
-                            Export to JSON
+                        <a id="exportSqlite" class="dropdown-item">
+                            Export to Sqlite
                         </a>
                     </div>
                 </li>
