@@ -23,7 +23,7 @@ var columnData = new Object();
 var dbFields;
 
 // var initSqlJs = window.initSqlJs;
-// 
+//
 // const SQL = await initSqlJs({
 //   // Required to load the wasm binary asynchronously. Of course, you can host it wherever you want
 //   // You can omit locateFile completely when running in node
@@ -38,10 +38,10 @@ function initializeDB(data, headers, key) {
     var rows = [];
     var field;
     var dbKey = sanitize(key);
-    
-    
+
+
     // var dbName = 'csvDB' + JSON.stringify(data).hashCode();
-    
+
     config = {
         locateFile: filename => `js/${filename}`
     }
@@ -56,11 +56,11 @@ function initializeDB(data, headers, key) {
             }
             return meta;
         });
-        
+
         console.log(columns);
         // db.run("CREATE TABLE DataTable (" + colQuery + ");");
         db.run("CREATE TABLE DataTable (" + columns.join(",") + ");");
-        
+
         let results = db.exec("SELECT * FROM DataTable ");
         console.log(results);
 
@@ -68,7 +68,7 @@ function initializeDB(data, headers, key) {
         groupField = dbKey;
         primaryKey = key;
         primaryDbKey = dbKey;
-        
+
 
         postInitialization(db, null);
         updateTable(db, null, data, headers, primaryKey, true);
@@ -125,9 +125,9 @@ function updateTable(db, table, data, headers, key, isPrimary) {
 
     $('#second_key_sel').off();
     if (!isPrimary) {
-        $('#second_key_sel').on('change', function() {            
+        $('#second_key_sel').on('change', function() {
             var secondaryKey = sanitize($('#second_key_sel').val());
-            sanitizedSecondaryHeaders.forEach(header => {                
+            sanitizedSecondaryHeaders.forEach(header => {
                 if (!(sanitizedHeaders.includes(header))) {
                     console.log('ADDING HEADER ' + header);
                     headerNames.push(header);
@@ -137,7 +137,7 @@ function updateTable(db, table, data, headers, key, isPrimary) {
                     db.exec('ALTER TABLE DataTable ADD COLUMN ' + header + ' char;');
                 }
             });
-            dbFields = sanitizedHeaders.map(field => {return "`" + field + "`";});            
+            dbFields = sanitizedHeaders.map(field => {return "`" + field + "`";});
             updateFieldsMenu();
             resetTable();
             updateRows(data, db, table, secondaryKey);
@@ -179,7 +179,7 @@ function updateRows(data, db, table, secondaryDbKey) {
                 continue;
             }
             secondaryKeyValue = secondaryKeyValue.toString().trim();
-            
+
             // insert new database entry
             if (primaryDbKeyValues.indexOf(secondaryKeyValue.toString()) <= -1 && secondaryKeyValue != '') {
                 // console.log('NEW ENTRY');
@@ -197,7 +197,7 @@ function updateRows(data, db, table, secondaryDbKey) {
                 // console.log('NEW ENTRY: ' + datum);
 
                 // console.log(datumString);
-                // newRows.push(table.createRow(datum));                
+                // newRows.push(table.createRow(datum));
                 queryINSERT += "INSERT INTO DataTable (" + dbFields.join(",") + ") VALUES (" + datum.join(",") + ");";
                 // db.run(query);
                 primaryDbKeyValues.push(secondaryKeyValue.toString());
@@ -228,7 +228,7 @@ function updateRows(data, db, table, secondaryDbKey) {
         console.log('INSERT INTO TABLE');
         console.log(queryINSERT);
         db.run(queryINSERT);
-        console.log(queryUPDATE);        
+        console.log(queryUPDATE);
         db.run(queryUPDATE);
         console.log(db.exec("SELECT * FROM DataTable"));
         baseQuery = "SELECT * FROM DataTable";
@@ -289,70 +289,31 @@ function addColumn(db, table, field, routine) {
 
 function recalculateColumns(db, table, columns) {
 
-    var newRows = [];
-    var rows = db.exec("SELECT * FROM DataTable")[0].values;
-    // let functionStr = 'return db.select().from(table).exec()';
-    // console.log(functionStr);
-    // console.log(columnData);
-    
-    let sanitizedField;
-    let dbField;
-    let datumString;
-    let query = '';
-    // let colIndices = columns.map(col => {
-    //     columnData[col.name].routine = routine;
-    //     return col.name;
-    // });
-    // console.log(colIndices);
-    
+    let rows = db.exec("SELECT * FROM DataTable")[0].values;
     // console.log(rows);
 
+    let query = '';
+
+    let rowObj;
     columns.forEach(col => {
         let sfield = col.name;
         let routine = col.routine;
         columnData[sfield].routine = routine;
         rows.forEach(function(row) {
             // console.log(row);
-            let rowObj = {};
+            rowObj = {};
             sanitizedHeaders.forEach(function(dbField, index) {
                 rowObj[dbField] = row[index];
             });
-            
-            // columns.forEach(col => {
-            //     let sfield = col.name;
-            //     let routine = col.routine;
-            //     columnData[headerIndex[sfield]].routine = routine;
-            // 
-            // let routineStr = routine.replace(/\(@([^\)]+)\)/g, 'row[headerIndex[sanitize("$1")]]');
-            // 
-            // let routineFunc = new Function('row',  routineStr);
-            // rowObj[headerIndex[sfield]] = routineFunc(rowObj);
-            // var datum = {};
-            // 
-            
-            datumString = sanitizedHeaders.map(dbField => {            
-                if (typeof rowObj[dbField] !== "undefined" && rowObj[dbField] !== null) {
-                    if (dbField == sfield) {
-                        let routine = columnData[dbField].routine;
-                        let routineStr = routine.replace(/\(@([^\)]+)\)/g, 'rowObj[sanitize("$1")]');
-                        let routineFunc = new Function('row',  routineStr);
-                        return '"' + routineFunc(rowObj); + '"';
-                    } else {
-                        return '"' + rowObj[dbField] + '"';
-                    }
-                } else {
-                    return '" "';
-                }
-            }).join(",");
-            
-            query += "INSERT OR REPLACE INTO DataTable (" + dbFields.join(",") + ") VALUES (" + datumString + ");";                
+
+            let routineStr = routine.replace(/\(@([^\)]+)\)/g, 'row[sanitize("$1")]');
+            let routineFunc = new Function('row',  routineStr);
+            let value =  '"' + routineFunc(rowObj) + '"';
+            // query += "INSERT OR REPLACE INTO DataTable (" + dbFields.join(",") + ") VALUES (" + datumString + ");";
+            query += "UPDATE DataTable SET `" + sfield  + "` =  " + value + " WHERE `" + primaryDbKey + "` = " + rowObj[primaryDbKey] + "; \n";
         });
-        // db.insertOrReplace().into(table).values(newRows).exec().then(function() {
-        //     console.log(groupField);
-        //     queryHWSet(db, table, baseQuery, groupField);
-        // });
-        console.log(sanitizedHeaders);
-        console.log(query);
+        // console.log(sanitizedHeaders);
+        // console.log(query);
         db.run(query);
     });
     queryHWSet(db, table, baseQuery, groupField);
@@ -404,7 +365,7 @@ function queryHWSet(db, table, query, field) {
         console.log(results);
         let rows = results.length ? db.exec(query)[0].values : [];
         let row;
-        
+
         rows.forEach(function(simpleRow, rowIndex) {
             // console.log(simpleRow);
             row = {};
@@ -413,13 +374,13 @@ function queryHWSet(db, table, query, field) {
             });
             // console.log(row);
             var tableRow = document.getElementById('mainTable').getElementsByTagName('tbody')[0].insertRow(-1);
-            
+
             let cell;
-                        
+
             cell = tableRow.insertCell(0);
             $(cell).addClass('col_count');
             $(cell).attr('field', 'count');
-            
+
             if ((prev_row == null) || (prev_row[dbGroup] != row[dbGroup])) {
                 $(".col_count[index='" + index + "']:not(:first)").html(count + '<strong style="float:right">&ndash;</strong>');
                 $("td.root[index='" + index + "']").html(count);
@@ -434,18 +395,18 @@ function queryHWSet(db, table, query, field) {
             }
             $(".col_count[index='" + index + "']:not(:first)").html(count + '<strong style="float:right">&ndash;</strong>');
             $("td.root[index='" + index + "']").html(count);
-            
+
             $(tableRow).attr('index', index);
             $(cell).attr('index', index);
             $(cell).attr('clicked', 0);
             cell.textContent = count ;
-            
+
             cell = tableRow.insertCell(0);
             $(cell).addClass('col_rank');
             $(cell).attr('field', 'rank');
             cell.textContent = index + 1;
-            
-            
+
+
             sanitizedHeaders.map(function(hfield) {
                 var $td = $("<td>", {
                     'field': hfield,
@@ -454,12 +415,12 @@ function queryHWSet(db, table, query, field) {
                 $td.text(row[hfield]);
                 $td.appendTo($(tableRow));
             });
-            
+
             prev_row = row;
             prev_tableRow = tableRow;
-            
+
         });
-        
+
         refreshTable(db, table, field);
     }, 0);
 }
@@ -889,7 +850,7 @@ function updateButtons(db, table) {
             $(this).html('&#x25BC;');
         }
         $('tbody').css('margin-top', parseInt($('th').first().css('height')) + 'px');
-        
+
         $('tbody').find('td.col_rank').each(function(index) {
             $(this).text(index + 1);
         });
@@ -1084,7 +1045,7 @@ function loadPrimary(data, headers) {
     // }
 
     columnData = {};
-    
+
     var field;
     var sanitizedField;
 
