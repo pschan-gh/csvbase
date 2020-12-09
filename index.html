@@ -1,0 +1,298 @@
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/6.2.2/math.min.js" integrity="sha256-D/MkugLuxx4Xx0Kb92cUhpxlCMhUvQ0eOtEL8Ol23jM=" crossorigin="anonymous"></script>
+
+<script src="table2csv.js" type='text/javascript'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.6.2/papaparse.js" integrity="sha256-95XKAGWvB8KgVN45UZ487Ja0dpbuiYEPGH4wUhy4O+k=" crossorigin="anonymous"></script>
+
+<!-- <script src="js/lovefield.js"></script> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/lovefield/2.1.12/lovefield.js" integrity="sha256-f1ZTSl24OYWE/QmqScoS1soGvrNhJDF4EtjxKIjOWNA=" crossorigin="anonymous"></script> -->
+
+<script src='js/sql-wasm.js'></script>
+
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.4/xlsx.full.min.js" integrity="sha256-w4FbLoep/QMisX0AubgVd6NdLz1IBt9b1DATsT+hP2c=" crossorigin="anonymous"></script>
+
+<!-- <script type="text/javascript" src="js/gridviewscroll.js"></script> -->
+
+<script src="csvbase.js" type='text/javascript'></script>
+
+<script>if (window.module) module = window.module;</script>
+
+<style>
+
+.triangle {
+    color:#aaa;
+    float:right;
+    display:inline-block;
+}
+strong {
+    color: SteelBlue;
+}
+
+.table {
+    font-size:1rem;
+}
+
+
+thead {
+    display:table-header-group;
+}
+
+
+tbody {
+    display:table;
+}
+
+.table th, .table td {
+    padding: 0.25rem !important;
+    font-family:monospace;
+    font-size:1rem !important;
+}
+
+.table td {
+}
+
+.table th {
+}
+
+a {
+    color: #888;
+}
+
+a.header {
+    color:#000;
+}
+
+.nav-item.calculated_column {
+    display:none;
+}
+
+img.loading {
+    position:fixed;
+    top:50%;
+    left:50%;
+    margin-top:-5em;
+    margin-left:-5em;
+    height:10em;
+    width:auto;
+}
+
+</style>
+</head>
+
+<body style="margin:0 10 10 10">
+<div style="position:relative;width:100%;height:100%;display:flex;flex-direction:column">
+    <nav class="navbar navbar-expand-md">
+        <div class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="reset">
+                        <i class="material-icons">
+                            refresh
+                        </i>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        New Database
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="width:20em;">
+                        <label for="primary-file-input" class="dropdown-item">
+                            Import CSV
+                        </label>
+                        <input class="form-control-file form-control-sm dropdown-item" style="display:none" type="file" id="primary-file-input" accept=".csv, .txt, .lst"/>
+                        <a class="pastebin dropdown-item" data-toggle="modal" data-target="#pastebin">Paste CSV</a>
+                        <label id="import" for="importJSON" class="dropdown-item">Open JSON</label>
+                        <input class="form-control-file form-control-sm dropdown-item" type="file" style="display:none" id="importJSON" accept=".json"/>
+                        <label id="import" for="importXLSX" class="dropdown-item">Import XLSX</label>
+                        <input class="form-control-file form-control-sm dropdown-item" type="file" style="display:none" id="importXLSX" accept=".xlsx, .xls"/>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="key_div" style="display:none;">
+                        <select id="key_sel" name="key_sel" class="form-control form-control-sm" data-toggle="tooltip" data-placement="bottom" title="Set Primary Key">
+                            <option selected>Select Primary Key...</option>
+                        </select>
+                    </a>
+                </li>
+                <li class="nav-item dropdown update" style="display:none">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                         Update with:
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="width:20em;">
+                        <label for="secondary-file-input" class="dropdown-item secondary-input">Open CSV</label>
+                        <input style="display:none" class="form-control-form form-control-sm" type="file" id="secondary-file-input" accept=".csv, .txt, .lst"/>
+                        <label for="secondary-json-input" class="dropdown-item secondary-input">Open JSON</label>
+                        <input style="display:none" class="form-control-form form-control-sm" type="file" id="secondary-json-input" accept=".json"/>
+                        <label for="secondary-xlsx-input" class="dropdown-item secondary-input">Open XLSX</label>
+                        <input style="display:none" class="form-control-form form-control-sm" type="file" id="secondary-xlsx-input" accept=".xlsx, .xls"/>
+                        <a class="pastebin dropdown-item" data-toggle="modal" data-target="#pastebin">Paste</a>
+                    </div>
+                </li>
+                <li class="nav-item" id="second_key_li" style="display:none;">
+                    <a class="nav-link" href="#">
+                        <select id="second_key_sel" name="second_key_sel" class="form-control form-control-sm">
+                            <option selected>Select Matching Key...</option>
+                        </select>
+                    </a>
+                </li>
+                <li class="nav-item calculated_column">
+                    <a class="fields nav-link" data-toggle="modal" data-target="#column_bin" href="#" id="calculated_column">Add Calculated Column</a>
+                    <!-- <div style="width:100%; padding:5px" div class="dropdown-menu query" aria-labelledby="calculated_column">
+                        <div class="field_reference" style="padding:10px">
+                        </div>
+                        <textarea class="routine" style="font-family:Courier;height:20em;width:100%;border:solid #ddd 1px;border-radius:5px" id="calc_col_routine" name="calc_col_routine" value="return"></textarea>
+                        <div style="margin-top:5px">
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <input class="form-control name" style="font-family:Courier" type="text" id="calc_col_name" name="calc_col_name">
+                                </div>
+                                <div class="form-group col-md-1">
+                                    <input id="calc_col_submit" class="form-control" type="button" value="Submit">
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown" id="columns_toggle" style="display:none">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                         Columns
+                    </a>
+                    <div class="dropdown-menu" id="columns_menu" aria-labelledby="dropdownMenuButton" onclick=" event.stopPropagation();">
+                    </div>
+                </li>
+                <li class="nav-item" style="display:none">
+                    <a class="nav-link query dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Query</a>
+                    <form style="width:100%; padding:5px" div class="dropdown-menu query" aria-labelledby="navbarDropdown">
+                        <div class="form-row">
+                            <div class="form-group col-md-11">
+                                <input class="form-control" style="font-family:Courier" type="text" id="query" name="query">
+                            </div>
+                            <div class="form-group col-md-1">
+                                <input id="query_submit" class="form-control" type="button" value="Submit">
+                            </div>
+                        </div>
+                    </form>
+                </li>
+                <li class="nav-item dropdown" id="export" style="display:none">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Export
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a id="exportCSV" class="dropdown-item">
+                            Export to CSV
+                        </a>
+                        <a id="exportJSON" class="dropdown-item">
+                            Export to JSON
+                        </a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <strong id="messages"></strong>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div style="position:fixed;top:45%;width:100%;text-align:center;margin:auto;z-index:999"><center><h1><strong id="hover_msg">No Database Loaded Yet</strong></h1></center>
+    </div>
+    <div id="container" style="width:100%;flex:auto;overflow-x:auto;overflow-y:hidden;position:relative">
+        <div id="table-container" style="height:100%; width:auto; overflow-y:auto;overflow-x:hidden;">
+            <table id="mainTable"  class="table table-bordered table-hover" style="overflow-y:auto;overflow-x:hidden">
+                <thead>
+                    <tr id="header_row" class="table-secondary" style="position:absolute;top:0;left:0;width:100%">
+                    <!-- <tr id="header_row" class="table-secondary" style="width:100%"> -->
+                    </tr>
+                </thead>
+                <tbody style="max-height:100%;">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="pastebin" class="modal" tabindex="-1" role="dialog" aria-labelledby="pastebin" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="dialog" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="plaintext_source">Paste</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"  >
+                    <textarea style="width:100%;height:25em;font-family:Courier" id="fields"  name="fields" ></textarea>
+                </div>
+                <div class="modal-footer">
+                    <input class="form-control-file form-control-sm" style="" type="file" id="paste_file"/>
+                    <button id="fields_submit" class="btn btn-primary btn-sm save">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="column_bin" class="modal" tabindex="-1" role="dialog" aria-labelledby="column_bin" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="dialog" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 style="display:inline" class="modal-title">Calculate Column</h5>
+                    <input style="display:inline" class="form-control column_name" style="font-family:Courier" type="text" id="calc_col_name" name="calc_col_name"/>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="field_reference" style="padding:10px">
+                </div>
+                <div class="modal-body">
+                    <textarea style="width:100%;height:25em;font-family:Courier" id="column_routine"  name="column_routine" ></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button id="column_submit" class="btn btn-primary btn-sm save">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="statistics" class="modal" tabindex="-1" role="dialog" aria-labelledby="statistics" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="dialog" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title field" id="Statistics">Statistics</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="stats">
+                    </div>
+                    <div id="bars" style="text-align:center;margin-top:1em">
+                    </div>
+                    <center>
+                        <label>Bins</label>
+                        <input type="number" min="0" max="100" step="5" value="10" id="nBin"/>
+                        &nbsp;&nbsp;
+                        <label>Max</label>
+                        <input type="number" min="0" max="100" step="1" value="100" id="max"/>
+                    </center>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
