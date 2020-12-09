@@ -404,7 +404,7 @@ function queryHWSet(db, table, query, field) {
             cell = tableRow.insertCell(0);
             $(cell).addClass('col_rank');
             $(cell).attr('field', 'rank');
-            cell.textContent = index + 1;
+            cell.textContent = rowIndex + 1;
 
 
             sanitizedHeaders.map(function(hfield) {
