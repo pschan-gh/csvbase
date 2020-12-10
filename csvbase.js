@@ -22,16 +22,8 @@ var maxCols = 0;
 var columnData = new Object();
 var dbFields;
 
-// var initSqlJs = window.initSqlJs;
-//
-// const SQL = await initSqlJs({
-//   // Required to load the wasm binary asynchronously. Of course, you can host it wherever you want
-//   // You can omit locateFile completely when running in node
-//   locateFile: file => `js/sql-wasm.wasm`
-// });
 
-
-function initializeDB(data, headers, key) {
+function initializeDB(data, headers, key, sqlite = null) {
     $('#mainTable').find('tbody').html('');
 
     var row;
@@ -39,19 +31,19 @@ function initializeDB(data, headers, key) {
     var field;
     var dbKey = sanitize(key);
 
-
+    console.log('PRIMARY KEY: ' + dbKey);
     // var dbName = 'csvDB' + JSON.stringify(data).hashCode();
 
     config = {
         locateFile: filename => `js/${filename}`
     }
     initSqlJs(config).then(function(SQL){
-        var db = new SQL.Database();
+        var db = sqlite == null ? new SQL.Database() : new SQL.Database(sqlite);
         let meta;
-        dbFields = sanitizedHeaders.map(field => {return "`" + field + "`";});
+        dbFields = headers.map(field => {return "`" + field + "`";});
         let columns = dbFields.map(field => {
             meta = field + " char";
-            if (field == key) {
+            if (field == '`' + dbKey + '`') {
                 meta += " PRIMARY KEY";
             }
             return meta;
@@ -168,6 +160,7 @@ function updateRows(data, db, table, secondaryDbKey) {
         let sanitizedField;
         for(let i = 0; i < data.length; i++) {
             rowObj = {};
+            // console.log(data[i]);
             for(key in data[i]) {
                 rowObj[sanitize(key)] = data[i][key];
             }
@@ -184,7 +177,7 @@ function updateRows(data, db, table, secondaryDbKey) {
             if (primaryDbKeyValues.indexOf(secondaryKeyValue.toString()) <= -1 && secondaryKeyValue != '') {
                 // console.log('NEW ENTRY');
                 let datumString = '';
-                // console.log(sanitizedHeaders);
+                console.log(sanitizedHeaders);
                 let datum = sanitizedHeaders.map(dbField => {
                     if (dbField == primaryDbKey) {
                         return '"' + secondaryKeyValue + '"';
@@ -194,10 +187,7 @@ function updateRows(data, db, table, secondaryDbKey) {
                         return '" "';
                     }
                 });
-                // console.log('NEW ENTRY: ' + datum);
-
-                // console.log(datumString);
-                // newRows.push(table.createRow(datum));
+                
                 queryINSERT += "INSERT INTO DataTable (" + dbFields.join(",") + ") VALUES (" + datum.join(",") + ");";
                 // db.run(query);
                 primaryDbKeyValues.push(secondaryKeyValue.toString());
@@ -245,22 +235,7 @@ function updateRows(data, db, table, secondaryDbKey) {
         }
         // console.log(columnData);
         recalculateColumns(db, null, columnsWithRoutines);
-        // db.insertOrReplace().into(table).values(newRows).exec().then(function() {
-        //     baseQuery = "select().from(table)";
-        //     $('#query').val(baseQuery);
-        //     // queryHWSet(db, table, baseQuery, groupField);
-        //     $(this).val('Select Matching Key...');
-        //     let columnsWithRoutines = [];
-        //     for (let key in columnData) {
-        //         if (columnData.hasOwnProperty(key)) {
-        //             if (columnData[key].hasOwnProperty('routine') && columnData[key].routine != "") {
-        //                 columnsWithRoutines.push(columnData[key]);
-        //             }
-        //         }
-        //     }
-        //     console.log(columnData);
-        //     recalculateColumns(db, table, columnsWithRoutines);
-        // });
+        
     }, 0);
 }
 
@@ -356,6 +331,8 @@ function queryHWSet(db, table, query, field) {
     var index = 0;
     var count = 0;
 
+    let jsonObj = {'primaryDbKey': primaryDbKey, 'columns': columnData, 'database' : []};
+
     // var queryFunc = new Function('db', 'table',  'return db.' + query + '.exec()');
 
     $('#messages').html('Running Query<img class="loading" src="./Loading_icon.gif"/>');
@@ -372,6 +349,7 @@ function queryHWSet(db, table, query, field) {
             sanitizedHeaders.forEach(function(field, index) {
                 row[field] = simpleRow[index];
             });
+            jsonObj.database.push(row);
             // console.log(row);
             var tableRow = document.getElementById('mainTable').getElementsByTagName('tbody')[0].insertRow(-1);
 
@@ -421,6 +399,19 @@ function queryHWSet(db, table, query, field) {
 
         });
 
+        $('#exportJSON').off();
+        $('#exportJSON').on('click', function(){
+            sanitizedHeaders.forEach(function(sfield) {
+                 columnData[sfield]['name'] = sfield;
+             });
+            console.log(jsonObj);
+            // console.log(JSON.stringify(jsonObj));
+            var a = document.createElement('a');
+            a.setAttribute('href', 'data:text/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(jsonObj)));
+            a.setAttribute('download', 'database.json');
+            a.click();
+            // window.location.href = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+        });
         refreshTable(db, table, field);
     }, 0);
 }
@@ -572,20 +563,6 @@ function updateButtons(db, table) {
 
     $('#exportSqlite').off();
     $('#exportSqlite').on('click', function(){
-        // console.log(headerIndex);
-        // db.export().then(function(data) {
-        //     sanitizedHeaders.forEach(sfield => {
-        //         columnData[sfield]['name'] = sfield;
-        //     });
-        //     var jsonObj = {'primaryDbKey': primaryDbKey, 'columns': columnData, 'database' : data};
-        //     console.log(jsonObj);
-        //     // console.log(JSON.stringify(jsonObj));
-        //     var a = document.createElement('a');
-        //     a.setAttribute('href', 'data:text/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(jsonObj)));
-        //     a.setAttribute('download', 'database.json');
-        //     a.click()
-        //     // window.location.href = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
-        // });
         // https://stackoverflow.com/questions/23451726/saving-binary-data-as-file-using-javascript-from-a-browser
         var a = document.createElement('a');
         document.body.appendChild(a);
@@ -1070,10 +1047,6 @@ function loadPrimary(data, headers) {
         headerNames.push(field);
         sanitizedField = sanitize(field);
         sanitizedHeaders.push(sanitizedField);
-        // headerTypes[sanitizedField] = lf.Type.STRING;
-        // headerIndex[sanitizedField] = 'COL' + j.toString();
-        // columnData[headerIndex[sanitizedField]]['name'] = sanitizedField;
-        // columnData[headerIndex[sanitizedField]]['routine'] = '';
         columnData[sanitizedField] = new Object();
         columnData[sanitizedField]['name'] = sanitizedField;
         columnData[sanitizedField]['routine'] = '';
@@ -1285,73 +1258,29 @@ $(function () {
             $('#mainTable').find('tbody').html('');
 
             var jsonObj = JSON.parse(e.target.result);
-            console.log(jsonObj);
-            var row;
-            var rows = [];
+            // console.log(jsonObj);
+            let row;
+            let rows;
             var field;
             var dbKey = jsonObj.primaryDbKey;
-            // var dbName = jsonObj.database.name;
             primaryDbKey = dbKey;
 
-            // indexedDB.deleteDatabase(dbName);
-            // schemaBuilder = lf.schema.create(dbName, jsonObj.database.version);
+            columnData = jsonObj.columns;
 
-            var tableBuilder = schemaBuilder.createTable('DataTable0');
-
-            for (var j = 0; j < maxCols; j++) {
-                tableBuilder = tableBuilder.addColumn('COL' + j.toString(), lf.Type.STRING);
-                if (dbKey == 'COL' + j.toString()) {
-                    tableBuilder = tableBuilder.addPrimaryKey([dbKey]);
+            let headers = [];
+            for (let key in columnData) {
+                if (columnData.hasOwnProperty(key)) {
+                    headers.push(key);
+                    sanitizedHeaders.push(key);
                 }
             }
-
-            colWidths = {};
-            for (var i = 0; i < maxCols; i++) {
-                columnData['COL' + i] = {};
-            }
-
-            dataIndex = {};
-            // headerIndex = {};
-            sanitizedHeaders = [];
-            for (let key in jsonObj.columns) {
-                if(jsonObj.columns.hasOwnProperty(key)){
-                    if (jsonObj.columns[key].name != null && jsonObj.columns[key].name != '' && typeof jsonObj.columns[key].name !== typeof undefined) {
-                        dataIndex[key] = jsonObj.columns[key].name;
-                        // headerIndex[jsonObj.columns[key].name] = key;
-                        headerNames.push(jsonObj.columns[key].name);
-                        sanitizedHeaders.push(jsonObj.columns[key].name);
-                        columnData[key]['name'] = jsonObj.columns[key].name;
-                        columnData[key]['routine'] = jsonObj.columns[key].routine;
-                    }
-                }
-            }
-            // console.log(headerIndex);
-            console.log(sanitizedHeaders);
-            primaryKey = dataIndex[primaryDbKey];
-            sortField = primaryKey;
-            groupField = primaryKey;
-
-            let o = new Option("option text", "value");
-            $(o).html(primaryKey);
-            $(o).attr('selected');
-            $("#key_sel").html('');
-            $("#key_sel").append(o);
-            $('#key_div').css('display', 'inline-block');
-            $('#key_sel').closest('li').find('a').addClass("disabled").attr('aria-disabled', 'true');
-
-            updateFieldsMenu();
-
-            schemaBuilder.connect().then(function(db) {
-                db.import(jsonObj.database);
-                console.log(db);
-                var logTable = db.getSchema().table('DataTable0');
-                baseQuery = "SELECT * FROM DataTable";
-                postInitialization(db, logTable);
-                queryHWSet(db, logTable, baseQuery, primaryKey);
-                $('#import').hide();
-                $('#messages').html('');
-                $('#hover_msg').hide();
-            });
+            console.log(headers);
+            
+            // jsonObj.database.forEach(function(obj) {
+            //     console.log(obj);
+            // });
+            initializeDB(jsonObj.database, headers, primaryDbKey);
+            
         }
         reader.readAsText(e.target.files[0]);
     });
@@ -1385,14 +1314,14 @@ $(function () {
         // https://stackoverflow.com/questions/8238407/how-to-parse-excel-file-in-javascript-html5
         var reader = new FileReader();
         reader.onload = function(e) {
-            var data = e.target.result;
+            let sqlite = e.target.result;
 
             config = {
                 locateFile: filename => `js/${filename}`
             }
             initSqlJs(config).then(function(SQL){
                 // Load the db
-                let db = new SQL.Database(data);
+                initializeDB(null, null, null, sqlite);
                 console.log(db);
             });
         };
