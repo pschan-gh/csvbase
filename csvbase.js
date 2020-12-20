@@ -289,7 +289,7 @@ function recalculateColumns(db, table, columns) {
             let routineFunc = new Function('row',  routineStr);
             let value =  '"' + routineFunc(rowObj) + '"';
             // query += "INSERT OR REPLACE INTO DataTable (" + dbFields.join(",") + ") VALUES (" + datumString + ");";
-            query += "UPDATE DataTable SET `" + sfield  + "` =  " + value + " WHERE `" + primaryDbKey + "` = " + rowObj[primaryDbKey] + "; \n";
+            query += 'UPDATE DataTable SET `' + sfield  + '` =  ' + value + ' WHERE `' + primaryDbKey + '` = "' + rowObj[primaryDbKey] + '"; \n';
         });
         // console.log(sanitizedHeaders);
         // console.log(query);
