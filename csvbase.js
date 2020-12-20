@@ -546,7 +546,7 @@ function updateButtons(db, table) {
             "separator": ",",
             "newline": "\n",
             "quoteFields": true,
-            "excludeColumns": ".col_chkbox, .col_count",
+            "excludeColumns": ".col_chkbox, .col_count, .col_rank",
             "excludeRows": "",
             "trimContent": true,
             "filename": "table.csv"
