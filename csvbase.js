@@ -184,7 +184,7 @@ function updateRows(data, db, table, secondaryDbKey) {
                     } else if (typeof rowObj[dbField] !== "undefined" && rowObj[dbField] !== null) {
                         return '"' + rowObj[dbField] + '"';
                     } else {
-                        return '" "';
+                        return '""';
                     }
                 });
 
@@ -197,7 +197,7 @@ function updateRows(data, db, table, secondaryDbKey) {
                 sanitizedHeaders.map(function(dbField) {
                     if (dbField != primaryDbKey) {
                         let value = rowObj[dbField];
-                        if (value != null && typeof value != typeof undefined) {
+                        if (value != "" && value != null && typeof value != typeof undefined) {
                             // db.update(table).
                             // set(table[dbField], value).
                             // where(table[primaryDbKey].eq(rowObj[secondaryDbKey])).
