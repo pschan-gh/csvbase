@@ -405,9 +405,9 @@ function queryHWSet(db, table, query, field) {
 
         $('#exportJSON').off();
         $('#exportJSON').on('click', function(){
-            sanitizedHeaders.forEach(function(sfield) {
-                 columnData[sfield]['name'] = sfield;
-             });
+            // sanitizedHeaders.forEach(function(sfield) {
+            //      columnData[sfield]['name'] = sfield;
+            //  });
             console.log(jsonObj);
             // console.log(JSON.stringify(jsonObj));
             var a = document.createElement('a');
