@@ -62,8 +62,8 @@ function initializeDB(data, headers, key, sqlite = null) {
         primaryDbKey = dbKey;
 
 
-        postInitialization(db, null);
-        updateTable(db, null, data, headers, primaryKey, true);
+        postInitialization(db, 'DataTable');
+        updateTable(db, 'DataTable', data, headers, primaryKey, true);
     });
 }
 
@@ -187,7 +187,7 @@ function updateRows(data, db, table, secondaryDbKey) {
                         return '" "';
                     }
                 });
-                
+
                 queryINSERT += "INSERT INTO DataTable (" + dbFields.join(",") + ") VALUES (" + datum.join(",") + ");";
                 // db.run(query);
                 primaryDbKeyValues.push(secondaryKeyValue.toString());
@@ -234,8 +234,8 @@ function updateRows(data, db, table, secondaryDbKey) {
             }
         }
         // console.log(columnData);
-        recalculateColumns(db, null, columnsWithRoutines);
-        
+        recalculateColumns(db, table, columnsWithRoutines);
+
     }, 0);
 }
 
@@ -256,8 +256,12 @@ function addColumn(db, table, field, routine) {
     }
     dataIndex[sanitizedField] = field;
 
+    columnData[sanitizedField] = {};
     columnData[sanitizedField]['name'] = sanitizedField;
     columnData[sanitizedField]['routine'] = routine;
+
+    db.exec('ALTER TABLE ' + table + ' ADD `' + sanitizedField + '` char');
+
     recalculateColumns(db, table, [{name: sanitizedField, routine: routine}]);
     addFieldToMenu(sanitizedField);
 }
@@ -1275,12 +1279,12 @@ $(function () {
                 }
             }
             console.log(headers);
-            
+
             // jsonObj.database.forEach(function(obj) {
             //     console.log(obj);
             // });
             initializeDB(jsonObj.database, headers, primaryDbKey);
-            
+
         }
         reader.readAsText(e.target.files[0]);
     });
