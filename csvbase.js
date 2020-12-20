@@ -416,6 +416,7 @@ function queryHWSet(db, table, query, field) {
             a.click();
             // window.location.href = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
         });
+        $('#container').addClass('loaded');
         refreshTable(db, table, field);
     }, 0);
 }
@@ -1193,18 +1194,21 @@ function insertAtCursor(myField, myValue) {
 function postInitialization(db, table) {
     console.log('POSTINIT');
 
-    $('.nav-item.dropdown.update').show();
+    // $('.nav-item.dropdown.update').show();
+    // $('#export').show();
+    // $('#exportJSON').show();
+    // $('#columns_toggle').show();
+    // $('#query').closest('li').show();
+    
     $('#key_sel').closest('li').find('a').addClass("disabled").attr('aria-disabled', 'true');
-    $('#export').show();
+    
     $('a.pastebin').removeClass('disabled');
     $('a.query').removeClass('disabled');
-
-    $('#import').hide();
-    $('#exportJSON').show();
-    $('#columns_toggle').show();
+    // $('#import').hide();
+    
     $('#fields').closest('li').hide();
     $('#primary-file-input').closest('li').hide();
-    $('#query').closest('li').show();
+    
     $('#messages').html('<strong>Database Loaded.</strong>');
     $('#hover_msg').hide();
 
@@ -1372,25 +1376,33 @@ $(function () {
      $('[data-toggle="tooltip"]').tooltip();
 
      $('#reset').click(function() {
-         $('.nav-item.dropdown.update').hide();
+         // $('.nav-item.dropdown.update').hide();
+         // $('#import').show();
+         // $('#export').hide();
+         // $('#exportJSON').hide();
+         // $('#columns_toggle').hide();
+         // $('#query').closest('li').hide();
+         $('#container').removeClass('loaded');
+         // $('#fields').closest('li').show();
+         // $('#primary-file-input').closest('li').show();         
+         
+         $('#key_div').hide();
+         $('.nav-item.dropdown.new_database').show();
          $('#key_sel').closest('li').find('a').removeClass("disabled").attr('aria-disabled', 'false');
-         $('#export').hide();
+         $('#key_sel').html('<option selected>Select Primary Key...</option>');
+         $('#second_key_sel').html('<option selected>Select Matching Key...</option>');
+         
          $('a.pastebin').addClass('disabled');
          $('a.query').add('disabled');
-
-         $('#import').show();
-         $('#exportJSON').hide();
-         $('#columns_toggle').hide();
-         $('#fields').closest('li').show();
-         $('#primary-file-input').closest('li').show();
-         $('#query').closest('li').hide();
+         
          $('#messages').html('');
          $('#hover_msg').html('No Database Loaded Yet').show();
 
          $('#table-container').css('width', '100%');
          $('#mainTable').css('width', '100%');
          $('#mainTable thead tr').html('');
-         $('#mainTable tbody').html('').css('margin-top', '');
+         $('#mainTable tbody').html('').css('margin-top', '');         
+         
          sortField = 'undefined';
          groupField = 'undefined';
          headerNames = [];

@@ -89,11 +89,27 @@ img.loading {
     width:auto;
 }
 
+#key_div, .nav-item.dropdown.update, #second_key_sel, .calculated_column, #columns_toggle, li.query, #export {
+    display:none;    
+}
+
+#import  {
+    display:block;
+}
+
+#container.loaded #import  {
+    display:none;    
+}
+
+#container.loaded #second_key_sel, #container.loaded .calculated_column,  #container.loaded li.query,  #container.loaded #export, #container.loaded .nav-item.dropdown.update, #container.loaded #columns_toggle {
+    display:block;    
+}
+
 </style>
 </head>
 
 <body style="margin:0 10 10 10">
-<div style="position:relative;width:100%;height:100%;display:flex;flex-direction:column">
+<div id="container" style="position:relative;width:100%;height:100%;display:flex;flex-direction:column">
     <nav class="navbar navbar-expand-md">
         <div class="navbar-collapse collapse">
             <ul class="navbar-nav">
@@ -104,11 +120,11 @@ img.loading {
                         </i>
                     </a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <li class="nav-item dropdown new_database">
+                    <a class="nav-link dropdown-toggle" href="#" id="databaseDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         New Database
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="width:20em;">
+                    <div class="dropdown-menu" aria-labelledby="databaseDropdown" style="width:20em;">
                         <label for="primary-file-input" class="dropdown-item">
                             Import CSV
                         </label>
@@ -123,13 +139,13 @@ img.loading {
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" id="key_div" style="display:none;">
+                    <a class="nav-link" href="#" id="key_div">
                         <select id="key_sel" name="key_sel" class="form-control form-control-sm" data-toggle="tooltip" data-placement="bottom" title="Set Primary Key">
                             <option selected>Select Primary Key...</option>
                         </select>
                     </a>
                 </li>
-                <li class="nav-item dropdown update" style="display:none">
+                <li class="nav-item dropdown update">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                          Update with:
                     </a>
@@ -170,14 +186,14 @@ img.loading {
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item dropdown" id="columns_toggle" style="display:none">
+                <li class="nav-item dropdown" id="columns_toggle">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                          Columns
                     </a>
                     <div class="dropdown-menu" id="columns_menu" aria-labelledby="dropdownMenuButton" onclick=" event.stopPropagation();">
                     </div>
                 </li>
-                <li class="nav-item" style="display:none">
+                <li class="nav-item query">
                     <a class="nav-link query dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Query</a>
                     <form style="width:100%; padding:5px" div class="dropdown-menu query" aria-labelledby="navbarDropdown">
                         <div class="form-row">
@@ -190,7 +206,7 @@ img.loading {
                         </div>
                     </form>
                 </li>
-                <li class="nav-item dropdown" id="export" style="display:none">
+                <li class="nav-item dropdown" id="export">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Export
                     </a>
