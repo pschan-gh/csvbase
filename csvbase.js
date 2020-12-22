@@ -103,6 +103,12 @@ function updateTable(db, table, data, headers, key, isPrimary) {
         var field = headers[j];
         sanitizedField = sanitize(field);
         sanitizedField = sanitizedField == '' ? 'BLANK' + j.toString() : sanitizedField;
+        
+        if (!columnData.hasOwnProperty(sanitizedField)) {
+            columnData[sanitizedField] = {};
+            columnData[sanitizedField]['name'] = sanitizedField;
+        }
+        
         sanitizedSecondaryHeaders.push(sanitizedField);
     }
 
@@ -125,7 +131,7 @@ function updateTable(db, table, data, headers, key, isPrimary) {
                     headerNames.push(header);
                     // headerIndex[sanitizedField] = 'COL' + sanitizedHeaders.length;
                     sanitizedHeaders.push(header);
-                    // columnData[sanitizedField]['name'] = sanitizedField;
+                    
                     db.exec('ALTER TABLE DataTable ADD COLUMN ' + header + ' char;');
                 }
             });
