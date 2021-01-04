@@ -103,12 +103,12 @@ function updateTable(db, table, data, headers, key, isPrimary) {
         var field = headers[j];
         sanitizedField = sanitize(field);
         sanitizedField = sanitizedField == '' ? 'BLANK' + j.toString() : sanitizedField;
-        
+
         if (!columnData.hasOwnProperty(sanitizedField)) {
             columnData[sanitizedField] = {};
             columnData[sanitizedField]['name'] = sanitizedField;
         }
-        
+
         sanitizedSecondaryHeaders.push(sanitizedField);
     }
 
@@ -131,7 +131,7 @@ function updateTable(db, table, data, headers, key, isPrimary) {
                     headerNames.push(header);
                     // headerIndex[sanitizedField] = 'COL' + sanitizedHeaders.length;
                     sanitizedHeaders.push(header);
-                    
+
                     db.exec('ALTER TABLE DataTable ADD COLUMN ' + header + ' char;');
                 }
             });
@@ -850,8 +850,11 @@ function updateButtons(db, table) {
         }
         $('tbody').css('margin-top', parseInt($('th').first().css('height')) + 'px');
 
-        $('tbody').find('td.col_rank').each(function(index) {
-            $(this).text(index + 1);
+        // $('tbody').find('td.col_rank').each(function(index) {
+        //     $(this).text(index + 1);
+        // });
+        $('tbody').find('tr').each(function(index) {
+            $(this).find('td.col_rank').text(index + 1);
         });
     });
 
@@ -1205,16 +1208,16 @@ function postInitialization(db, table) {
     // $('#exportJSON').show();
     // $('#columns_toggle').show();
     // $('#query').closest('li').show();
-    
+
     $('#key_sel').closest('li').find('a').addClass("disabled").attr('aria-disabled', 'true');
-    
+
     $('a.pastebin').removeClass('disabled');
     $('a.query').removeClass('disabled');
     // $('#import').hide();
-    
+
     $('#fields').closest('li').hide();
     $('#primary-file-input').closest('li').hide();
-    
+
     $('#messages').html('<strong>Database Loaded.</strong>');
     $('#hover_msg').hide();
 
@@ -1390,25 +1393,25 @@ $(function () {
          // $('#query').closest('li').hide();
          $('#container').removeClass('loaded');
          // $('#fields').closest('li').show();
-         // $('#primary-file-input').closest('li').show();         
-         
+         // $('#primary-file-input').closest('li').show();
+
          $('#key_div').hide();
          $('.nav-item.dropdown.new_database').show();
          $('#key_sel').closest('li').find('a').removeClass("disabled").attr('aria-disabled', 'false');
          $('#key_sel').html('<option selected>Select Primary Key...</option>');
          $('#second_key_sel').html('<option selected>Select Matching Key...</option>');
-         
+
          $('a.pastebin').addClass('disabled');
          $('a.query').add('disabled');
-         
+
          $('#messages').html('');
          $('#hover_msg').html('No Database Loaded Yet').show();
 
          $('#table-container').css('width', '100%');
          $('#mainTable').css('width', '100%');
          $('#mainTable thead tr').html('');
-         $('#mainTable tbody').html('').css('margin-top', '');         
-         
+         $('#mainTable tbody').html('').css('margin-top', '');
+
          sortField = 'undefined';
          groupField = 'undefined';
          headerNames = [];
