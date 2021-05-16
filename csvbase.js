@@ -351,8 +351,9 @@ function queryHWSet(db, table, query, field) {
         let results = db.exec(query);
         console.log(results);
         let rows = results.length ? db.exec(query)[0].values : [];
+        console.log(rows);
         let row;
-
+        
         rows.forEach(function(simpleRow, rowIndex) {
             // console.log(simpleRow);
             row = {};
@@ -361,7 +362,8 @@ function queryHWSet(db, table, query, field) {
             });
             jsonObj.database.push(row);
             // console.log(row);
-            var tableRow = document.getElementById('mainTable').getElementsByTagName('tbody')[0].insertRow(-1);
+            // react
+            // var tableRow = document.getElementById('mainTable').getElementsByTagName('tbody')[0].insertRow(-1);
 
             let cell;
 
@@ -1433,4 +1435,6 @@ $(function () {
          maxCols = 100;
          columnData = new Object();
      });
+     
+     
 })
