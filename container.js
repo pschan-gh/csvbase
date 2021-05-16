@@ -6,7 +6,7 @@ class Container extends React.Component {
             tableContent: [], 
             data:null,
             database:{},
-            headers: [],
+            headers: ['rank', 'count'],
             headers2: [],
             primarykey:null,
             // secondarykey:null
@@ -50,7 +50,8 @@ class Container extends React.Component {
                 headers2:results.meta['fields']
                 // sanitizedheaders: sanitizedHeaders
             });
-            console.log(scope.state.headers2);
+            console.log(scope.state);
+            $('select.key').show();
         }
         reader.readAsText(fileinput.current.files[0]);
     }
@@ -87,8 +88,7 @@ class Container extends React.Component {
             // this.setState({database:database}, function() {
             //     this.UpdateTable();
             // });
-            this.setState({database:database});
-            
+            this.setState({database:database});            
         });                
     }
     
@@ -110,12 +110,12 @@ class Container extends React.Component {
     render() {
         return (
         <div id="container">
-            <Nav fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} keyhandler={this.KeyHandler} headers2={this.state.headers2} />
+            <Nav fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} />
             <div id="outer-table-container">
                 <div id="table-container">
-                    <Table headers={this.state.headers} database={this.state.database}/>
+                    <Table headers={this.state.headers} database={this.state.database} primarykey={this.state.primarykey}/>
                 </div>
-            </div>
+            </div>            
         </div>
         )
     }
