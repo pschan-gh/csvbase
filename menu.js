@@ -1,12 +1,12 @@
-class PrimaryKey extends React.Component {
+class Key extends React.Component {
     constructor(props) {
         super(props);        
     }
         
     render() {
         return (
-            <select id="key_sel" name="primarykey" className="form-control form-control-sm" data-toggle="tooltip" data-placement="bottom" title="Set Primary Key" onChange={this.props.keyhandler}>
-                <option value="default">Select Primary Key...</option>
+            <select name={this.props.name} className="form-control form-control-sm" data-toggle="tooltip" data-placement="bottom" title="Set Key" onChange={this.props.keyhandler}>
+                <option value="default">Select Key...</option>
                 {this.props.headers.map((field, i) => {
                     return <option key={field} className={field} value={field}>{field}</option>;
                 })}
@@ -22,9 +22,9 @@ class CsvInput extends React.Component {
         
     render() {
         return (
-            <label htmlFor="primary-file-input" className="dropdown-item" >
+            <label className="dropdown-item" >
             Import CSV
-            <input id="primary-file-input" type="file" ref={this.props.fileinput} accept=".csv, .txt, .lst" style={{ display: "none" }} onChange={this.props.csvhandler}/>
+            <input type="file" ref={this.props.fileinput} accept=".csv, .txt, .lst" style={{ display: "none" }} onChange={this.props.csvhandler}/>
             </label>
         );
     }
@@ -48,18 +48,19 @@ class Nav extends React.Component {
                     </li>
                     <li className="nav-item dropdown new_database">
                         <a className="nav-link dropdown-toggle" href="#" id="databaseDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            New Database
+                            Update Database
                         </a>
                         <div className="dropdown-menu" aria-labelledby="databaseDropdown" >
-                            <CsvInput fileinput={this.props.fileinput} csvhandler={this.props.csvhandler}/>
+                            <CsvInput fileinput={this.props.fileinput} csvhandler={e => this.props.csvhandler(e, this.props.fileinput)}/>
                             <a className="pastebin dropdown-item" data-toggle="modal" data-target="#pastebin">Paste CSV</a>
                         </div>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" id="key_div">
-                            <PrimaryKey keyhandler={this.props.keyhandler} headers={this.props.headers}/>
+                            <Key name="primarykey" keyhandler={e => this.props.keyhandler(e, 'primarykey')} headers={this.props.headers2}/>
                         </a>
                     </li>
+                    
                 </ul>
             </div>    
         </nav> 

@@ -1,77 +1,3 @@
-function TableRow(props) {
- return (
-    <tr>
-        {props.headers.map(field => {
-            return <td key={field} data-field={field}>{props.item[field]}</td>;
-        })}                            
-    </tr>    
-  );
-}
-
-class Table extends React.Component {
-    constructor(props) {
-        super(props);        
-    }
-    // useEffect(() => {
-    //     console.log('use effect');
-    // });
-    componentDidMount() {
-        console.log('did mount');
-        let colWidths = {};
-        this.props.headers.map(field => {
-            console.log(document.querySelector('th[data-field="' + field + '"]'));
-        });
-        // console.log(colWidths);
-    }
-    componentDidUpdate() {
-        console.log('use did update');
-        let colWidths = {};
-        this.props.headers.map(field => {
-            // colWidths[field] = document.querySelector('th[data-field="' + field + '"]').offsetWidth;
-            colWidths[field] = Math.max($("td[data-field='" + field + "']").width(), $("th[data-field='" + field + "']").width());
-        });
-        console.log(colWidths);
-        
-        let tableWidth = 0;
-        $('th:visible').each(function() {
-            tableWidth += colWidths[$(this).attr('data-field')];
-        });
-
-        $('#mainTable').css('width', tableWidth);
-        $('#table-container').css('width', tableWidth + 15);
-        $('tbody tr').css('width', tableWidth);
-        $('thead tr').css('width', tableWidth);
-        $('th, td').each(function() {
-            $(this).css('width', colWidths[$(this).attr('data-field')]);
-        });
-        $('tbody').css('margin-top', parseInt($('th').first().css('height')));
-
-    }
-
-    render() {
-        console.log(this.props.database);
-        return(
-        <table id="mainTable" className="table table-bordered table-hover">
-            <thead>
-                <tr id="header_row" className="table-secondary">
-                    {this.props.headers.map((field, i) => {
-                        return <th key={field} data-field={field}>{field}</th>;
-                    }
-                    )}
-                </tr>
-            </thead>
-            <tbody>
-                { Object.keys(this.props.database).map(field => {
-                    return <TableRow headers={this.props.headers} item={this.props.database[field]} key={field} />
-                    })
-                }
-            </tbody>
-        </table>
-    )
-    }
-}
-
-
 class Container extends React.Component {
     constructor(props){
         super(props);
@@ -79,13 +5,16 @@ class Container extends React.Component {
             // selectedFile: null,
             tableContent: [], 
             data:null,
-            database:[],
+            database:{},
             headers: [],
-            primarykey:null  
+            headers2: [],
+            primarykey:null,
+            // secondarykey:null
         };
         this.CsvHandler = this.CsvHandler.bind(this);
         this.KeyHandler = this.KeyHandler.bind(this);
         this.fileInput = React.createRef();    
+        this.fileInput2 = React.createRef();  
     }
     
     sanitize(str) {
@@ -94,10 +23,10 @@ class Container extends React.Component {
         return str;
     }
 
-    CsvHandler(e) {
+    CsvHandler(e, fileinput) {
         e.preventDefault();        
         console.log(
-        `Selected file - ${this.fileInput.current.files[0].name}`
+        `Selected file - ${fileinput.current.files[0].name}`
         );
         const reader = new FileReader();
         const scope = this;
@@ -108,46 +37,52 @@ class Container extends React.Component {
                 dynamicTyping: false,
             });
             console.log(results);
-            let headers = results.meta['fields']; 
-            let sanitizedHeaders = headers.map(str => {return scope.sanitize(str);});
+            let headers = scope.state.headers.slice();
+            results.meta['fields'].forEach(field => {
+                if (!headers.includes(field)) {
+                    headers.push(field);
+                }
+            });
+            // let sanitizedHeaders = headers.map(str => {return scope.sanitize(str);});
             scope.setState({
                 data: results.data,
                 headers:headers,
-                sanitizedheaders: sanitizedHeaders
+                headers2:results.meta['fields']
+                // sanitizedheaders: sanitizedHeaders
             });
+            console.log(scope.state.headers2);
         }
-        reader.readAsText(this.fileInput.current.files[0]);
+        reader.readAsText(fileinput.current.files[0]);
     }
     
-    KeyHandler(e) {
-        console.log('primary key selected');
+    KeyHandler(e, keyName) {
+        console.log('key selected');
         // console.log(e.target);
         let {name, value} = e.target;
         const scope = this;
         console.log(name);
         console.log(value);
-        this.setState({'primarykey': value}, function() {
+        this.setState({[keyName]: value}, function() {
             console.log(this.state);
             let row;
             let primarykey = this.state.primarykey;
-            let keyval;
+            // let secondarykey = this.state.secondarykey == null : primarykey ? this.state.secondarykey;
             console.log(primarykey);
-            let database = {};
+            let keyval;
+            let database = {...this.state.database};
             for (let i = 0; i < this.state.data.length; i++) {
                 row = this.state.data[i];
                 keyval = row[primarykey];
                 if (!(keyval in database)) {
                     database[keyval] = {};
-                    this.state.headers.map(field => {
-                        database[keyval][field] = row[field];
-                    });
-                } else {
-                    this.state.headers.map(field => {
-                        if (row[field] != null && typeof row[field] != 'undefined' ) {
-                            database[keyval][field] = row[field];
-                        }
-                    });
                 }
+                this.state.headers.map(field => {
+                    if (row[field] != null && typeof row[field] != 'undefined' ) {
+                        database[keyval][field] = row[field];
+                    } else if (database[keyval] == null || typeof database[keyval] == 'undefined' ) {
+                        database[keyval][field] = '';
+                    }
+                });
             }
             // this.setState({database:database}, function() {
             //     this.UpdateTable();
@@ -175,7 +110,7 @@ class Container extends React.Component {
     render() {
         return (
         <div id="container">
-            <Nav fileinput={this.fileInput} csvhandler={this.CsvHandler} keyhandler={this.KeyHandler} headers={this.state.headers}/>
+            <Nav fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} keyhandler={this.KeyHandler} headers2={this.state.headers2} />
             <div id="outer-table-container">
                 <div id="table-container">
                     <Table headers={this.state.headers} database={this.state.database}/>
