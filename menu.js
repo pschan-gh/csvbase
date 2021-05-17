@@ -1,3 +1,18 @@
+function Query(props) {
+    return (
+        <form className="dropdown-menu query" aria-labelledby="navbarDropdown" onSubmit={props.handlequery} >
+            <div className="form-row">
+                <div className="form-group col-md-11">
+                    <input className="form-control" type="text" id="query" name="query" defaultValue={props.filter}/>
+                </div>
+                <div className="form-group col-md-1">
+                    <input id="query_submit" className="form-control" type="button" value="Submit" />
+                </div>
+            </div>
+        </form>
+    );
+}
+
 class FieldCheckBox extends React.Component {
     constructor(props) {
         super(props);
@@ -31,6 +46,23 @@ class FieldCheckBox extends React.Component {
           </a>
       );
   }
+}
+
+class CheckBoxes extends React.Component {
+    constructor(props){
+        super(props);     
+    }
+    
+    render() {
+        console.log(this.props.headers);
+        return (            
+            <div className="dropdown-menu" id="columns_menu" aria-labelledby="dropdownMenuButton">
+            {this.props.headers.map(field => {
+                return <FieldCheckBox key={field} field={field} />
+            })}
+            </div>
+        );
+    }
 }
 
 class Key extends React.Component {
@@ -138,32 +170,19 @@ class Nav extends React.Component {
                             <Key name="primarykey" keyhandler={e => this.props.keyhandler(e, 'primarykey')} headers={this.props.headers2}/>
                         </a>
                     </li>
-                    <CheckBoxes headers={this.props.headers}/>
+                    <li className="nav-item dropdown" id="columns_toggle">
+            <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Columns
+            </a>
+                        <CheckBoxes headers={this.props.headers}/>
+                    </li>
+                    <li className="nav-item query">
+                        <a className="nav-link query dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Query</a>
+                            <Query filter={this.props.filter} handlequery={this.props.handlequery} />
+                    </li>
                 </ul>
             </div>
         </nav> 
         )
-    }
-}
-
-class CheckBoxes extends React.Component {
-    constructor(props){
-        super(props);     
-    }
-    
-    render() {
-        console.log(this.props.headers);
-        return (
-            <li className="nav-item dropdown" id="columns_toggle">
-            <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Columns
-            </a>
-            <div className="dropdown-menu" id="columns_menu" aria-labelledby="dropdownMenuButton">
-            {this.props.headers.map(field => {
-                return <FieldCheckBox key={field} field={field} />
-            })}
-            </div>
-            </li>
-        );
     }
 }

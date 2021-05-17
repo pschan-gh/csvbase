@@ -53,7 +53,7 @@ class Table extends React.Component {
         this.state = {
             clickedArray:{},
             sort: function(a, b) {return true;},
-            colWidths:{}
+            // colWidths:{}
         };
         this.handleSort = this.handleSort.bind(this);
     }
@@ -94,8 +94,9 @@ class Table extends React.Component {
     }
     componentDidUpdate() {
         console.log('use did update');
-        let colWidths = this.state.colWidths;
         let clickedArray = {...this.state.clickedArray};
+        let colWidths = {}
+
         this.props.headers.map(field => {
             // colWidths[field] = document.querySelector('th[data-field="' + field + '"]').offsetWidth;
             if ( clickedArray[field] == null || typeof clickedArray[field] == 'undefined') {
@@ -103,17 +104,20 @@ class Table extends React.Component {
             }
             let widths = [];
             $("td[data-field='" + field + "']").each(function() {
-                widths.push(($(this).text().length)/10);
+                widths.push(($(this).text().length)*10);
             });
-            colWidths[field] = Math.min(200, Math.max(...widths));
+            $("th[data-field='" + field + "'] > a.header").each(function() {
+                widths.push(($(this).text().length)*10);
+            });
+            // colWidths[field] = Math.min(400, Math.max(...widths));
+            colWidths[field] = Math.min(1000, Math.max(...widths) + 15);
         });
         console.log(colWidths);
         let tableWidth = 0;
         $('th:visible').each(function() {
             tableWidth += colWidths[$(this).attr('data-field')];
         });
-        console.log(tableWidth);
-
+       
         $('#mainTable').css('width', tableWidth + 15);
         // $('#table-container').css('width', tableWidth + 15);
         $('tbody tr').css('width', tableWidth);

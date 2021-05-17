@@ -10,19 +10,18 @@ class Container extends React.Component {
             headers: ['rank'],
             headers2: [],
             primarykey:null,
-            filter:true
+            filter:'true',
             // secondarykey:null
         };
         this.CsvHandler = this.CsvHandler.bind(this);
         this.KeyHandler = this.KeyHandler.bind(this);
+        this.handleQuery = this.handleQuery.bind(this);
         this.fileInput = React.createRef();    
         this.fileInput2 = React.createRef();  
     }
 
-    UpdateTable() {
+    UpdateTable(database, filter) {
         let table = [];
-        let row;
-        let database = this.state.database;
         let datum;
         for (let key in database) {
             datum = {};
@@ -35,7 +34,9 @@ class Container extends React.Component {
             });
             table.push(datum);
         }
-        return table;
+        let filterFunc =  new Function('item', 'return ' + filter);
+        return table.filter(filterFunc);
+
     }
 
     sanitize(str) {
@@ -112,18 +113,29 @@ class Container extends React.Component {
            
             this.setState({
                 database:database, 
-                // table:this.UpdateTable()
-            });            
+                table:this.UpdateTable(database, this.state.filter)
+            }, function(){console.log(this.state.table)});            
         });                
     }    
     
+    handleQuery(e) {
+        e.preventDefault();
+        const form = e.currentTarget;
+        const filter = form.elements["query"].value;
+        console.log(filter);
+        this.setState({
+            filter:filter,
+            table:this.UpdateTable(this.state.database, filter)
+        }, function(){console.log(this.state.table)}); 
+    }
+
     render() {
         return (
         <div id="container">
-            <Nav fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} />
+            <Nav fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery}/>
             <div id="outer-table-container">
                 <div id="table-container">
-                    <Table table={this.UpdateTable()} headers={this.state.headers} database={this.state.database} primarykey={this.state.primarykey}/>
+                    <Table table={this.state.table} headers={this.state.headers} database={this.state.database} primarykey={this.state.primarykey}/>
                 </div>
             </div>            
         </div>
