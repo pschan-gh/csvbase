@@ -3,12 +3,14 @@ class Container extends React.Component {
         super(props);
         this.state = {
             // selectedFile: null,
-            tableContent: [], 
+            table: [], 
             data:null,
             database:{},
-            headers: ['rank', 'count'],
+            // headers: ['rank', 'count'],
+            headers: ['rank'],
             headers2: [],
             primarykey:null,
+            filter:true
             // secondarykey:null
         };
         this.CsvHandler = this.CsvHandler.bind(this);
@@ -16,7 +18,26 @@ class Container extends React.Component {
         this.fileInput = React.createRef();    
         this.fileInput2 = React.createRef();  
     }
-    
+
+    UpdateTable() {
+        let table = [];
+        let row;
+        let database = this.state.database;
+        let datum;
+        for (let key in database) {
+            datum = {};
+            this.state.headers.map(field => {
+                if (database[key][field] == null || typeof database[key][field] == 'undefined') {
+                    datum[field] = '';
+                } else {
+                    datum[field] = database[key][field];
+                }
+            });
+            table.push(datum);
+        }
+        return table;
+    }
+
     sanitize(str) {
         var str = str.replace(/^\s+|\s+$/g, "").replace(/\s/g, "_").replace(/[^a-z0-9_]/ig, "").toUpperCase();
         str = str.replace(/([a-zA-Z])_(\d+)/g,"$1$2");
@@ -88,24 +109,13 @@ class Container extends React.Component {
             // this.setState({database:database}, function() {
             //     this.UpdateTable();
             // });
-            this.setState({database:database});            
+           
+            this.setState({
+                database:database, 
+                // table:this.UpdateTable()
+            });            
         });                
-    }
-    
-    UpdateTable() {
-        let table = [];
-        let row;
-        let database = this.state.database;
-        let headers = this.state.headers;
-        for (let key in database) {
-            row = [];
-            headers.forEach(field => {
-                row.push(database[key][field]);
-            });
-            table.push(row);
-        }
-        this.setState({tableContent: table});
-    }
+    }    
     
     render() {
         return (
@@ -113,7 +123,7 @@ class Container extends React.Component {
             <Nav fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} />
             <div id="outer-table-container">
                 <div id="table-container">
-                    <Table headers={this.state.headers} database={this.state.database} primarykey={this.state.primarykey}/>
+                    <Table table={this.UpdateTable()} headers={this.state.headers} database={this.state.database} primarykey={this.state.primarykey}/>
                 </div>
             </div>            
         </div>
