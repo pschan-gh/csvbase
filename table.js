@@ -1,7 +1,17 @@
 function Sort(props) {
-    return(
-        <a className="triangle" onClick={() => props.handlesort(props.field)}>&#x25BA;</a>
-    );
+    if (props.clickedarray[props.field] == 1) {
+        return(
+            <a className="triangle" onClick={() => props.handlesort(props.field)}>&#x25B2;</a>
+        );
+    } else if (props.clickedarray[props.field] == -1) {
+        return(
+            <a className="triangle" onClick={() => props.handlesort(props.field)}>&#x25BC;</a>
+        );
+    } else {
+        return(
+            <a className="triangle" onClick={() => props.handlesort(props.field)}>&#x25BA;</a>
+        );
+    }
 }
 
 function TableRow(props) {
@@ -50,8 +60,14 @@ class Table extends React.Component {
 
     handleSort(field) {
         console.log(field);
+        let clickedArray = {};
+        this.props.headers.forEach(field => clickedArray[field] = 0);
+        let clicked = this.state.clickedArray[field] == 1 ? -1 : 1;
+        clickedArray[field] = clicked;
+        
         this.setState({
-            sort: function(a, b) { return a[field].localeCompare(b[field]); }
+            clickedArray: clickedArray,
+            sort: function(a, b) { return clicked*a[field].localeCompare(b[field]); }
         });
         return true;
     }
