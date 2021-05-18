@@ -16,3 +16,34 @@ function insertAtCursor(myField, myValue) {
     }
     myField.focus();
 }
+
+function computeColWidths(headers) {
+    let colWidths = {};
+    headers.map(field => {
+        let widths = [];
+        $("td[data-field='" + field + "']").each(function() {
+            widths.push(($(this).text().length)*12);
+        });
+        $("th[data-field='" + field + "'] > a.header").each(function() {
+            widths.push(($(this).text().length)*12);
+        });
+        colWidths[field] = Math.min(400, Math.max(...widths) + 15);
+    });
+    return colWidths;
+}
+
+function updateTableWidth(colWidths) {
+    let tableWidth = 0;
+    $('.field_checkbox:checked').each(function() {
+        tableWidth += colWidths[$(this).attr('data-field')];
+    });
+   
+    $('#mainTable').css('width', tableWidth + 15);
+    $('#table-container').css('width', tableWidth + 15);
+    $('tbody tr').css('width', tableWidth);
+    $('thead tr').css('width', tableWidth);
+    $('th, td').each(function() {
+        $(this).css('width', colWidths[$(this).attr('data-field')]);
+    });
+    $('tbody').css('margin-top', parseInt($('th').first().css('height')));
+}

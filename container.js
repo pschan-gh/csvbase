@@ -2,16 +2,13 @@ class Container extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            // selectedFile: null,
             table: [], 
             data:null,
             database:{},
-            // headers: ['rank', 'count'],
             headers: ['rank'],
             headers2: [],
             primarykey:null,
             filter:'true',
-            // secondarykey:null
         };
         this.CsvHandler = this.CsvHandler.bind(this);
         this.KeyHandler = this.KeyHandler.bind(this);
@@ -165,7 +162,7 @@ class Container extends React.Component {
             <Nav fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery} handleaddcolumn={this.handleAddColumn}/>
             <div id="outer-table-container">
                 <div id="table-container">
-                    <Table table={this.state.table} headers={this.state.headers} database={this.state.database} primarykey={this.state.primarykey}/>
+                    <Table table={this.state.table} headers={this.state.headers} primarykey={this.state.primarykey}/>
                 </div>
             </div>            
         </div>
