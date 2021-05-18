@@ -1,3 +1,54 @@
+function AddColumn(props) {
+    return (
+        <a className="fields nav-link" data-toggle="modal" data-target="#column_bin" href="#" id="calculated_column">Add Calculated Column</a>
+    );
+}
+
+class AddColumnModal extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    componentDidUpdate(props) {
+        $('.field_reference button.field').off();
+        $('.field_reference button.field').click(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            // console.log(e);
+            insertAtCursor(document.getElementById('column_routine'), '+(@' + $(this).text() + ')');
+        });
+    }
+    render() {
+        return (
+            <div id="column_bin" className="modal" tabIndex="-1" role="dialog" aria-labelledby="column_bin" aria-hidden="true">
+                <div className="modal-dialog modal-lg" role="dialog" >
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 style={{display:'inline'}} className="modal-title">Calculate Column</h5>
+                            <input style={{display:'inline'}} className="form-control column_name" style={{fontFamily:'Courier'}} type="text" id="calc_col_name" name="calc_col_name"/>
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div className="field_reference" style={{padding:'10px'}}>
+                            {this.props.headers.map(field =>
+                                <button key={field} className="field btn btn-outline-info btn-sm">{field}</button>
+                            )}
+                        </div>
+                        <form onSubmit={this.props.handleaddcolumn}>                
+                            <div className="modal-body">                
+                                <textarea style={{width:'100%',height:'25em',fontFamily:'Courier'}} id="column_routine"  name="column_routine" ></textarea>
+                            </div>
+                            <div className="modal-footer">
+                                <input id="column_submit" className="form-control" type="submit" value="Submit" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
+
 function Query(props) {
     return (
         <form className="dropdown-menu query" aria-labelledby="navbarDropdown" onSubmit={props.handlequery} >
@@ -6,7 +57,7 @@ function Query(props) {
                     <input className="form-control" type="text" id="query" name="query" defaultValue={props.filter}/>
                 </div>
                 <div className="form-group col-md-1">
-                    <input id="query_submit" className="form-control" type="button" value="Submit" />
+                    <input id="query_submit" className="form-control" type="submit" value="Submit" />
                 </div>
             </div>
         </form>
@@ -117,20 +168,25 @@ class Nav extends React.Component {
                 $chkboxes.slice(Math.min(start,end), Math.max(start,end)+ 1).each(function(){
                     if(this.checked != lastChecked.checked) {
                          // this.click();
-                         this.checked = lastChecked.checked;
+                         this.checked = lastChecked.checked;                         
                      }
-                 });
-
-                $chkboxes.each(function() {
-                    var field = $(this).attr('field');
-                    if ($(this).is(':checked')) {
-                        $('th[field="' + field + '"], td[field="' + field + '"]').show();
-                    } else {
-                        $('th[field="' + field + '"], td[field="' + field + '"]').hide();
-                    }
-                });                
+                     let field = $(this).attr('field');
+                     if (this.checked) {
+                         $('th[field="' + field + '"], td[field="' + field + '"]').show();
+                     } else {
+                         $('th[field="' + field + '"], td[field="' + field + '"]').hide();
+                     }
+                 });                   
             }
-
+            $chkboxes.each(function() {
+                let field = $(this).attr('field');
+                if ($(this).is(':checked')) {
+                    $('th[field="' + field + '"], td[field="' + field + '"]').show();
+                } else {
+                    $('th[field="' + field + '"], td[field="' + field + '"]').hide();
+                }
+            });
+            
             lastChecked = this;
             let colWidths = {};
             props.headers.map(field => {
@@ -195,8 +251,12 @@ class Nav extends React.Component {
                         <a className="nav-link query dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Query</a>
                             <Query filter={this.props.filter} handlequery={this.props.handlequery} />
                     </li>
+                    <li className="nav-item calculated_column">
+                        <AddColumn />
+                    </li>
                 </ul>
             </div>
+            <AddColumnModal headers={this.props.headers} handleaddcolumn={this.props.handleaddcolumn} />
         </nav> 
         )
     }

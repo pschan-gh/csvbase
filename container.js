@@ -16,6 +16,7 @@ class Container extends React.Component {
         this.CsvHandler = this.CsvHandler.bind(this);
         this.KeyHandler = this.KeyHandler.bind(this);
         this.handleQuery = this.handleQuery.bind(this);
+        this.handleAddColumn = this.handleAddColumn.bind(this);
         this.fileInput = React.createRef();    
         this.fileInput2 = React.createRef();  
     }
@@ -65,7 +66,7 @@ class Container extends React.Component {
                     headers.push(field);
                 }
             });
-            // let sanitizedHeaders = headers.map(str => {return scope.sanitize(str);});
+            
             scope.setState({
                 data: results.data,
                 headers:headers,
@@ -107,16 +108,45 @@ class Container extends React.Component {
                     }
                 });
             }
-            // this.setState({database:database}, function() {
-            //     this.UpdateTable();
-            // });
-           
+        
             this.setState({
                 database:database, 
                 table:this.UpdateTable(database, this.state.filter)
-            }, function(){console.log(this.state.table)});            
+            }, function(){
+                $('.nav-item.calculated_column').show(); 
+                console.log(this.state.table)
+            });
         });                
     }    
+    
+    handleAddColumn(e) {
+        e.preventDefault();
+        const form = e.currentTarget;
+        const routine = form.elements["column_routine"].value;
+        const field = $('#column_bin').find('.column_name').val();
+        if (this.state.headers.includes(field)) {
+            alert('FIELD NAME EXISTS');
+            return 0;
+        } else {
+            let database = {...this.state.database};
+            Object.keys(database).map(key => {
+                let item = database[key];
+                let routineStr = routine.replace(/\(@([^\)]+)\)/g, 'item["$1"]');
+                // console.log(routineStr);
+                let routineFunc = new Function('item',  routineStr);
+                let value =  routineFunc(item);
+                database[key][field] = value;
+                console.log(database[key]);
+            });
+            let headers = this.state.headers;
+            headers.push(field);
+            this.setState({
+                database:database, 
+                table:this.UpdateTable(database, this.state.filter),
+                headers:headers
+            });
+        }
+    }
     
     handleQuery(e) {
         e.preventDefault();
@@ -132,7 +162,7 @@ class Container extends React.Component {
     render() {
         return (
         <div id="container">
-            <Nav fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery}/>
+            <Nav fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery} handleaddcolumn={this.handleAddColumn}/>
             <div id="outer-table-container">
                 <div id="table-container">
                     <Table table={this.state.table} headers={this.state.headers} database={this.state.database} primarykey={this.state.primarykey}/>
