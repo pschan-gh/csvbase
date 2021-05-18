@@ -52,7 +52,8 @@ class Table extends React.Component {
         super(props); 
         this.state = {
             clickedArray:{},
-            sort: function(a, b) {return true;},
+            sortField:'',
+            // sort: function(a, b) {return true;},
             // colWidths:{}
         };
         this.handleSort = this.handleSort.bind(this);
@@ -67,23 +68,28 @@ class Table extends React.Component {
         
         this.setState({
             clickedArray: clickedArray,
-            sort: function(a, b) { return clicked*a[field].localeCompare(b[field]); }
+            sortField: field
+            // sort: function(a, b) { 
+            //     if 
+            //     return clicked*a[field].localeCompare(b[field]); 
+            // }
         });
         return true;
     }
 
-    UpdateTable(database, headers) {
-        let table = [];
-        let row;
-        for (let key in database) {
-            // row = [];
-            // headers.filter(field => field != 'rank').forEach(field => {
-            //     row.push(database[key][field]);
-            // });
-            table.push(database[key]);
+    sortByField(a, b, field) {
+        if (field == '') {
+            return true;
         }
-        return table;
+        let clickedArray = this.state.clickedArray;
+        let clicked = this.state.clickedArray[field] 
+        if (!isNaN(a) && !isNaN(b)) {
+            return clicked*(a - b);
+        } else {
+            return clicked*a[field].localeCompare(b[field]); 
+        }
     }
+    
     componentDidMount() {        
         console.log('did mount');
         let colWidths = {};
@@ -104,10 +110,10 @@ class Table extends React.Component {
             }
             let widths = [];
             $("td[data-field='" + field + "']").each(function() {
-                widths.push(($(this).text().length)*10);
+                widths.push(($(this).text().length)*12);
             });
             $("th[data-field='" + field + "'] > a.header").each(function() {
-                widths.push(($(this).text().length)*10);
+                widths.push(($(this).text().length)*12);
             });
             // colWidths[field] = Math.min(400, Math.max(...widths));
             colWidths[field] = Math.min(1000, Math.max(...widths) + 15);
@@ -119,7 +125,7 @@ class Table extends React.Component {
         });
        
         $('#mainTable').css('width', tableWidth + 15);
-        // $('#table-container').css('width', tableWidth + 15);
+        $('#table-container').css('width', tableWidth + 15);
         $('tbody tr').css('width', tableWidth);
         $('thead tr').css('width', tableWidth);
         $('th, td').each(function() {
@@ -140,7 +146,7 @@ class Table extends React.Component {
         <table id="mainTable" className="table table-bordered table-hover">
             <Header headers={this.props.headers} clickedarray={this.state.clickedArray} handlesort={this.handleSort} />
             <tbody>
-                { this.props.table.sort(this.state.sort).map((row, index) => {
+                { this.props.table.sort((a, b) => this.sortByField(a, b, this.state.sortField)).map((row, index) => {
                     return <TableRow row={row} headers={this.props.headers} index={index + 1} key={index + 1} />
                     })
                 }

@@ -101,7 +101,7 @@ class Nav extends React.Component {
     constructor(props){
         super(props);     
     }
-    componentDidUpdate() {
+    componentDidUpdate(props) {
         var $chkboxes = $('.field_checkbox');
         var lastChecked = null;
         $chkboxes.click(function(e) {
@@ -116,7 +116,8 @@ class Nav extends React.Component {
 
                 $chkboxes.slice(Math.min(start,end), Math.max(start,end)+ 1).each(function(){
                     if(this.checked != lastChecked.checked) {
-                         this.click();
+                         // this.click();
+                         this.checked = lastChecked.checked;
                      }
                  });
 
@@ -127,21 +128,35 @@ class Nav extends React.Component {
                     } else {
                         $('th[field="' + field + '"], td[field="' + field + '"]').hide();
                     }
-
-                    var tableWidth = 0;
-                    let colWidths = {};
-                    colWidths[field] = Math.max($("td[data-field='" + field + "']").width(), $("th[data-field='" + field + "']").width()) + 50;
-                    $('th:visible').each(function() {
-                        tableWidth += colWidths[$(this).attr('field')];
-                    });
-
-                    $('#table-container').css('width', tableWidth + 45);
-                    $('#mainTable').css('width', tableWidth);
-                    $('#mainTable > thead > tr').css('width', tableWidth);
-                });
+                });                
             }
 
             lastChecked = this;
+            let colWidths = {};
+            props.headers.map(field => {
+                let widths = [];
+                $("td[data-field='" + field + "']").each(function() {
+                    widths.push(($(this).text().length)*12);
+                });
+                $("th[data-field='" + field + "'] > a.header").each(function() {
+                    widths.push(($(this).text().length)*12);
+                });
+                // colWidths[field] = Math.min(400, Math.max(...widths));
+                colWidths[field] = Math.min(1000, Math.max(...widths) + 15);
+            });
+            let tableWidth = 0;
+            $('.field_checkbox:checked').each(function() {
+                tableWidth += colWidths[$(this).attr('data-field')];
+            });
+           
+            $('#mainTable').css('width', tableWidth + 15);
+            $('#table-container').css('width', tableWidth + 15);
+            $('tbody tr').css('width', tableWidth);
+            $('thead tr').css('width', tableWidth);
+            $('th, td').each(function() {
+                $(this).css('width', colWidths[$(this).attr('data-field')]);
+            });
+            $('tbody').css('margin-top', parseInt($('th').first().css('height')));
         });
     }
     render() {
