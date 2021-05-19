@@ -38,8 +38,8 @@ function updateTableWidth(colWidths) {
         tableWidth += colWidths[$(this).attr('data-field')];
     });
    
-    $('#mainTable').css('width', tableWidth + 15);
-    $('#table-container').css('width', tableWidth + 15);
+    $('#mainTable').css('width', tableWidth + 20);
+    // $('#table-container').css('width', tableWidth + 20);
     $('tbody tr').css('width', tableWidth);
     $('thead tr').css('width', tableWidth);
     $('th, td').each(function() {
