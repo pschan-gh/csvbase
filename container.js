@@ -10,12 +10,23 @@ class Container extends React.Component {
             primarykey:null,
             filter:'true',
         };
+        this.ReorderHeaders = this.ReorderHeaders.bind(this);
         this.CsvHandler = this.CsvHandler.bind(this);
         this.KeyHandler = this.KeyHandler.bind(this);
         this.handleQuery = this.handleQuery.bind(this);
         this.handleAddColumn = this.handleAddColumn.bind(this);
         this.fileInput = React.createRef();    
         this.fileInput2 = React.createRef();  
+    }
+
+    ReorderHeaders() {
+        // let menu = document.querySelector('#columns_menu');
+        let $boxes = $('#columns_menu input');
+        let headers = [];
+        $boxes.each(function() {
+            headers.push($(this).attr('data-field'));
+        });
+        this.setState({headers: headers});
     }
 
     UpdateTable(database, filter) {
@@ -165,7 +176,7 @@ class Container extends React.Component {
     render() {
         return (
         <div id="container">
-            <Nav fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery} handleaddcolumn={this.handleAddColumn}/>
+            <Nav fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery} handleaddcolumn={this.handleAddColumn} reorderheaders={this.ReorderHeaders}/>
             <div id="outer-table-container">
                 <div id="table-container">
                     <Table table={this.state.table} headers={this.state.headers} primarykey={this.state.primarykey}/>

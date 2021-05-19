@@ -104,12 +104,20 @@ class CheckBoxes extends React.Component {
         });
     }
     
+    componentDidUpdate(props) {
+        $( function() {
+            $( ".sortable" ).sortable();
+            $( ".sortable" ).disableSelection();
+        } );
+    }
+    
     render() {
         return (            
-        <div className="dropdown-menu" id="columns_menu" aria-labelledby="dropdownMenuButton">
+        <div className="dropdown-menu sortable" id="columns_menu" aria-labelledby="dropdownMenuButton">
             {this.props.headers.map(field => {
                 return <FieldCheckBox headers={this.props.headers} key={field} field={field} handlecheckboxes={this.handleCheckboxes} />
             })}
+            <button className="btn btn-outline-secondary btn-sm ms-2" onClick={this.props.reorderheaders}>Reorder</button>
         </div>
         );
     }
@@ -210,7 +218,7 @@ class Nav extends React.Component {
         <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Columns
         </a>
-        <CheckBoxes headers={this.props.headers}/>
+        <CheckBoxes headers={this.props.headers} reorderheaders={this.props.reorderheaders} />
         </li>
         <li className="nav-item query">
         <a className="nav-link query dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Query</a>

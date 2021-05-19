@@ -44,14 +44,14 @@ class Query extends React.Component {
     render() {
         return (
             <div className="dropdown-menu query" aria-labelledby="navbarDropdown" style={{width:'100%'}}>
-                <form onSubmit={e => this.props.handlequery(e, this.state.queryItems)}>
+                <form className="mb-0" onSubmit={e => this.props.handlequery(e, this.state.queryItems)}>
                     {this.state.queryItems.map(item => {
                         return (
                             <QueryItem key={item.id} querykey={item.id} field={item.field} conjunction={item.conjunction} condition={item.condition} headers={this.props.headers} handleselect={this.handleSelect} handlecondition={this.handleCondition} />
                         )
                     })}
                         <div className="col-auto">
-                            <button type="submit" className="btn btn-primary mb-3">Submit</button>
+                            <button type="submit" className="btn btn-outline-primary btn-sm">Submit</button>
                         </div>
                 </form>
             </div>
