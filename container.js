@@ -144,16 +144,22 @@ class Container extends React.Component {
             });
         }
     }
-    
-    handleQuery(e) {
+
+    handleQuery(e, queryItems) {
         e.preventDefault();
-        const form = e.currentTarget;
-        const filter = form.elements["query"].value;
-        console.log(filter);
-        this.setState({
-            filter:filter,
-            table:this.UpdateTable(this.state.database, filter)
-        }, function(){console.log(this.state.table)}); 
+        queryItems.map(item => {
+            let filter;
+            if (item.field == 'Show All') { 
+                filter = 'true';
+            } else {
+                filter = 'item["' + item.field + '"]' + ' ' + item.condition;
+            }
+            console.log(filter);
+            this.setState({
+                filter:filter,
+                table:this.UpdateTable(this.state.database, filter)
+            }, function(){console.log(this.state.table)}); 
+        });
     }
 
     render() {

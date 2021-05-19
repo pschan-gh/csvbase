@@ -49,21 +49,6 @@ class AddColumnModal extends React.Component {
     }
 }
 
-function Query(props) {
-    return (
-    <form className="dropdown-menu query" aria-labelledby="navbarDropdown" onSubmit={props.handlequery} >
-        <div className="form-row">
-            <div className="form-group col-md-11">
-                <input className="form-control" type="text" id="query" name="query" defaultValue={props.filter}/>
-            </div>
-            <div className="form-group col-md-1">
-                <input id="query_submit" className="form-control" type="submit" value="Submit" />
-            </div>
-        </div>
-    </form>
-    );
-}
-
 class FieldCheckBox extends React.Component {
     constructor(props) {
         super(props);
@@ -137,7 +122,7 @@ class Key extends React.Component {
     
     render() {
         return (
-        <select name={this.props.name} className="form-control form-control-sm key" data-toggle="tooltip" data-placement="bottom" title="Set Key" onChange={this.props.keyhandler}>
+        <select name={this.props.name} className="form-control form-control-sm key" title="Set Key" onChange={this.props.keyhandler}>
             <option value="default">Select Key...</option>
             {this.props.headers.map((field, i) => {
                 return <option key={field} className={field} value={field}>{field}</option>;
@@ -190,6 +175,10 @@ class Nav extends React.Component {
             }            
             lastChecked = this;            
         });
+        
+        $('.dropdown-menu.query').click(function(e) {
+            e.stopPropagation();
+        });
     }
     render() {
         return (
@@ -204,28 +193,28 @@ class Nav extends React.Component {
             </a>
             </li>
             <li className="nav-item dropdown new_database">
-            <a className="nav-link dropdown-toggle" href="#" id="databaseDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a className="nav-link dropdown-toggle" href="#" id="databaseDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Update Database
             </a>
-        <div className="dropdown-menu" aria-labelledby="databaseDropdown" >
-        <CsvInput fileinput={this.props.fileinput} csvhandler={e => this.props.csvhandler(e, this.props.fileinput)}/>
-        <a className="pastebin dropdown-item" data-toggle="modal" data-target="#pastebin">Paste CSV</a>
-        </div>
-        </li>
-        <li className="nav-item">
-        <a className="nav-link" href="#" id="key_div">
+            <div className="dropdown-menu" aria-labelledby="databaseDropdown" >
+            <CsvInput fileinput={this.props.fileinput} csvhandler={e => this.props.csvhandler(e, this.props.fileinput)}/>
+            <a className="pastebin dropdown-item" data-toggle="modal" data-target="#pastebin">Paste CSV</a>
+            </div>
+            </li>
+            <li className="nav-item">
+            <a className="nav-link" href="#" id="key_div">
         <Key name="primarykey" keyhandler={e => this.props.keyhandler(e, 'primarykey')} headers={this.props.headers2}/>
         </a>
         </li>
         <li className="nav-item dropdown" id="columns_toggle">
-        <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Columns
         </a>
         <CheckBoxes headers={this.props.headers}/>
         </li>
         <li className="nav-item query">
-        <a className="nav-link query dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Query</a>
-        <Query filter={this.props.filter} handlequery={this.props.handlequery} />
+        <a className="nav-link query dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Query</a>
+        <Query filter={this.props.filter} handlequery={this.props.handlequery} headers={this.props.headers} />
         </li>
         <li className="nav-item calculated_column">
         <AddColumn />
