@@ -1,3 +1,9 @@
+function sanitize(str) {
+    var str = str.replace(/^\s+|\s+$/g, "").replace(/\s/g, "_").replace(/[^a-z0-9_]/ig, "").toUpperCase();
+    str = str.replace(/([a-zA-Z])_(\d+)/g,"$1$2");
+    return str;
+}
+
 function insertAtCursor(myField, myValue) {
     //IE support
     if (document.selection) {

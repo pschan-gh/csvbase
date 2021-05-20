@@ -31,12 +31,11 @@ function Header(props) {
             <tr id="header_row" className="table-secondary">                
                 {props.headers.map((field, i) => {
                     return <th key={field} data-field={field}>
-                    <a href="#" className="header" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{field}</a>
+                    <a href="#" className="header" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{field}</a>
                     <div className="dropdown-menu" aria-labelledby={field}>
+                        <a className="dropdown-item rename" data-field={field} href="#">Rename</a>
                         <a className="dropdown-item group_by" data-field={field} href="#">Group by</a>
-                        <a className="dropdown-item fields statistics" data-field={field} href="#" >Statistics</a>
-                        <a className="dropdown-item recalculate fields" data-toggle="modal" data-target="#column_bin" data-field={field} href="#">Recalculate</a>
-                        <a className="dropdown-item fields hide" data-field={field} href="#">Hide</a>
+                        <a className="dropdown-item fields statistics" data-field={field} href="#" >Statistics</a>                        
                     </div>
                     <Sort handlesort={props.handlesort} field={field} sortarray={props.sortarray} />
                     </th>;                    

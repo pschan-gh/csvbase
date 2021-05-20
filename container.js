@@ -11,6 +11,7 @@ class Container extends React.Component {
             filter:'true',
         };
         this.ReorderHeaders = this.ReorderHeaders.bind(this);
+        this.CsvPasteHandler = this.CsvPasteHandler.bind(this);
         this.CsvHandler = this.CsvHandler.bind(this);
         this.KeyHandler = this.KeyHandler.bind(this);
         this.handleQuery = this.handleQuery.bind(this);
@@ -47,11 +48,31 @@ class Container extends React.Component {
         return table.filter(filterFunc);
 
     }
-
-    sanitize(str) {
-        var str = str.replace(/^\s+|\s+$/g, "").replace(/\s/g, "_").replace(/[^a-z0-9_]/ig, "").toUpperCase();
-        str = str.replace(/([a-zA-Z])_(\d+)/g,"$1$2");
-        return str;
+    
+    CsvPasteHandler(e) {
+        e.preventDefault();
+        const form = e.currentTarget;
+        const csv = form.elements["csv"].value;
+        
+        let results = Papa.parse(csv, {
+            header: true,
+            dynamicTyping: false,
+        });
+        console.log(results);
+        let headers = this.state.headers.slice();
+        results.meta['fields'].forEach(field => {
+            if (!headers.includes(field)) {
+                headers.push(field);
+            }
+        });
+        
+        this.setState({
+            data: results.data,
+            headers:headers,
+            headers2:results.meta['fields']
+        });
+        console.log(this.state);
+        $('select.key').show();
     }
 
     CsvHandler(e, fileinput) {
@@ -176,7 +197,7 @@ class Container extends React.Component {
     render() {
         return (
         <div id="container">
-            <Nav fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery} handleaddcolumn={this.handleAddColumn} reorderheaders={this.ReorderHeaders}/>
+            <Nav fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} csvpastehandler={this.CsvPasteHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery} handleaddcolumn={this.handleAddColumn} reorderheaders={this.ReorderHeaders}/>
             <div id="outer-table-container">
                 <div id="table-container">
                     <Table table={this.state.table} headers={this.state.headers} primarykey={this.state.primarykey}/>

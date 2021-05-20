@@ -1,125 +1,29 @@
-function AddColumn(props) {
-    return (
-        <a className="fields nav-link" data-toggle="modal" data-target="#column_bin" href="#" id="calculated_column">Add Calculated Column</a>
-    );
-}
-
-class AddColumnModal extends React.Component {
+class CsvPasteModal extends React.Component {
     constructor(props) {
         super(props);
     }
-    componentDidUpdate(props) {
-        $('.field_reference button.field').off();
-        $('.field_reference button.field').click(function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            // console.log(e);
-            insertAtCursor(document.getElementById('column_routine'), '+(@' + $(this).text() + ')');
-        });
-    }
+    
     render() {
         return (
-        <div id="column_bin" className="modal" tabIndex="-1" role="dialog" aria-labelledby="column_bin" aria-hidden="true">
-            <div className="modal-dialog modal-lg" role="dialog" >
-                <div className="modal-content">
-                    <div className="modal-header">
-                        <h5 style={{display:'inline'}} className="modal-title">Calculate Column</h5>
-                        <input style={{display:'inline'}} className="form-control column_name" style={{fontFamily:'Courier'}} type="text" id="calc_col_name" name="calc_col_name"/>
-                        <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div className="field_reference" style={{padding:'10px'}}>
-                        {this.props.headers.map(field =>
-                            <button key={field} className="field btn btn-outline-info btn-sm">{field}</button>
-                            )}
+            <div id="pastebin" className="modal" tabIndex="-1" role="dialog" aria-labelledby="pastebinlabel" aria-hidden="true">
+                <div className="modal-dialog modal-lg" role="dialog" >
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="pastebinlabel">Paste</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form onSubmit={this.props.handleaddcolumn}>                
-                            <div className="modal-body">                
-                                <textarea style={{width:'100%',height:'25em',fontFamily:'Courier'}} id="column_routine"  name="column_routine" ></textarea>
+                        <form onSubmit={this.props.csvpastehandler}>
+                            <div className="modal-body"  >
+                                <textarea style={{width:'100%',height:'25em',fontFamily:'Courier'}} id="fields" name="csv" ></textarea>
                             </div>
                             <div className="modal-footer">
-                                <input id="column_submit" className="form-control" type="submit" value="Submit" />
+                                <button id="csv_submit" type="submit" className="btn btn-primary" >Submit</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-        );
-    }
-}
-
-class FieldCheckBox extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-        };
-    }
-    
-    render() {
-        return (
-            <a className="dropdown-item" key={this.props.field}>
-            <input className='field_checkbox' defaultChecked={true} type='checkbox' data-field={this.props.field} name={this.props.field} onClick={this.props.handlecheckboxes} /><span>{this.props.field}</span>
-            </a>
-        );
-    }
-}
-
-class CheckBoxes extends React.Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            visible:{}
-        }
-        this.handleCheckboxes = this.handleCheckboxes.bind(this);
-    }
-    
-    handleCheckboxes(e) {
-        const target = event.target;
-        
-        let updated = this.props.headers.slice();
-        let scope = this;
-        $('.field_checkbox').each(function() {
-            let checked = this.checked;
-            let name = $(this).attr('name');
-            if (!checked) {
-                updated = updated.filter(field => field != name);            
-            } else {
-                if (!updated.includes(name)) {
-                    updated.push(name);            
-                } 
-            }
-            console.log(updated);
-            
-        });
-        this.setState({visible:updated}, () => {
-            this.props.headers.map(field => {
-                if(scope.state.visible.includes(field)) {
-                    $('th[data-field="' + field + '"], td[data-field="' + field + '"]').show();
-                } else {
-                    $('th[data-field="' + field + '"], td[data-field="' + field + '"]').hide();
-                }
-            });
-            updateTableWidth(computeColWidths(this.props.headers));
-        });
-    }
-    
-    componentDidUpdate(props) {
-        $( function() {
-            $( ".sortable" ).sortable();
-            $( ".sortable" ).disableSelection();
-        } );
-    }
-    
-    render() {
-        return (            
-        <div className="dropdown-menu sortable" id="columns_menu" aria-labelledby="dropdownMenuButton">
-            {this.props.headers.map(field => {
-                return <FieldCheckBox headers={this.props.headers} key={field} field={field} handlecheckboxes={this.handleCheckboxes} />
-            })}
-            <button className="btn btn-outline-secondary btn-sm ms-2" onClick={this.props.reorderheaders}>Reorder</button>
-        </div>
-        );
+        )
     }
 }
 
@@ -206,7 +110,7 @@ class Nav extends React.Component {
             </a>
             <div className="dropdown-menu" aria-labelledby="databaseDropdown" >
             <CsvInput fileinput={this.props.fileinput} csvhandler={e => this.props.csvhandler(e, this.props.fileinput)}/>
-            <a className="pastebin dropdown-item" data-toggle="modal" data-target="#pastebin">Paste CSV</a>
+            <a className="pastebin dropdown-item" data-bs-toggle="modal" data-bs-target="#pastebin">Paste CSV</a>
             </div>
             </li>
             <li className="nav-item">
@@ -229,7 +133,8 @@ class Nav extends React.Component {
         </li>
         </ul>
         </div>
-        <AddColumnModal headers={this.props.headers} handleaddcolumn={this.props.handleaddcolumn} />
+        <CsvPasteModal csvpastehandler={this.props.csvpastehandler} />
+        <AddColumnModal headers={this.props.headers} handleaddcolumn={this.props.handleaddcolumn} />        
         </nav> 
         )
     }
