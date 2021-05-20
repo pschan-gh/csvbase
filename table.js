@@ -25,25 +25,37 @@ function TableRow(props) {
   );
 }
 
-function Header(props) {
-    return(
-        <thead>
-            <tr id="header_row" className="table-secondary">                
-                {props.headers.map((field, i) => {
-                    return <th key={field} data-field={field}>
-                    <a href="#" className="header" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{field}</a>
-                    <div className="dropdown-menu" aria-labelledby={field}>
-                        <a className="dropdown-item rename" data-field={field} href="#">Rename</a>
-                        <a className="dropdown-item group_by" data-field={field} href="#">Group by</a>
-                        <a className="dropdown-item fields statistics" data-field={field} href="#" >Statistics</a>                        
-                    </div>
-                    <Sort handlesort={props.handlesort} field={field} sortarray={props.sortarray} />
-                    </th>;                    
-                }
-                )}
-            </tr>
-        </thead>
-    );        
+class Header extends React.Component {
+    constructor(props) {
+        super(props); 
+        // this.handleSort = this.handleSort.bind(this);
+    }
+    
+    ClickHandler(field) {
+        console.log(field);
+        $('#rename_column input[name="old_col_name"]').val(field);
+    }
+    
+    render() {
+        return(
+            <thead>
+                <tr id="header_row" className="table-secondary">                
+                    {this.props.headers.map((field, i) => {
+                        return <th key={field} data-field={field}>
+                            <a href="#" className="header" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{field}</a>
+                            <div className="dropdown-menu" aria-labelledby={field}>
+                                <a className="dropdown-item rename" data-bs-toggle="modal" data-bs-target="#rename_column" onClick={() => this.ClickHandler(field)} href="#">Rename</a>                        
+                                    <a className="dropdown-item group_by" data-field={field} href="#">Group by</a>
+                                    <a className="dropdown-item fields statistics" data-field={field} href="#" >Statistics</a>                        
+                                    </div>
+                                    <Sort handlesort={this.props.handlesort} field={field} sortarray={this.props.sortarray} />
+                                </th>;                    
+                            }
+                        )}
+                    </tr>
+                </thead>
+            );
+        }
 }
 
 class Table extends React.Component {

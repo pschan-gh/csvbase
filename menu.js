@@ -97,13 +97,6 @@ class Nav extends React.Component {
             <nav className="navbar navbar-expand-md">
             <div className="navbar-collapse collapse">
             <ul className="navbar-nav">
-            <li className="nav-item">
-            <a className="nav-link" href="#" id="reset">
-            <i className="material-icons">
-            refresh
-            </i>
-            </a>
-            </li>
             <li className="nav-item dropdown new_database">
             <a className="nav-link dropdown-toggle" href="#" id="databaseDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Update Database
@@ -134,7 +127,8 @@ class Nav extends React.Component {
         </ul>
         </div>
         <CsvPasteModal csvpastehandler={this.props.csvpastehandler} />
-        <AddColumnModal headers={this.props.headers} handleaddcolumn={this.props.handleaddcolumn} />        
+        <AddColumnModal headers={this.props.headers} handleaddcolumn={this.props.handleaddcolumn} />
+        <RenameColumnModal handlerenamecolumn={this.props.handlerenamecolumn} />     
         </nav> 
         )
     }

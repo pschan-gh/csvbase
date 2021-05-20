@@ -15,6 +15,7 @@ class Container extends React.Component {
         this.CsvHandler = this.CsvHandler.bind(this);
         this.KeyHandler = this.KeyHandler.bind(this);
         this.handleQuery = this.handleQuery.bind(this);
+        this.handleRenameColumn = this.handleRenameColumn.bind(this);
         this.handleAddColumn = this.handleAddColumn.bind(this);
         this.fileInput = React.createRef();    
         this.fileInput2 = React.createRef();  
@@ -30,12 +31,12 @@ class Container extends React.Component {
         this.setState({headers: headers});
     }
 
-    UpdateTable(database, filter) {
+    UpdateTable(database, filter, headers) {
         let table = [];
         let datum;
         for (let key in database) {
             datum = {};
-            this.state.headers.map(field => {
+            headers.map(field => {
                 if (database[key][field] == null || typeof database[key][field] == 'undefined') {
                     datum[field] = '';
                 } else {
@@ -140,7 +141,7 @@ class Container extends React.Component {
         
             this.setState({
                 database:database, 
-                table:this.UpdateTable(database, this.state.filter)
+                table:this.UpdateTable(database, this.state.filter, this.state.headers)
             }, function(){
                 $('.nav-item.calculated_column').show(); 
                 console.log(this.state.table)
@@ -148,11 +149,32 @@ class Container extends React.Component {
         });                
     }    
     
+    handleRenameColumn(e) {
+        e.preventDefault();
+        const form = e.currentTarget;
+        const oldField = form.elements["old_col_name"].value;
+        const field = form.elements["col_name"].value;
+        let headers = this.state.headers.slice();
+        const index = headers.indexOf(oldField);
+        headers[index] = field;
+        let database = {...this.state.database};
+        Object.keys(database).map(key => {
+            database[key][field] = database[key][oldField];
+            delete database[key][oldField];
+        });
+        console.log(database);
+        this.setState({
+            database:database, 
+            table:this.UpdateTable(database, this.state.filter, headers),
+            headers:headers
+        });
+    }
+    
     handleAddColumn(e) {
         e.preventDefault();
         const form = e.currentTarget;
         const routine = form.elements["column_routine"].value;
-        const field = $('#column_bin').find('.column_name').val();
+        const field = form.elements["calc_col_name"].value;
         if (this.state.headers.includes(field)) {
             alert('FIELD NAME EXISTS');
             return 0;
@@ -171,7 +193,7 @@ class Container extends React.Component {
             headers.push(field);
             this.setState({
                 database:database, 
-                table:this.UpdateTable(database, this.state.filter),
+                table:this.UpdateTable(database, this.state.filter, headers),
                 headers:headers
             });
         }
@@ -189,7 +211,7 @@ class Container extends React.Component {
             console.log(filter);
             this.setState({
                 filter:filter,
-                table:this.UpdateTable(this.state.database, filter)
+                table:this.UpdateTable(this.state.database, filter, this.state.headers)
             }, function(){console.log(this.state.table)}); 
         });
     }
@@ -197,7 +219,7 @@ class Container extends React.Component {
     render() {
         return (
         <div id="container">
-            <Nav fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} csvpastehandler={this.CsvPasteHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery} handleaddcolumn={this.handleAddColumn} reorderheaders={this.ReorderHeaders}/>
+            <Nav fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} csvpastehandler={this.CsvPasteHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery} handleaddcolumn={this.handleAddColumn} handlerenamecolumn={this.handleRenameColumn} reorderheaders={this.ReorderHeaders}/>
             <div id="outer-table-container">
                 <div id="table-container">
                     <Table table={this.state.table} headers={this.state.headers} primarykey={this.state.primarykey}/>
