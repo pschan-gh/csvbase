@@ -115,20 +115,22 @@ class Nav extends React.Component {
         <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Columns
         </a>
-        <CheckBoxes headers={this.props.headers} reorderheaders={this.props.reorderheaders} />
+        {/* <CheckBoxes headers={this.props.headers} reorderheaders={this.props.reorderheaders} /> */}
         </li>
         <li className="nav-item query">
         <a className="nav-link query dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Query</a>
         <Query filter={this.props.filter} handlequery={this.props.handlequery} headers={this.props.headers} />
         </li>
         <li className="nav-item calculated_column">
-        <AddColumn />
+        {/* <AddColumn /> */}
         </li>
         </ul>
         </div>
         <CsvPasteModal csvpastehandler={this.props.csvpastehandler} />
+        {/*
         <AddColumnModal headers={this.props.headers} handleaddcolumn={this.props.handleaddcolumn} />
         <RenameColumnModal handlerenamecolumn={this.props.handlerenamecolumn} />     
+        */}
         </nav> 
         )
     }

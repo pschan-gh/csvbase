@@ -64,8 +64,35 @@ class Table extends React.Component {
         this.state = {
             sortArray:{},
             sortField:'',
+            filter:'true'
         };
         this.handleSort = this.handleSort.bind(this);
+        this.updateTable = this.updateTable.bind(this);
+    }
+
+    updateTable() {
+        console.log('updating table');
+        
+        let headers = this.props.headers;
+        let filter = this.props.filter;
+        let database = this.props.database;
+        
+        let table = [];
+        let datum;
+        
+        for (let key in database) {
+            datum = {};
+            headers.map(field => {
+                if (database[key][field] == null || typeof database[key][field] == 'undefined') {
+                    datum[field] = '';
+                } else {
+                    datum[field] = database[key][field];
+                }
+            });
+            table.push(datum);
+        }
+        let filterFunc =  new Function('item', 'return ' + filter);
+        return table.filter(filterFunc);
     }
 
     handleSort(field) {
@@ -88,8 +115,8 @@ class Table extends React.Component {
         }
         let sortArray = this.state.sortArray;
         let clicked = this.state.sortArray[field] 
-        if (!isNaN(a) && !isNaN(b)) {
-            return clicked*(a - b);
+        if (!(isNaN(parseFloat(a[field])) || isNaN(parseFloat(b[field])))) {
+            return clicked*(parseFloat(a[field]) - parseFloat(b[field]));
         } else {
             return clicked*a[field].localeCompare(b[field]); 
         }
@@ -109,12 +136,14 @@ class Table extends React.Component {
         updateTableWidth(computeColWidths(this.props.headers));    
     }
 
-    render() {
+    render() {        
+        let table =  this.updateTable();
+        console.log(table);
         return(
         <table id="mainTable" className="table table-bordered table-hover">
             <Header headers={this.props.headers} sortarray={this.state.sortArray} handlesort={this.handleSort} />
             <tbody>
-                { this.props.table.sort((a, b) => this.sortByField(a, b, this.state.sortField)).map((row, index) => {
+                { table.sort((a, b) => this.sortByField(a, b, this.state.sortField)).map((row, index) => {
                     return <TableRow row={row} headers={this.props.headers} index={index + 1} key={index + 1} />
                     })
                 }

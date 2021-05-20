@@ -1,7 +1,8 @@
 function QueryItem(props) {
     return (
-        <div className="row input-group mb-3">
-            <select style={{marginLeft:'2em'}} name={props.querykey} className="form-control" defaultValue={props.field} onChange={props.handleselect}>
+        <div className="row mx-3 mb-3">
+        <div className="col">
+            <select name={props.querykey} className="form-control" defaultValue={props.field} onChange={props.handleselect}>
                 <option name={props.querykey} value='Show All'>Show All</option>
                 {
                     props.headers.map((field, i) => {
@@ -9,7 +10,10 @@ function QueryItem(props) {
                     })
                 }
             </select>
+        </div>
+        <div className="col">
             <input className="form-control" type="text" name={props.querykey} defaultValue={props.condition} onChange={props.handlecondition}/>
+        </div>
         </div>
     );
 }
@@ -51,7 +55,7 @@ class Query extends React.Component {
                         )
                     })}
                         <div className="col-auto">
-                            <button type="submit" className="btn btn-outline-primary btn-sm">Submit</button>
+                            <button type="submit" className="btn btn-secondary btn-sm">Submit</button>
                         </div>
                 </form>
             </div>

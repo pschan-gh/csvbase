@@ -2,7 +2,7 @@ class Container extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            table: [], 
+            // table: [], 
             data:null,
             database:{},
             headers: ['rank'],
@@ -31,24 +31,24 @@ class Container extends React.Component {
         this.setState({headers: headers});
     }
 
-    UpdateTable(database, filter, headers) {
-        let table = [];
-        let datum;
-        for (let key in database) {
-            datum = {};
-            headers.map(field => {
-                if (database[key][field] == null || typeof database[key][field] == 'undefined') {
-                    datum[field] = '';
-                } else {
-                    datum[field] = database[key][field];
-                }
-            });
-            table.push(datum);
-        }
-        let filterFunc =  new Function('item', 'return ' + filter);
-        return table.filter(filterFunc);
-
-    }
+    // UpdateTable(database, filter, headers) {
+    //     let table = [];
+    //     let datum;
+    //     for (let key in database) {
+    //         datum = {};
+    //         headers.map(field => {
+    //             if (database[key][field] == null || typeof database[key][field] == 'undefined') {
+    //                 datum[field] = '';
+    //             } else {
+    //                 datum[field] = database[key][field];
+    //             }
+    //         });
+    //         table.push(datum);
+    //     }
+    //     let filterFunc =  new Function('item', 'return ' + filter);
+    //     return table.filter(filterFunc);
+    // 
+    // }
     
     CsvPasteHandler(e) {
         e.preventDefault();
@@ -141,7 +141,7 @@ class Container extends React.Component {
         
             this.setState({
                 database:database, 
-                table:this.UpdateTable(database, this.state.filter, this.state.headers)
+                // table:this.UpdateTable(database, this.state.filter, this.state.headers)
             }, function(){
                 $('.nav-item.calculated_column').show(); 
                 console.log(this.state.table)
@@ -165,7 +165,7 @@ class Container extends React.Component {
         console.log(database);
         this.setState({
             database:database, 
-            table:this.UpdateTable(database, this.state.filter, headers),
+            // table:this.UpdateTable(database, this.state.filter, headers),
             headers:headers
         });
     }
@@ -193,7 +193,7 @@ class Container extends React.Component {
             headers.push(field);
             this.setState({
                 database:database, 
-                table:this.UpdateTable(database, this.state.filter, headers),
+                // table:this.UpdateTable(database, this.state.filter, headers),
                 headers:headers
             });
         }
@@ -211,7 +211,7 @@ class Container extends React.Component {
             console.log(filter);
             this.setState({
                 filter:filter,
-                table:this.UpdateTable(this.state.database, filter, this.state.headers)
+                // table:this.UpdateTable(this.state.database, filter, this.state.headers)
             }, function(){console.log(this.state.table)}); 
         });
     }
@@ -222,7 +222,7 @@ class Container extends React.Component {
             <Nav fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} csvpastehandler={this.CsvPasteHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery} handleaddcolumn={this.handleAddColumn} handlerenamecolumn={this.handleRenameColumn} reorderheaders={this.ReorderHeaders}/>
             <div id="outer-table-container">
                 <div id="table-container">
-                    <Table table={this.state.table} headers={this.state.headers} primarykey={this.state.primarykey}/>
+                    <Table table={this.state.table} database={this.state.database} headers={this.state.headers} filter={this.state.filter} primarykey={this.state.primarykey}/>
                 </div>
             </div>            
         </div>
