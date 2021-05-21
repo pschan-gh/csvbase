@@ -133,7 +133,12 @@ class Table extends React.Component {
             }
             
         });
-        updateTableWidth(computeColWidths(this.props.headers));    
+        updateTableWidth(computeColWidths(this.props.headers));
+        $('tr').off();
+        $('tr').on('click', function() {
+            $('td').css('color', '');
+            $(this).find('td').css('color', 'red');
+        });
     }
 
     render() {        

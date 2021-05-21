@@ -28,12 +28,12 @@ function computeColWidths(headers) {
     headers.map(field => {
         let widths = [];
         $("td[data-field='" + field + "']").each(function() {
-            widths.push(($(this).text().length)*12);
+            widths.push(($(this).text().length)*6);
         });
         $("th[data-field='" + field + "'] > a.header").each(function() {
-            widths.push(($(this).text().length)*12);
+            widths.push(($(this).text().length)*6);
         });
-        colWidths[field] = Math.min(400, Math.max(...widths) + 15);
+        colWidths[field] = Math.min(400, Math.max(...widths)) + 20;
     });
     return colWidths;
 }

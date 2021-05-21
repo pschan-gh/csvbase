@@ -124,6 +124,22 @@ class Nav extends React.Component {
         <li className="nav-item calculated_column">
         <AddColumn />
         </li>
+        <li className="nav-item dropdown" id="export">
+            <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Export
+            </a>
+            <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a id="exportCSV" className="dropdown-item" onClick={this.props.exporthandler}>
+                    Export to CSV
+                </a>
+                {/* <a id="exportJSON" class="dropdown-item">
+                    Export to JSON
+                </a>
+                <a id="exportSqlite" class="dropdown-item">
+                    Export to Sqlite
+                </a> */}
+            </div>
+        </li>
         </ul>
         </div>
         <CsvPasteModal csvpastehandler={this.props.csvpastehandler} />

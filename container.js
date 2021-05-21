@@ -10,6 +10,7 @@ class Container extends React.Component {
             primarykey:null,
             filter:'true',
         };
+        this.ExportHandler = this.ExportHandler.bind(this);
         this.ReorderHeaders = this.ReorderHeaders.bind(this);
         this.CsvPasteHandler = this.CsvPasteHandler.bind(this);
         this.CsvHandler = this.CsvHandler.bind(this);
@@ -49,6 +50,33 @@ class Container extends React.Component {
     //     return table.filter(filterFunc);
     // 
     // }
+    
+    ExportHandler() {
+        $('th div.triangle').html('');
+        
+        var $table = $('#mainTable');
+        var csv = $table.table2csv('return', {
+            "separator": ",",
+            "newline": "\n",
+            "quoteFields": true,
+            "excludeColumns": ".col_chkbox, .col_count, .col_rank",
+            "excludeRows": "",
+            "trimContent": true,
+            "filename": "table.csv"
+        });
+
+        csv = csv.replace(/RenameGroup byStatistics/g, '');
+
+        // https://stackoverflow.com/questions/42462764/javascript-export-csv-encoding-utf-8-issue/42466254
+        var universalBOM = "\uFEFF";
+        var a = document.createElement('a');
+        a.setAttribute('href', 'data:text/csv;charset=UTF-8,'
+        + encodeURIComponent(universalBOM + csv));
+        a.setAttribute('download', 'untitled.csv');
+        a.click()
+        // window.location.href = 'data:text/csv;charset=UTF-8,' + encodeURIComponent(universalBOM + csv);
+        $('th div.triangle').html('&#x25ba;');
+    }
     
     CsvPasteHandler(e) {
         e.preventDefault();
@@ -185,7 +213,7 @@ class Container extends React.Component {
                 let routineStr = routine.replace(/\(@([^\)]+)\)/g, 'item["$1"]');
                 // console.log(routineStr);
                 let routineFunc = new Function('item',  routineStr);
-                let value =  routineFunc(item);
+                let value =  routineFunc(item).toString();
                 database[key][field] = value;
                 console.log(database[key]);
             });
@@ -219,7 +247,7 @@ class Container extends React.Component {
     render() {
         return (
         <div id="container">
-            <Nav fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} csvpastehandler={this.CsvPasteHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery} handleaddcolumn={this.handleAddColumn} handlerenamecolumn={this.handleRenameColumn} reorderheaders={this.ReorderHeaders}/>
+            <Nav fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} csvpastehandler={this.CsvPasteHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery} handleaddcolumn={this.handleAddColumn} handlerenamecolumn={this.handleRenameColumn} reorderheaders={this.ReorderHeaders} exporthandler={this.ExportHandler}/>
             <div id="outer-table-container">
                 <div id="table-container">
                     <Table table={this.state.table} database={this.state.database} headers={this.state.headers} filter={this.state.filter} primarykey={this.state.primarykey}/>
