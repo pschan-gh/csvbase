@@ -82,7 +82,7 @@ class Table extends React.Component {
             sortField:'',
             prevSortField:'',
             groupField:'',
-            filter:'true'
+            filter:'true',
         };
         this.handleSort = this.handleSort.bind(this);
         this.updateTable = this.updateTable.bind(this);
