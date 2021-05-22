@@ -16,7 +16,8 @@ function Sort(props) {
 
 function TableRow(props) {
     let bgcolor = props.groupbyprimarykey ? '' : 'hsl(' + (props.groupindex * 75) % 360 + ', 45%, 95%)';    
-    let rank = props.groupbyprimarykey ? props.groupindex : props.index;
+    // let rank = props.groupbyprimarykey ? props.groupindex : props.index;
+    let rank = props.index;
     return (
         <tr data-group-index={props.groupindex} style={{backgroundColor:bgcolor}}>
         <td key='rank' data-field='rank'>{rank}</td>
@@ -37,7 +38,9 @@ class Header extends React.Component {
     StatisticsHandler(field) {
         let table = [];
         this.props.groups.forEach(group => {
-            table.push(group);
+            group.map(element => {
+                table.push(element);
+            });
         });
         let values = table.map(item => {return item[field];});
         statistics(values, field);
@@ -77,6 +80,7 @@ class Table extends React.Component {
         this.state = {
             sortArray:{},
             sortField:'',
+            prevSortField:'',
             groupField:'',
             filter:'true'
         };
@@ -101,24 +105,29 @@ class Table extends React.Component {
             return database[key][groupField];
         });
         console.log(values);
-        let unique = values.filter((value, index, self) => { return self.indexOf(value) === index; });
-        let uniqueSorted = unique.sort((a, b) => {
-            let clicked = this.state.sortArray[this.state.groupField];
-            if (!(isNaN(parseFloat(a)) || isNaN(parseFloat(b)))) {
-                return clicked*(parseFloat(a) - parseFloat(b));
-            } else {
-                return clicked*a.localeCompare(b); 
-            }
-        });
-        console.log(uniqueSorted);
         
+        let uniqueSorted;
+        if(groupField != this.props.primarykey) {
+            let unique = values.filter((value, index, self) => { return self.indexOf(value) === index; });
+            uniqueSorted = unique.sort((a, b) => {
+                let clicked = this.state.sortArray[this.state.groupField];
+                if (!(isNaN(parseFloat(a)) || isNaN(parseFloat(b)))) {
+                    return clicked*(parseFloat(a) - parseFloat(b));
+                } else {
+                    return clicked*a.localeCompare(b); 
+                }
+            });            
+        } else {
+            uniqueSorted = [''];
+        }
+        console.log(uniqueSorted);
         let datum;
         
         let filterFunc =  new Function('item', 'return ' + filter);
         let groups = uniqueSorted.map(value => {
             let table = [];
             for (let key in database) {
-                if (database[key][groupField] != value) {
+                if (database[key][groupField] != value && groupField != this.props.primarykey) {
                     continue;
                 }
                 datum = {};
@@ -131,37 +140,62 @@ class Table extends React.Component {
                 });
                 table.push(datum);
             }
-            return table.filter(filterFunc).sort((a, b) => this.sortByField(a, b, this.state.sortField));
-        });
-                
-        return groups;
+            // if (this.state.prevSortField != '') {
+            //     console.log('multiple sort ' + this.state.prevSortField + ' ' + this.state.sortField);
+            //     return table.filter(filterFunc)
+            //     .sort((a, b) => this.sortByField(a, b, this.state.prevSortField))
+            //     .sort((a, b) => this.sortByField(a, b, this.state.sortField));
+            // } else {
+            //     return table.filter(filterFunc)
+            //     .sort((a, b) => this.sortByField(a, b, this.state.sortField));
+            // }
+            console.log('multiple sort ' + this.state.prevSortField + ' ' + this.state.sortField);
+            return table.filter(filterFunc)
+                .sort((a, b) => {return this.sortByField(a, b, this.state.sortField, this.state.prevSortField)});
+        });                
+        return groups;                
     }
 
     handleSort(field) {
         console.log(field);
-        let sortArray = {};
-        this.props.headers.forEach(field => sortArray[field] = 0);
+        let sortArray = this.state.sortArray;
+        // this.props.headers.forEach(field => sortArray[field] = 0);
         let clicked = this.state.sortArray[field] == 1 ? -1 : 1;
         sortArray[field] = clicked;
-        
+        let prevSortField = this.state.sortField;
+        console.log(prevSortField);
         this.setState({
             sortArray: sortArray,
-            sortField: field
+            sortField: field,
+            prevSortField:prevSortField
         });
-        return true;
     }
 
-    sortByField(a, b, field) {
+    sortByField(a, b, field, field2) {
         if (field == '') {
             return true;
         }
         let sortArray = this.state.sortArray;
-        let clicked = this.state.sortArray[field] 
+        let clicked = this.state.sortArray[field];
+        
+        let diff, diff2;
         if (!(isNaN(parseFloat(a[field])) || isNaN(parseFloat(b[field])))) {
-            return clicked*(parseFloat(a[field]) - parseFloat(b[field]));
+            diff =  clicked*(parseFloat(a[field]) - parseFloat(b[field]));
         } else {
-            return clicked*a[field].localeCompare(b[field]); 
+            diff = clicked*a[field].localeCompare(b[field]); 
         }
+        
+        if (field2 == '') {
+            diff2 = true;
+        } else {
+            let clicked2 = this.state.sortArray[field2];
+            if (!(isNaN(parseFloat(a[field2])) || isNaN(parseFloat(b[field2])))) {
+                diff2 = clicked2*(parseFloat(a[field2]) - parseFloat(b[field2]));
+            } else {
+                diff2 =  clicked2*(a[field2].localeCompare(b[field2])); 
+            }
+        }
+        return diff || diff2;
     }
     
     componentDidUpdate() {
