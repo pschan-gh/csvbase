@@ -113,12 +113,32 @@ class Container extends React.Component {
         const scope = this;
         reader.onload = function(e) {
             let plaintextDB = e.target.result;
-            let results = Papa.parse(plaintextDB, {
+            
+            let headerRow = plaintextDB.split('\n').shift();
+            let headers = Papa.parse(plaintextDB, {
+                header: true,
+                dynamicTyping: false,
+            }).meta['fields'];
+            
+            let sanitizedHeaders = [];
+            let blankIndex = 0;
+            headers.forEach(function(field) {
+                if (field.trim() != '') {
+                    sanitizedHeaders.push('"' + sanitize(field) + '"');
+                } else {
+                    sanitizedHeaders.push('"BLANK' + blankIndex++ + '"');
+                }
+            });
+            
+            let sanitizedDB = sanitizedHeaders.join(',') + "\n" 
+            + plaintextDB.split('\n').slice(1).join("\n");
+            console.log(sanitizedDB);
+            let results = Papa.parse(sanitizedDB, {
                 header: true,
                 dynamicTyping: false,
             });
             console.log(results);
-            let headers = scope.state.headers.slice();
+            headers = scope.state.headers.slice();
             results.meta['fields'].forEach(field => {
                 if (!headers.includes(field)) {
                     headers.push(field);

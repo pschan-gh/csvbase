@@ -1,6 +1,7 @@
 function sanitize(str) {
-    var str = str.replace(/^\s+|\s+$/g, "").replace(/\s/g, "_").replace(/[^a-z0-9_]/ig, "").toUpperCase();
-    str = str.replace(/([a-zA-Z])_(\d+)/g,"$1$2");
+    // var str = str.replace(/^\s+|\s+$/g, "").replace(/\s/g, "_").replace(/[^a-z0-9_]/ig, "").toUpperCase();
+    var str = str.replace(/[^a-z0-9_\-]/ig, " ").replace(/\s+/g, ' ');
+    // str = str.replace(/([a-zA-Z])_(\d+)/g,"$1$2");
     return str;
 }
 
