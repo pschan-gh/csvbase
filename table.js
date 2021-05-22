@@ -28,7 +28,12 @@ function TableRow(props) {
 class Header extends React.Component {
     constructor(props) {
         super(props); 
-        // this.handleSort = this.handleSort.bind(this);
+        this.StatisticsHandler = this.StatisticsHandler.bind(this);
+    }
+    
+    StatisticsHandler(field) {
+        let values = this.props.table.map(item => {return item[field];});
+        statistics(values, field);
     }
     
     ClickHandler(field) {
@@ -46,7 +51,7 @@ class Header extends React.Component {
                             <div className="dropdown-menu" aria-labelledby={field}>
                                 <a className="dropdown-item rename" data-bs-toggle="modal" data-bs-target="#rename_column" onClick={() => this.ClickHandler(field)} href="#">Rename</a>                        
                                     <a className="dropdown-item group_by" data-field={field} href="#">Group by</a>
-                                    <a className="dropdown-item fields statistics" data-field={field} href="#" >Statistics</a>                        
+                                    <a className="dropdown-item fields statistics" data-field={field} href="#" data-bs-toggle="modal" data-bs-target="#statistics" onClick={() => this.StatisticsHandler(field)}>Statistics</a>                        
                                     </div>
                                     <Sort handlesort={this.props.handlesort} field={field} sortarray={this.props.sortarray} />
                                 </th>;                    
@@ -146,7 +151,7 @@ class Table extends React.Component {
         console.log(table);
         return(
         <table id="mainTable" className="table table-bordered table-hover">
-            <Header headers={this.props.headers} sortarray={this.state.sortArray} handlesort={this.handleSort} />
+            <Header table={table} headers={this.props.headers} sortarray={this.state.sortArray} handlesort={this.handleSort} />
             <tbody>
                 { table.sort((a, b) => this.sortByField(a, b, this.state.sortField)).map((row, index) => {
                     return <TableRow row={row} headers={this.props.headers} index={index + 1} key={index + 1} />

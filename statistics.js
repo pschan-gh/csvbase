@@ -90,7 +90,7 @@ function bars(data) {
 }
 
 function statistics(values, field) {
-    $('#statistics').modal('toggle');
+    // $('#statistics').modal('toggle');
     $('.modal-title.field').text(field);
 
     let array = values.map(value => {return isNaN(value) ? 0 : value;});
