@@ -192,7 +192,6 @@ class Container extends React.Component {
                 // table:this.UpdateTable(database, this.state.filter, this.state.headers)
             }, function(){
                 $('.nav-item.calculated_column').show(); 
-                console.log(this.state.table)
             });
         });                
     }    

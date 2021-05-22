@@ -15,24 +15,31 @@ function Sort(props) {
 }
 
 function TableRow(props) {
- return (
-    <tr>
-        <td key='rank' data-field='rank'>{props.index}</td>
+    let bgcolor = props.groupbyprimarykey ? '' : 'hsl(' + (props.groupindex * 75) % 360 + ', 45%, 95%)';    
+    let rank = props.groupbyprimarykey ? props.groupindex : props.index;
+    return (
+        <tr data-group-index={props.groupindex} style={{backgroundColor:bgcolor}}>
+        <td key='rank' data-field='rank'>{rank}</td>
         {props.headers.filter(field => field != 'rank').map((field, index) => {
             return <td key={field} data-field={field}>{props.row[field]}</td>;
         })}                            
-    </tr>    
-  );
+        </tr>    
+    );
 }
 
 class Header extends React.Component {
     constructor(props) {
         super(props); 
         this.StatisticsHandler = this.StatisticsHandler.bind(this);
-    }
+        
+    }    
     
     StatisticsHandler(field) {
-        let values = this.props.table.map(item => {return item[field];});
+        let table = [];
+        this.props.groups.forEach(group => {
+            table.push(group);
+        });
+        let values = table.map(item => {return item[field];});
         statistics(values, field);
     }
     
@@ -46,11 +53,12 @@ class Header extends React.Component {
             <thead>
                 <tr id="header_row" className="table-secondary">                
                     {this.props.headers.map((field, i) => {
-                        return <th key={field} data-field={field}>
+                        let groupby = this.props.groupfield == field ? 'groupby' : '';
+                        return <th key={field} data-field={field} className={groupby}>
                             <a href="#" className="header" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{field}</a>
                             <div className="dropdown-menu" aria-labelledby={field}>
                                 <a className="dropdown-item rename" data-bs-toggle="modal" data-bs-target="#rename_column" onClick={() => this.ClickHandler(field)} href="#">Rename</a>                        
-                                    <a className="dropdown-item group_by" data-field={field} href="#">Group by</a>
+                                    <a className="dropdown-item group_by" data-field={field} href="#"  onClick={() => this.props.grouphandler(field)}>Group by</a>
                                     <a className="dropdown-item fields statistics" data-field={field} href="#" data-bs-toggle="modal" data-bs-target="#statistics" onClick={() => this.StatisticsHandler(field)}>Statistics</a>                        
                                     </div>
                                     <Sort handlesort={this.props.handlesort} field={field} sortarray={this.props.sortarray} />
@@ -69,10 +77,16 @@ class Table extends React.Component {
         this.state = {
             sortArray:{},
             sortField:'',
+            groupField:'',
             filter:'true'
         };
         this.handleSort = this.handleSort.bind(this);
         this.updateTable = this.updateTable.bind(this);
+        this.GroupHandler = this.GroupHandler.bind(this);
+    }
+
+    GroupHandler(field) {
+        this.setState({groupField:field});
     }
 
     updateTable() {
@@ -81,23 +95,46 @@ class Table extends React.Component {
         let headers = this.props.headers;
         let filter = this.props.filter;
         let database = this.props.database;
+        let groupField = this.state.groupField == '' ? this.props.primarykey : this.state.groupField;
         
-        let table = [];
+        let values = Object.keys(database).map(key => {
+            return database[key][groupField];
+        });
+        console.log(values);
+        let unique = values.filter((value, index, self) => { return self.indexOf(value) === index; });
+        let uniqueSorted = unique.sort((a, b) => {
+            let clicked = this.state.sortArray[this.state.groupField];
+            if (!(isNaN(parseFloat(a)) || isNaN(parseFloat(b)))) {
+                return clicked*(parseFloat(a) - parseFloat(b));
+            } else {
+                return clicked*a.localeCompare(b); 
+            }
+        });
+        console.log(uniqueSorted);
+        
         let datum;
         
-        for (let key in database) {
-            datum = {};
-            headers.map(field => {
-                if (database[key][field] == null || typeof database[key][field] == 'undefined') {
-                    datum[field] = '';
-                } else {
-                    datum[field] = database[key][field];
-                }
-            });
-            table.push(datum);
-        }
         let filterFunc =  new Function('item', 'return ' + filter);
-        return table.filter(filterFunc);
+        let groups = uniqueSorted.map(value => {
+            let table = [];
+            for (let key in database) {
+                if (database[key][groupField] != value) {
+                    continue;
+                }
+                datum = {};
+                headers.map(field => {
+                    if (database[key][field] == null || typeof database[key][field] == 'undefined') {
+                        datum[field] = '';
+                    } else {
+                        datum[field] = database[key][field];
+                    }
+                });
+                table.push(datum);
+            }
+            return table.filter(filterFunc).sort((a, b) => this.sortByField(a, b, this.state.sortField));
+        });
+                
+        return groups;
     }
 
     handleSort(field) {
@@ -135,9 +172,18 @@ class Table extends React.Component {
         this.props.headers.map(field => {
             if ( sortArray[field] == null || typeof sortArray[field] == 'undefined') {
                 sortArray[field] = 1;
-            }
-            
+            }            
         });
+        
+        $('.field_checkbox').each(function() {
+            let field = $(this).attr('data-field');
+            if(this.checked) {                
+                $('th[data-field="' + field + '"], td[data-field="' + field + '"]').show();
+            } else {
+                $('th[data-field="' + field + '"], td[data-field="' + field + '"]').hide();
+            }
+        });
+        
         updateTableWidth(computeColWidths(this.props.headers));
         $('tr').off();
         $('tr').on('click', function() {
@@ -147,16 +193,19 @@ class Table extends React.Component {
     }
 
     render() {        
-        let table =  this.updateTable();
-        console.log(table);
+        let groups =  this.updateTable();
+        console.log(groups);
         return(
         <table id="mainTable" className="table table-bordered table-hover">
-            <Header table={table} headers={this.props.headers} sortarray={this.state.sortArray} handlesort={this.handleSort} />
+            <Header groups={groups} grouphandler={this.GroupHandler} groupfield={this.state.groupField} headers={this.props.headers} sortarray={this.state.sortArray} handlesort={this.handleSort} />
             <tbody>
-                { table.sort((a, b) => this.sortByField(a, b, this.state.sortField)).map((row, index) => {
-                    return <TableRow row={row} headers={this.props.headers} index={index + 1} key={index + 1} />
+            {
+                groups.map((group, groupIndex) => {
+                    return group.map((row, index) => {
+                        return <TableRow groupbyprimarykey={this.props.primarykey == this.state.groupField || this.state.groupField == ''} groupindex={groupIndex + 1} row={row} headers={this.props.headers} index={index + 1} key={group.toString() + (index + 1).toString()} />
                     })
-                }
+                })
+            }
             </tbody>
         </table>
     )
