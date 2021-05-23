@@ -19,7 +19,8 @@ class Container extends React.Component {
         this.handleRenameColumn = this.handleRenameColumn.bind(this);
         this.handleAddColumn = this.handleAddColumn.bind(this);
         this.fileInput = React.createRef();    
-        this.fileInput2 = React.createRef();  
+        this.fileInput2 = React.createRef();
+        this.table = React.createRef()
     }
 
     ReorderHeaders() {
@@ -191,6 +192,7 @@ class Container extends React.Component {
                 database:database, 
                 // table:this.UpdateTable(database, this.state.filter, this.state.headers)
             }, function(){
+                this.table.current.updateTable();
                 $('.nav-item.calculated_column').show(); 
             });
         });                
@@ -269,7 +271,7 @@ class Container extends React.Component {
             <Nav fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} csvpastehandler={this.CsvPasteHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery} handleaddcolumn={this.handleAddColumn} handlerenamecolumn={this.handleRenameColumn} reorderheaders={this.ReorderHeaders} exporthandler={this.ExportHandler}/>
             <div id="outer-table-container">
                 <div id="table-container">
-                    <Table table={this.state.table} database={this.state.database} headers={this.state.headers} filter={this.state.filter} primarykey={this.state.primarykey}/>
+                    <Table ref={this.table} database={this.state.database} headers={this.state.headers} filter={this.state.filter} primarykey={this.state.primarykey}/>
                 </div>
             </div>            
         </div>
