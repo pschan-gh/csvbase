@@ -262,7 +262,7 @@ class Container extends React.Component {
             this.setState({
                 filter:filter,
                 // table:this.UpdateTable(this.state.database, filter, this.state.headers)
-            }, function(){console.log(this.state.table)}); 
+            }, function(){this.table.current.updateTable();}); 
         });
     }
 

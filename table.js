@@ -142,7 +142,14 @@ class Table extends React.Component {
         // });
         // console.log(values);
         
-        let uniqueSorted = this.state.groupValues;
+        let uniqueSorted = this.state.groupValues.sort((a, b) => {
+            let clicked = this.state.sortArray[groupField];
+            if (!(isNaN(parseFloat(a)) || isNaN(parseFloat(b)))) {
+                return clicked*(parseFloat(a) - parseFloat(b));
+            } else {
+                return clicked*a.localeCompare(b); 
+            }
+        });  
         // if(groupField != this.props.primarykey) {
         //     let unique = values.filter((value, index, self) => { return self.indexOf(value) === index; });
         //     uniqueSorted = unique.sort((a, b) => {
@@ -214,7 +221,10 @@ class Table extends React.Component {
         });                
         // return groups;
         console.log(groups);
-        this.setState({groups:groups});            
+        this.setState({
+            groups:groups,
+        }
+        );
     }
 
     handleSort(field) {
