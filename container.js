@@ -5,7 +5,7 @@ class Container extends React.Component {
             // table: [], 
             data:null,
             database:{},
-            headers: ['rank'],
+            headers: ['count', 'rank'],
             headers2: [],
             primarykey:null,
             filter:'true',
@@ -33,25 +33,6 @@ class Container extends React.Component {
         });
         this.setState({headers: headers});
     }
-
-    // UpdateTable(database, filter, headers) {
-    //     let table = [];
-    //     let datum;
-    //     for (let key in database) {
-    //         datum = {};
-    //         headers.map(field => {
-    //             if (database[key][field] == null || typeof database[key][field] == 'undefined') {
-    //                 datum[field] = '';
-    //             } else {
-    //                 datum[field] = database[key][field];
-    //             }
-    //         });
-    //         table.push(datum);
-    //     }
-    //     let filterFunc =  new Function('item', 'return ' + filter);
-    //     return table.filter(filterFunc);
-    // 
-    // }
     
     ExportHandler() {
         $('th div.triangle').html('');
@@ -193,9 +174,7 @@ class Container extends React.Component {
             this.setState({
                 database:database, 
                 headers2:[]
-                // table:this.UpdateTable(database, this.state.filter, this.state.headers)
             }, function(){
-                // this.table.current.updateTable();
                 this.table.current.GroupHandler(this.table.current.state.groupField);                
                 $('.nav-item.calculated_column').show(); 
             });
@@ -218,7 +197,6 @@ class Container extends React.Component {
         console.log(database);
         this.setState({
             database:database, 
-            // table:this.UpdateTable(database, this.state.filter, headers),
             headers:headers
         });
     }
@@ -246,7 +224,6 @@ class Container extends React.Component {
             headers.push(field);
             this.setState({
                 database:database, 
-                // table:this.UpdateTable(database, this.state.filter, headers),
                 headers:headers
             });
         }
@@ -264,7 +241,6 @@ class Container extends React.Component {
             console.log(filter);
             this.setState({
                 filter:filter,
-                // table:this.UpdateTable(this.state.database, filter, this.state.headers)
             }, function(){this.table.current.updateTable();}); 
         });
     }

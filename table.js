@@ -15,13 +15,14 @@ function Sort(props) {
 }
 
 function TableRow(props) {
-    let bgcolor = props.groupbyprimarykey ? '' : 'hsl(' + (props.groupindex * 75) % 360 + ', 45%, 95%)';    
-    // let rank = props.groupbyprimarykey ? props.groupindex : props.index;
+    // let bgcolor = props.groupbyprimarykey ? '' : 'hsl(' + (props.groupindex * 85) % 360 + ', 45%, 95%)';    
+    // style={{backgroundColor:bgcolor}}
     let rank = props.index;
     return (
-        <tr data-group-index={props.groupindex} style={{backgroundColor:bgcolor}}>
-        <td key='rank' data-field='rank'>{rank}</td>
-        {props.headers.filter(field => field != 'rank').map((field, index) => {
+        <tr data-group-index={props.groupindex}>
+        <td key='count' data-field='count' className='count' data-count={props.count}><div className="count-number" style={{float:'left'}}>{props.count}</div><div style={{float:'right'}} className="expandcollapse">+</div></td>
+        <td key='rank' data-field='rank'>{rank}</td>        
+        {props.headers.filter(field => field != 'rank' && field != 'count').map((field, index) => {
             return <td key={field} data-field={field}>{props.row[field]}</td>;
         })}                            
         </tr>    
@@ -84,12 +85,11 @@ class Table extends React.Component {
             groupField:'',
             groupValues:[''],
             filter:'true',
-            groups:[],            
+            groups:[],      
         };
         this.handleSort = this.handleSort.bind(this);
         this.updateTable = this.updateTable.bind(this);
         this.GroupHandler = this.GroupHandler.bind(this);
-        this.updateTable();
     }
 
     GroupHandler(field) {
@@ -116,19 +116,6 @@ class Table extends React.Component {
         }, function(){this.updateTable();});
     }
 
-    // initializeGroups(headers, filter, groups, groupField) {
-    // 
-    // 
-    //     let dataTable[];
-    //     if (groups.length == 0) {
-    //         dataTable = this.props.database;
-    //         Object.keys(this.props.databse)
-    //     } else {
-    //         dataTable = 
-    //     }
-    // 
-    // }
-
     updateTable() {
         console.log('updating table');
         
@@ -136,11 +123,6 @@ class Table extends React.Component {
         let filter = this.props.filter;
         let database = this.props.database;
         let groupField = this.state.groupField == '' ? this.props.primarykey : this.state.groupField;
-        
-        // let values = Object.keys(database).map(key => {
-        //     return database[key][groupField];
-        // });
-        // console.log(values);
         
         let uniqueSorted = this.state.groupValues.sort((a, b) => {
             let clicked = this.state.sortArray[groupField];
@@ -150,20 +132,6 @@ class Table extends React.Component {
                 return clicked*a.localeCompare(b); 
             }
         });  
-        // if(groupField != this.props.primarykey) {
-        //     let unique = values.filter((value, index, self) => { return self.indexOf(value) === index; });
-        //     uniqueSorted = unique.sort((a, b) => {
-        //         let clicked = this.state.sortArray[this.state.groupField];
-        //         if (!(isNaN(parseFloat(a)) || isNaN(parseFloat(b)))) {
-        //             return clicked*(parseFloat(a) - parseFloat(b));
-        //         } else {
-        //             return clicked*a.localeCompare(b); 
-        //         }
-        //     });            
-        // } else {
-        //     uniqueSorted = [''];
-        // }
-        console.log(uniqueSorted);
         
         let datalist;
         
@@ -184,7 +152,6 @@ class Table extends React.Component {
         } else {
             datalist = [].concat.apply([], this.state.groups);
         }
-        console.log(datalist);
                 
         let filterFunc =  new Function('item', 'return ' + filter);
         let datum;
@@ -205,21 +172,9 @@ class Table extends React.Component {
                 });
                 table.push(datum);
             }
-            // if (this.state.prevSortField != '') {
-            //     console.log('multiple sort ' + this.state.prevSortField + ' ' + this.state.sortField);
-            //     return table.filter(filterFunc)
-            //     .sort((a, b) => this.sortByField(a, b, this.state.prevSortField))
-            //     .sort((a, b) => this.sortByField(a, b, this.state.sortField));
-            // } else {
-            //     return table.filter(filterFunc)
-            //     .sort((a, b) => this.sortByField(a, b, this.state.sortField));
-            // }
-            // console.log('multiple sort ' + this.state.prevSortField + ' ' + this.state.sortField);
-            console.log(table);
             return table.filter(filterFunc)
                 .sort((a, b) => {return this.sortByField(a, b, this.state.sortField, '')});
         });                
-        // return groups;
         console.log(groups);
         this.setState({
             groups:groups,
@@ -230,7 +185,6 @@ class Table extends React.Component {
     handleSort(field) {
         console.log(field);
         let sortArray = this.state.sortArray;
-        // this.props.headers.forEach(field => sortArray[field] = 0);
         let clicked = this.state.sortArray[field] == 1 ? -1 : 1;
         sortArray[field] = clicked;
         let prevSortField = this.state.sortField;
@@ -295,6 +249,32 @@ class Table extends React.Component {
             $('td').css('color', '');
             $(this).find('td').css('color', 'red');
         });
+        
+        if (this.state.groupField != this.props.primarykey && this.state.groupField != '') {
+            $('tbody tr').off();
+            let groupCount = $('tbody').attr('data-group-count');
+            for (let i = 0; i < groupCount; i++) {            
+                $('tbody tr[data-group-index="' + i + '"]:not(:first)').hide();
+                $('tbody tr[data-group-index="' + i + '"] td.count').click(() => {
+                    if ($('tbody tr[data-group-index="' + i + '"]').length > 1) {
+                        if ($('tbody tr[data-group-index="' + i + '"]:eq(1)').is(":visible")) {
+                            $('tbody tr[data-group-index="' + i + '"]:not(:first)').hide();
+                            $('tbody tr[data-group-index="' + i + '"] div.expandcollapse').text('+');
+                            $('tbody tr[data-group-index="' + i + '"]').css('background-color', '');
+                        } else {
+                            $('tbody tr[data-group-index="' + i + '"]').show();
+                            $('tbody tr[data-group-index="' + i + '"] div.expandcollapse').text('-');
+                            let bgcolor = 'hsl(' + (i * 95) % 360 + ', 55%, 95%)';
+                            $('tbody tr[data-group-index="' + i + '"]').css('background-color', bgcolor);
+                        }
+                    }
+                });
+            }
+        } else {
+            // $('div.count-number').hide();
+            $('div.expandcollapse').hide();
+        }
+        
     }
 
     render() {        
@@ -303,11 +283,11 @@ class Table extends React.Component {
         return(
             <table id="mainTable" className="table table-bordered table-hover">
             <Header groups={this.state.groups} grouphandler={this.GroupHandler} groupfield={this.state.groupField} headers={this.props.headers} sortarray={this.state.sortArray} handlesort={this.handleSort} />
-            <tbody>
+            <tbody data-group-count={this.state.groups.length}>
             {
                 this.state.groups.map((group, groupIndex) => {
-                    return group.map((row, index) => {
-                        return <TableRow groupbyprimarykey={this.props.primarykey == this.state.groupField || this.state.groupField == ''} groupindex={groupIndex + 1} row={row} headers={this.props.headers} index={index + 1} key={group.toString() + (index + 1).toString()} />
+                    return group.map((row, index, group) => {
+                        return <TableRow groupbyprimarykey={this.props.primarykey == this.state.groupField || this.state.groupField == ''} groupindex={groupIndex + 1} row={row} count={group.length} headers={this.props.headers} index={index + 1} key={group.toString() + (index + 1).toString()} />
                     })
                 })
             }
