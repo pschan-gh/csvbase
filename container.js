@@ -160,6 +160,7 @@ class Container extends React.Component {
     
     KeyHandler(e, keyName) {
         console.log('key selected');
+        this.table.current.setState({groups:[]});
         // console.log(e.target);
         let {name, value} = e.target;
         const scope = this;
