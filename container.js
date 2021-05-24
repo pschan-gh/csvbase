@@ -19,8 +19,8 @@ class Container extends React.Component {
         this.handleQuery = this.handleQuery.bind(this);
         this.handleRenameColumn = this.handleRenameColumn.bind(this);
         this.handleAddColumn = this.handleAddColumn.bind(this);
-        this.fileInput = React.createRef();    
-        this.fileInput2 = React.createRef();
+        this.fileInput = React.createRef(); 
+        this.xlsxInput = React.createRef();    
         this.table = React.createRef();
         this.nav = React.createRef()
     }
@@ -36,9 +36,8 @@ class Container extends React.Component {
     }
     
     ExportHandler() {
-        $('th div.triangle').html('');
+        $('th .triangle').html('');
         
-        var $table = $('#mainTable');
         var csv = $table.table2csv('return', {
             "separator": ",",
             "newline": "\n",
@@ -59,7 +58,7 @@ class Container extends React.Component {
         a.setAttribute('download', 'untitled.csv');
         a.click()
         // window.location.href = 'data:text/csv;charset=UTF-8,' + encodeURIComponent(universalBOM + csv);
-        $('th div.triangle').html('&#x25ba;');
+        $('th .triangle').html('&#x25ba;');
     }
     
     CsvPasteHandler(e) {
@@ -284,7 +283,7 @@ class Container extends React.Component {
     render() {
         return (
         <div id="container">
-            <Nav ref={this.nav} fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} xlsxhandler={this.XlsxHandler} csvpastehandler={this.CsvPasteHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery} handleaddcolumn={this.handleAddColumn} handlerenamecolumn={this.handleRenameColumn} reorderheaders={this.ReorderHeaders} exporthandler={this.ExportHandler}/>
+            <Nav ref={this.nav} fileinput={this.fileInput} xlsxinput={this.xlsxInput} csvhandler={this.CsvHandler} xlsxhandler={this.XlsxHandler} csvpastehandler={this.CsvPasteHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery} handleaddcolumn={this.handleAddColumn} handlerenamecolumn={this.handleRenameColumn} reorderheaders={this.ReorderHeaders} exporthandler={this.ExportHandler}/>
             <div id="outer-table-container">
                 <div id="table-container">
                     <Table ref={this.table} database={this.state.database} headers={this.state.headers} filter={this.state.filter} primarykey={this.state.primarykey}/>

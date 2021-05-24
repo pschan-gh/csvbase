@@ -63,7 +63,7 @@ function XlsxInput(props) {
     return (
         <label className="dropdown-item">
             Import XLSX
-            <input type="file" ref={props.fileinput} accept=".xlsx, .xls" style={{ display: "none" }} onChange={props.xlsxhandler}/>
+            <input type="file" ref={props.xlsxinput} accept=".xlsx, .xls" style={{ display: "none" }} onChange={props.xlsxhandler}/>
         </label>
     );
 }
@@ -112,7 +112,7 @@ class Nav extends React.Component {
             </a>
             <div className="dropdown-menu" aria-labelledby="databaseDropdown" >
             <CsvInput fileinput={this.props.fileinput} csvhandler={e => this.props.csvhandler(e, this.props.fileinput)}/>
-            <XlsxInput fileinput={this.props.fileinput} xlsxhandler={e => this.props.xlsxhandler(e, this.props.fileinput)}/>
+            <XlsxInput xlsxinput={this.props.xlsxinput} xlsxhandler={e => this.props.xlsxhandler(e, this.props.xlsxinput)}/>
             <a className="pastebin dropdown-item" data-bs-toggle="modal" data-bs-target="#pastebin">Paste CSV</a>
             </div>
             </li>
