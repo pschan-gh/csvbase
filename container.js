@@ -14,6 +14,7 @@ class Container extends React.Component {
         this.ReorderHeaders = this.ReorderHeaders.bind(this);
         this.CsvPasteHandler = this.CsvPasteHandler.bind(this);
         this.CsvHandler = this.CsvHandler.bind(this);
+        this.XlsxHandler = this.XlsxHandler.bind(this);
         this.KeyHandler = this.KeyHandler.bind(this);
         this.handleQuery = this.handleQuery.bind(this);
         this.handleRenameColumn = this.handleRenameColumn.bind(this);
@@ -140,6 +141,41 @@ class Container extends React.Component {
         reader.readAsText(fileinput.current.files[0]);
     }
     
+    XlsxHandler(e, fileinput) {
+        e.preventDefault();        
+        console.log(
+        `Selected file - ${fileinput.current.files[0].name}`
+        );
+        const reader = new FileReader();
+        const scope = this;
+        reader.onload = function(e) {
+            const data = e.target.result;
+            const workbook = XLSX.read(data, {
+                type: 'binary'
+            });
+            const sheetName = workbook.SheetNames[0];
+            const XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+            console.log(XL_row_object);
+            const headers2 = Object.keys(XL_row_object[0]);
+            
+            let headers = scope.state.headers.slice();
+            headers2.forEach(field => {
+                if (!headers.includes(field)) {
+                    headers.push(field);
+                }
+            });
+            
+            scope.setState({
+                data: XL_row_object,
+                headers:headers,
+                headers2:headers2
+            });
+            console.log(scope.state);
+            $('select.key').show();
+        }
+        reader.readAsBinaryString(e.target.files[0]);
+    }
+    
     KeyHandler(e, keyName) {
         console.log('key selected');
         this.table.current.setState({groups:[]});
@@ -248,7 +284,7 @@ class Container extends React.Component {
     render() {
         return (
         <div id="container">
-            <Nav ref={this.nav} fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} csvpastehandler={this.CsvPasteHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery} handleaddcolumn={this.handleAddColumn} handlerenamecolumn={this.handleRenameColumn} reorderheaders={this.ReorderHeaders} exporthandler={this.ExportHandler}/>
+            <Nav ref={this.nav} fileinput={this.fileInput} fileinput2={this.fileInput2} csvhandler={this.CsvHandler} xlsxhandler={this.XlsxHandler} csvpastehandler={this.CsvPasteHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery} handleaddcolumn={this.handleAddColumn} handlerenamecolumn={this.handleRenameColumn} reorderheaders={this.ReorderHeaders} exporthandler={this.ExportHandler}/>
             <div id="outer-table-container">
                 <div id="table-container">
                     <Table ref={this.table} database={this.state.database} headers={this.state.headers} filter={this.state.filter} primarykey={this.state.primarykey}/>
