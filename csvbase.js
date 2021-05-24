@@ -26,15 +26,16 @@ function insertAtCursor(myField, myValue) {
 
 function computeColWidths(headers) {
     let colWidths = {};
+    let widths;
     headers.map(field => {
-        let widths = [];
+        widths = [];
         $("td[data-field='" + field + "']").each(function() {
-            widths.push(($(this).text().length)*6);
+            widths.push($(this).text().length);
         });
-        $("th[data-field='" + field + "'] > a.header").each(function() {
-            widths.push(($(this).text().length)*6);
+        $("th[data-field='" + field + "']").each(function() {
+            widths.push($(this).find('a.header').text().length);
         });
-        colWidths[field] = Math.min(400, Math.max(...widths)) + 20;
+        colWidths[field] = Math.min(400, Math.max(...widths)*10) + 20;
     });
     return colWidths;
 }
@@ -47,9 +48,9 @@ function updateTableWidth(colWidths) {
    
     $('#mainTable').css('width', tableWidth + 20);
     // $('#table-container').css('width', tableWidth + 20);
-    $('tbody tr').css('width', tableWidth);
-    $('thead tr').css('width', tableWidth);
-    $('th, td').each(function() {
+    // $('tbody tr').css('width', tableWidth);
+    // $('thead tr').css('width', tableWidth);
+    $('th').each(function() {
         $(this).css('width', colWidths[$(this).attr('data-field')]);
     });
     $('tbody').css('margin-top', parseInt($('th').first().css('height')));

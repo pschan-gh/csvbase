@@ -1,8 +1,9 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 
 <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 
@@ -45,6 +46,7 @@ strong {
 
 .table {
     /* font-size:1rem; */
+    white-space: nowrap !important;
 }
 
 
@@ -60,7 +62,7 @@ tbody {
 .table th, .table td {
     padding: 0.25rem !important;
     font-family:monospace;
-    font-size:12px !important;
+    font-size:12px !important;    
 }
 
 .table td {
@@ -79,9 +81,13 @@ thead:hover th.groupby {
     color:white !important;
     background-color:SteelBlue !important;
 }
-th.groupby a.header {
-    color:white;
+th.groupby a {
+    color:white !important;
     background-color:SteelBlue;
+}
+
+a.header {
+    text-decoration:none;
 }
 
 #mainTable {

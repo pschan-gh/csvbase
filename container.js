@@ -38,11 +38,12 @@ class Container extends React.Component {
     ExportHandler() {
         $('th .triangle').html('');
         
+        let $table = $('#mainTable');
         var csv = $table.table2csv('return', {
             "separator": ",",
             "newline": "\n",
             "quoteFields": true,
-            "excludeColumns": ".col_chkbox, .col_count, .col_rank",
+            "excludeColumns": ".col_count, .col_rank",
             "excludeRows": "",
             "trimContent": true,
             "filename": "table.csv"
@@ -109,6 +110,9 @@ class Container extends React.Component {
                 if (field.trim() != '') {
                     sanitizedHeaders.push('"' + sanitize(field) + '"');
                 } else {
+                    while (sanitizedHeaders.includes('"BLANK' + + blankIndex + '"') && blankIndex < 1000) {
+                        blankIndex++
+                    }
                     sanitizedHeaders.push('"BLANK' + blankIndex++ + '"');
                 }
             });

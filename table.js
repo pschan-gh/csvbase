@@ -1,15 +1,18 @@
 function Sort(props) {
     if (props.sortarray[props.field] == 1) {
         return(
-            <a className="triangle" onClick={() => props.handlesort(props.field)}>&#x25B2;</a>
+            // <a className="triangle" onClick={() => props.handlesort(props.field)}>&#x25B2;</a>
+            <a className="triangle" onClick={() => props.handlesort(props.field)}><i className="bi bi-caret-up-fill"></i></a>
         );
     } else if (props.sortarray[props.field] == -1) {
         return(
-            <a className="triangle" onClick={() => props.handlesort(props.field)}>&#x25BC;</a>
+            // <a className="triangle" onClick={() => props.handlesort(props.field)}>&#x25BC;</a>
+            <a className="triangle" onClick={() => props.handlesort(props.field)}><i className="bi bi-caret-down-fill"></i></a>
         );
     } else {
         return(
-            <a className="triangle" onClick={() => props.handlesort(props.field)}>&#x25BA;</a>
+            /*<a className="triangle" onClick={() => props.handlesort(props.field)}>&#x25BA;</a>*/
+            <a className="triangle" onClick={() => props.handlesort(props.field)}><i className="bi bi-caret-right"></i></a>
         );
     }
 }
@@ -20,8 +23,8 @@ function TableRow(props) {
     let rank = props.index;
     return (
         <tr data-group-index={props.groupindex}>
-        <td key='count' data-field='count' className='count' data-count={props.count}><div className="count-number" style={{float:'left'}}>{props.count}</div><div style={{float:'right'}} className="expandcollapse">+</div></td>
-        <td key='rank' data-field='rank'>{rank}</td>        
+        <td key='count' data-field='count' className='col_count' data-count={props.count}><div className="count-number" style={{float:'left'}}>{props.count}</div><div style={{float:'right'}} className="expandcollapse">+</div></td>
+        <td key='rank' data-field='rank' className='col_rank' >{rank}</td>        
         {props.headers.filter(field => field != 'rank' && field != 'count').map((field, index) => {
             return <td key={field} data-field={field}>{props.row[field]}</td>;
         })}                            
@@ -55,24 +58,27 @@ class Header extends React.Component {
     render() {
         return(
             <thead>
-                <tr id="header_row" className="table-secondary">                
-                    {this.props.headers.map((field, i) => {
+                <tr id="header_row" className="table-secondary">
+                    <th key='count' data-field='count' className='col_count'>Count</th>
+                    <th key='rank' data-field='rank' className='col_rank'>Rank</th>                    
+                    {this.props.headers.filter(field => {return (field != 'rank' && field != 'count');}).map((field, i) => {
                         let groupby = this.props.groupfield == field ? 'groupby' : '';
-                        return <th key={field} data-field={field} className={groupby}>
-                            <a href="#" className="header" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{field}</a>
-                            <div className="dropdown-menu" aria-labelledby={field}>
-                                <a className="dropdown-item rename" data-bs-toggle="modal" data-bs-target="#rename_column" onClick={() => this.ClickHandler(field)} href="#">Rename</a>                        
+                        return (
+                            <th key={field} data-field={field} className={groupby}>
+                                <a href="#" className="header" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{field}</a>
+                                <div className="dropdown-menu" aria-labelledby={field}>
+                                    <a className="dropdown-item rename" data-bs-toggle="modal" data-bs-target="#rename_column" onClick={() => this.ClickHandler(field)} href="#">Rename</a>                        
                                     <a className="dropdown-item group_by" data-field={field} href="#"  onClick={() => this.props.grouphandler(field)}>Group by</a>
                                     <a className="dropdown-item fields statistics" data-field={field} href="#" data-bs-toggle="modal" data-bs-target="#statistics" onClick={() => this.StatisticsHandler(field)}>Statistics</a>                        
-                                    </div>
-                                    <Sort handlesort={this.props.handlesort} field={field} sortarray={this.props.sortarray} />
-                                </th>;                    
-                            }
-                        )}
-                    </tr>
-                </thead>
-            );
-        }
+                                </div>
+                                <Sort handlesort={this.props.handlesort} field={field} sortarray={this.props.sortarray} />
+                            </th>
+                        )
+                    })}
+                </tr>
+            </thead>
+        );
+    }
 }
 
 class Table extends React.Component {
@@ -175,7 +181,7 @@ class Table extends React.Component {
             return table.filter(filterFunc)
                 .sort((a, b) => {return this.sortByField(a, b, this.state.sortField, '')});
         });                
-        console.log(groups);
+        
         this.setState({
             groups:groups,
         }
@@ -255,7 +261,8 @@ class Table extends React.Component {
             let groupCount = $('tbody').attr('data-group-count');
             for (let i = 0; i < groupCount; i++) {            
                 $('tbody tr[data-group-index="' + i + '"]:not(:first)').hide();
-                $('tbody tr[data-group-index="' + i + '"] td.count').click(() => {
+                $('tbody tr[data-group-index="' + i + '"] div.expandcollapse').text('+');
+                $('tbody tr[data-group-index="' + i + '"] td.col_count').click(() => {
                     if ($('tbody tr[data-group-index="' + i + '"]').length > 1) {
                         if ($('tbody tr[data-group-index="' + i + '"]:eq(1)').is(":visible")) {
                             $('tbody tr[data-group-index="' + i + '"]:not(:first)').hide();
@@ -264,7 +271,7 @@ class Table extends React.Component {
                         } else {
                             $('tbody tr[data-group-index="' + i + '"]').show();
                             $('tbody tr[data-group-index="' + i + '"] div.expandcollapse').text('-');
-                            let bgcolor = 'hsl(' + (i * 95) % 360 + ', 55%, 95%)';
+                            let bgcolor = 'hsl(' + (i * 150) % 360 + ', 55%, 95%)';
                             $('tbody tr[data-group-index="' + i + '"]').css('background-color', bgcolor);
                         }
                     }

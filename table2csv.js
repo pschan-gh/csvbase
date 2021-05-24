@@ -46,7 +46,7 @@
         rows.each(function (ignore, elem) {
             $(elem).find("td,th").filter(":visible").not(options.excludeColumns)
                 .each(function (i, col) {
-                    const column = $(col);
+                    const column = $(col).contents().eq(0);
 
                     // Strip whitespaces
                     const content = options.trimContent
