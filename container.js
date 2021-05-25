@@ -237,7 +237,7 @@ class Container extends React.Component {
         this.setState({
             database:database, 
             headers:headers
-        });
+        }, function(){this.table.current.resetGroups();});
     }
     
     handleAddColumn(e) {
@@ -280,7 +280,7 @@ class Container extends React.Component {
             console.log(filter);
             this.setState({
                 filter:filter,
-            }, function(){this.table.current.updateTable();}); 
+            }, function(){this.table.current.resetGroups();}); 
         });
     }
 
