@@ -259,12 +259,12 @@ class Container extends React.Component {
                 database[key][field] = value;
                 console.log(database[key]);
             });
-            let headers = this.state.headers;
+            let headers = this.state.headers.slice();
             headers.push(field);
             this.setState({
                 database:database, 
                 headers:headers
-            });
+            },  function(){this.table.current.resetGroups();});
         }
     }
 
