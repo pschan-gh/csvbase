@@ -188,7 +188,6 @@ class Container extends React.Component {
         console.log(name);
         console.log(value);
         this.setState({[keyName]: value}, function() {
-            console.log(this.state);
             let row;
             let primarykey = this.state.primarykey;
             // let secondarykey = this.state.secondarykey == null : primarykey ? this.state.secondarykey;
@@ -214,7 +213,7 @@ class Container extends React.Component {
                 database:database, 
                 headers2:[]
             }, function(){
-                this.table.current.GroupHandler(this.table.current.state.groupField);                
+                this.table.current.resetGroups();                
                 $('.nav-item.calculated_column').show(); 
             });
         });                
@@ -233,7 +232,7 @@ class Container extends React.Component {
             database[key][field] = database[key][oldField];
             delete database[key][oldField];
         });
-        console.log(database);
+        $('#rename_column').modal('toggle'); 
         this.setState({
             database:database, 
             headers:headers
@@ -261,6 +260,7 @@ class Container extends React.Component {
             });
             let headers = this.state.headers.slice();
             headers.push(field);
+            $('#column_bin').modal('toggle'); 
             this.setState({
                 database:database, 
                 headers:headers
@@ -278,6 +278,7 @@ class Container extends React.Component {
                 filter = 'item["' + item.field + '"]' + ' ' + item.condition;
             }
             console.log(filter);
+            $('.dropdown-menu.query').dropdown('toggle');
             this.setState({
                 filter:filter,
             }, function(){this.table.current.resetGroups();}); 

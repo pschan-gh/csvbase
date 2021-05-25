@@ -98,7 +98,7 @@ class Table extends React.Component {
         this.GroupHandler = this.GroupHandler.bind(this);
     }
 
-    GroupHandler(field) {
+    GroupHandler(field = this.state.groupField) {
         let values = Object.keys(this.props.database).map(key => {
             return this.props.database[key][field];
         });
@@ -124,7 +124,7 @@ class Table extends React.Component {
 
     resetGroups() {
         console.log('resetting groups');
-        this.setState({groups:[]}, function() {this.updateTable();});
+        this.setState({groups:[]}, function() {this.GroupHandler();});
     }
 
     updateTable() {
@@ -135,9 +135,6 @@ class Table extends React.Component {
         let database = this.props.database;
         let groupField = this.state.groupField == '' ? this.props.primarykey : this.state.groupField;
         
-        // console.log(database);
-        // console.log(headers);
- 
         let uniqueSorted = this.state.groupValues.sort((a, b) => {
             let clicked = this.state.sortArray[groupField];
             if (!(isNaN(parseFloat(a)) || isNaN(parseFloat(b)))) {
@@ -166,7 +163,7 @@ class Table extends React.Component {
         } else {
             datalist = [].concat.apply([], this.state.groups);
         }
-        console.log(datalist);
+    
         let filterFunc =  new Function('item', 'return ' + filter);
         let datum;
         let groups = uniqueSorted.map(value => {
@@ -190,7 +187,6 @@ class Table extends React.Component {
                 .sort((a, b) => {return this.sortByField(a, b, this.state.sortField, '')});
         });                
         
-        console.log(groups);
         this.setState({
             groups:groups,
         }
