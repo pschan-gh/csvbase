@@ -36,7 +36,7 @@ class Key extends React.Component {
         return (
         <select name={this.props.name} className="form-control form-control-sm key" title="Set Key" onChange={this.props.keyhandler}>
             <option value="default">Select Key...</option>
-            {this.props.headers.map((field, i) => {
+            {Object.keys(this.props.headers).map((field, i) => {
                 return <option key={field} value={field}>{field}</option>;
             })}
         </select>

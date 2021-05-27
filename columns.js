@@ -66,7 +66,7 @@ class AddColumnModal extends React.Component {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="field_reference" style={{padding:'10px'}}>
-                            {this.props.headers.map(field =>
+                            {Object.keys(this.props.headers).map(field =>
                                 <button key={field} className="field btn btn-outline-info btn-sm">{field}</button>
                             )}
                         </div>                                    
@@ -112,7 +112,7 @@ class CheckBoxes extends React.Component {
     handleCheckboxes(e) {
         const target = event.target;
         
-        let updated = this.props.headers.slice();
+        let updated = Object.keys({...this.props.headers});
         let scope = this;
         $('.field_checkbox').each(function() {
             let checked = this.checked;
@@ -128,7 +128,7 @@ class CheckBoxes extends React.Component {
             
         });
         this.setState({visible:updated}, () => {
-            this.props.headers.map(field => {
+            Object.keys(this.props.headers).map(field => {
                 if(scope.state.visible.includes(field)) {
                     $('th[data-field="' + field + '"], td[data-field="' + field + '"]').show();
                 } else {
@@ -149,7 +149,7 @@ class CheckBoxes extends React.Component {
     render() {
         return (            
         <div className="dropdown-menu sortable" id="columns_menu" aria-labelledby="dropdownMenuButton">
-            {this.props.headers.map(field => {
+            {Object.keys(this.props.headers).map(field => {
                 return <FieldCheckBox headers={this.props.headers} key={field} field={field} handlecheckboxes={this.handleCheckboxes} />
             })}
             <button className="btn btn-outline-secondary btn-sm ms-2" onClick={this.props.reorderheaders}>Reorder</button>

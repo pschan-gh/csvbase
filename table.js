@@ -25,7 +25,7 @@ function TableRow(props) {
         <tr data-group-index={props.groupindex}>
         <td key='count' data-field='count' className='col_count' data-count={props.count}><div className="count-number" style={{float:'left'}}>{props.count}</div><div style={{float:'right'}} className="expandcollapse">+</div></td>
         <td key='rank' data-field='rank' className='col_rank' >{rank}</td>        
-        {props.headers.filter(field => field != 'rank' && field != 'count').map((field, index) => {
+        {Object.keys(props.headers).filter(field => field != 'rank' && field != 'count').map((field, index) => {
             return <td key={field} data-field={field}>{props.row[field]}</td>;
         })}                            
         </tr>    
@@ -61,7 +61,7 @@ class Header extends React.Component {
                 <tr id="header_row" className="table-secondary">
                     <th key='count' data-field='count' className='col_count'>Count</th>
                     <th key='rank' data-field='rank' className='col_rank'>Rank</th>                    
-                    {this.props.headers.filter(field => {return (field != 'rank' && field != 'count');}).map((field, i) => {
+                    {Object.keys(this.props.headers).filter(field => {return (field != 'rank' && field != 'count');}).map((field, i) => {
                         let groupby = this.props.groupfield == field ? 'groupby' : '';
                         return (
                             <th key={field} data-field={field} className={groupby}>
@@ -151,7 +151,7 @@ class Table extends React.Component {
             let datum;                        
             for (let key in database) {
                 datum = {};
-                headers.map(field => {
+                Object.keys(headers).map(field => {
                     if (database[key][field] == null || typeof database[key][field] == 'undefined') {
                         datum[field] = '';
                     } else {
@@ -174,7 +174,7 @@ class Table extends React.Component {
                     continue;
                 }
                 datum = {};
-                headers.map(field => {
+                Object.keys(headers).map(field => {
                     if (item[field] == null || typeof item[field] == 'undefined') {
                         datum[field] = '';
                     } else {
@@ -239,7 +239,7 @@ class Table extends React.Component {
         let sortArray = {...this.state.sortArray};
         let colWidths = {}
 
-        this.props.headers.map(field => {
+        Object.keys(this.props.headers).map(field => {
             if ( sortArray[field] == null || typeof sortArray[field] == 'undefined') {
                 sortArray[field] = 1;
             }            

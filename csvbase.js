@@ -27,7 +27,7 @@ function insertAtCursor(myField, myValue) {
 function computeColWidths(headers) {
     let colWidths = {};
     let widths;
-    headers.map(field => {
+    Object.keys(headers).map(field => {
         widths = [];
         $("td[data-field='" + field + "']").each(function() {
             widths.push($(this).text().length);

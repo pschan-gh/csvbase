@@ -5,7 +5,7 @@ function QueryItem(props) {
             <select name={props.querykey} className="form-control" defaultValue={props.field} onChange={props.handleselect}>
                 <option name={props.querykey} value='Show All'>Show All</option>
                 {
-                    props.headers.map((field, i) => {
+                    Object.keys(props.headers).map((field, i) => {
                     return <option key={field} className={field} name={props.querykey} value={field} >{field}</option>;
                     })
                 }

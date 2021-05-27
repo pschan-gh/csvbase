@@ -5,8 +5,8 @@ class Container extends React.Component {
             // table: [], 
             data:null,
             database:{},
-            headers: ['count', 'rank'],
-            headers2: [],
+            headers: {'count':{}, 'rank':{}},
+            headers2: {},
             primarykey:null,
             filter:'true',
         };
@@ -28,9 +28,10 @@ class Container extends React.Component {
     ReorderHeaders() {
         // let menu = document.querySelector('#columns_menu');
         let $boxes = $('#columns_menu input');
-        let headers = [];
+        let oldHeaders = {...this.state.headers};
+        let headers = {};
         $boxes.each(function() {
-            headers.push($(this).attr('data-field'));
+            headers[$(this).attr('data-field')] = oldHeaders[$(this).attr('data-field')];
         });
         this.setState({headers: headers});
     }
@@ -72,17 +73,19 @@ class Container extends React.Component {
             dynamicTyping: false,
         });
         console.log(results);
-        let headers = this.state.headers.slice();
+        let headers = {...this.state.headers};
+        let headers2 = {};
         results.meta['fields'].forEach(field => {
-            if (!headers.includes(field)) {
-                headers.push(field);
+            if (!(field in headers)) {
+                headers[field] = {};
             }
+            headers2[field] = {};
         });
-        
+                
         this.setState({
             data: results.data,
             headers:headers,
-            headers2:results.meta['fields']
+            headers2:headers2
         });
         console.log(this.state);
         $('select.key').show();
@@ -99,14 +102,14 @@ class Container extends React.Component {
             let plaintextDB = e.target.result;
             
             let headerRow = plaintextDB.split('\n').shift();
-            let headers = Papa.parse(plaintextDB, {
+            let headerArray = Papa.parse(plaintextDB, {
                 header: true,
                 dynamicTyping: false,
             }).meta['fields'];
             
             let sanitizedHeaders = [];
             let blankIndex = 0;
-            headers.forEach(function(field) {
+            headerArray.forEach(function(field) {
                 if (field.trim() != '') {
                     sanitizedHeaders.push('"' + sanitize(field) + '"');
                 } else {
@@ -125,17 +128,19 @@ class Container extends React.Component {
                 dynamicTyping: false,
             });
             console.log(results);
-            headers = scope.state.headers.slice();
+            let headers = {...scope.state.headers};
+            let headers2 = {};
             results.meta['fields'].forEach(field => {
-                if (!headers.includes(field)) {
-                    headers.push(field);
+                if (!(field in headers)) {
+                    headers[field] = {};
                 }
+                headers2[field] = {};
             });
             
             scope.setState({
                 data: results.data,
                 headers:headers,
-                headers2:results.meta['fields']
+                headers2:headers2
                 // sanitizedheaders: sanitizedHeaders
             });
             console.log(scope.state);
@@ -161,10 +166,10 @@ class Container extends React.Component {
             console.log(XL_row_object);
             const headers2 = Object.keys(XL_row_object[0]);
             
-            let headers = scope.state.headers.slice();
+            let headers = {...scope.state.headers};
             headers2.forEach(field => {
-                if (!headers.includes(field)) {
-                    headers.push(field);
+                if (!(field in headers)) {
+                    headers[field] = {};
                 }
             });
             
@@ -200,7 +205,7 @@ class Container extends React.Component {
                 if (!(keyval in database)) {
                     database[keyval] = {};
                 }
-                this.state.headers.map(field => {
+                Object.keys(this.state.headers).map(field => {
                     if (row[field] != null && typeof row[field] != 'undefined' ) {
                         database[keyval][field] = row[field];
                     } else if (database[keyval] == null || typeof database[keyval] == 'undefined' ) {
@@ -224,7 +229,7 @@ class Container extends React.Component {
         const form = e.currentTarget;
         const oldField = form.elements["old_col_name"].value;
         const field = form.elements["col_name"].value;
-        let headers = this.state.headers.slice();
+        let headers = {...this.state.headers};
         const index = headers.indexOf(oldField);
         headers[index] = field;
         let database = {...this.state.database};
@@ -258,7 +263,7 @@ class Container extends React.Component {
                 database[key][field] = value;
                 console.log(database[key]);
             });
-            let headers = this.state.headers.slice();
+            let headers = {...this.state.headers};
             headers.push(field);
             $('#column_bin').modal('toggle'); 
             this.setState({
