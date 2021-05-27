@@ -5,7 +5,7 @@ class Container extends React.Component {
             // table: [], 
             data:null,
             database:{},
-            headers: {'count':{}, 'rank':{}},
+            headers: {'count':{routine:'protected'}, 'rank':{routine:'protected'}},
             headers2: {},
             primarykey:null,
             filter:'true',
@@ -136,9 +136,9 @@ class Container extends React.Component {
             
             results.meta['fields'].forEach(field => {
                 if (!(field in headers)) {
-                    headers[field] = {};
+                    headers[field] = {'routine':'protected'};
                 }
-                headers2[field] = {};
+                headers2[field] = {'routine':'protected'};
             });
             
             scope.setState({
@@ -255,22 +255,22 @@ class Container extends React.Component {
         const form = e.currentTarget;
         const routine = form.elements["column_routine"].value;
         const field = form.elements["calc_col_name"].value;
-        if (this.state.headers.includes(field)) {
+        if (field in this.state.headers) {
             alert('FIELD NAME EXISTS');
             return 0;
         } else {
             let database = {...this.state.database};
-            Object.keys(database).map(key => {
-                let item = database[key];
-                let routineStr = routine.replace(/\(@([^\)]+)\)/g, 'item["$1"]');
-                // console.log(routineStr);
-                let routineFunc = new Function('item',  routineStr);
-                let value =  routineFunc(item).toString();
-                database[key][field] = value;
-                console.log(database[key]);
-            });
+            // Object.keys(database).map(key => {
+            //     let item = database[key];
+            //     let routineStr = routine.replace(/\(@([^\)]+)\)/g, 'item["$1"]');
+            //     console.log(routineStr);
+            //     let routineFunc = new Function('item',  routineStr);
+            //     let value =  routineFunc(item).toString();
+            //     database[key][field] = value;
+            //     console.log(database[key]);
+            // });
             let headers = {...this.state.headers};
-            headers.push(field);
+            headers[field] = {'routine':routine}
             $('#column_bin').modal('toggle'); 
             this.setState({
                 database:database, 

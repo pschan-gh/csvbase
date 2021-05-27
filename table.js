@@ -166,6 +166,9 @@ class Table extends React.Component {
     
         let filterFunc =  new Function('item', 'return ' + filter);
         let datum;
+        let routineStr = '';
+        let value;
+        let routineFunc;
         let groups = uniqueSorted.map(value => {
             let table = [];
             for (let i = 0; i < datalist.length; i++) {
@@ -174,13 +177,28 @@ class Table extends React.Component {
                     continue;
                 }
                 datum = {};
-                Object.keys(headers).map(field => {
+                // Object.keys(headers).map(field => {
+                //     if (item[field] == null || typeof item[field] == 'undefined') {
+                //         datum[field] = '';
+                //     } else {
+                //         datum[field] = item[field];
+                //     }
+                // });
+                for (let field in headers) {
                     if (item[field] == null || typeof item[field] == 'undefined') {
                         datum[field] = '';
                     } else {
-                        datum[field] = item[field];
+                        if (headers[field].routine == 'protected') {
+                            datum[field] = item[field];
+                        } else {
+                            routineStr = headers[field].routine.replace(/\(@([^\)]+)\)/g, 'item["$1"]');
+                            //     console.log(routineStr);
+                            routineFunc = new Function('item',  routineStr);
+                            value =  routineFunc(item).toString();
+                            datum[field] = value;
+                        }
                     }
-                });
+                }
                 table.push(datum);
             }
             return table.filter(filterFunc)
