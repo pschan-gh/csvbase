@@ -18,7 +18,7 @@ class RenameColumnModal extends React.Component {
                                 <div className="col">
                                     <input style={{display:'inline'}} className="form-control column_name" style={{fontFamily:'Courier'}} type="text" name="old_col_name" readOnly/>
                                 </div>
-                                <div className="col"> => </div>
+                                <div className="col" style={{textAlign:'center'}}><i class="bi bi-arrow-right"></i></div>
                                 <div className="col">
                                     <input style={{display:'inline'}} className="form-control column_name" style={{fontFamily:'Courier'}} type="text" name="col_name"/>
                                 </div>             

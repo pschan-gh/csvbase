@@ -10,6 +10,7 @@ class Container extends React.Component {
             primarykey:null,
             filter:'true',
         };
+        this.sanitizeDB = this.sanitizeDB.bind(this);
         this.ExportHandler = this.ExportHandler.bind(this);
         this.ReorderHeaders = this.ReorderHeaders.bind(this);
         this.CsvPasteHandler = this.CsvPasteHandler.bind(this);
@@ -23,6 +24,36 @@ class Container extends React.Component {
         this.xlsxInput = React.createRef();    
         this.table = React.createRef();
         this.nav = React.createRef()
+    }
+
+    sanitizeDB(plaintextDB) {
+        let headerArray = Papa.parse(plaintextDB, {
+            header: true,
+            dynamicTyping: false,
+        }).meta['fields'];
+        
+        let sanitizedHeaders = [];
+        let blankIndex = 0;
+        headerArray.forEach(function(field) {
+            if (field.trim() != '') {
+                sanitizedHeaders.push('"' + sanitize(field) + '"');
+            } else {
+                while ( ((('"BLANK' + + blankIndex + '"') in this.state.headers) 
+                || sanitizedHeaders.includes('"BLANK' + + blankIndex + '"'))
+                && blankIndex < 1000) {
+                    blankIndex++
+                }
+                sanitizedHeaders.push('"BLANK' + blankIndex++ + '"');
+            }
+        });
+        
+        let sanitizedDB = sanitizedHeaders.join(',') + "\n" 
+        + plaintextDB.split('\n').slice(1).join("\n");
+        console.log(sanitizedDB);
+        return Papa.parse(sanitizedDB, {
+            header: true,
+            dynamicTyping: false,
+        });
     }
 
     ReorderHeaders() {
@@ -68,11 +99,8 @@ class Container extends React.Component {
         const form = e.currentTarget;
         const csv = form.elements["csv"].value;
         
-        let results = Papa.parse(csv, {
-            header: true,
-            dynamicTyping: false,
-        });
-        console.log(results);
+        let results = this.sanitizeDB(csv);
+        
         let headers = {...this.state.headers};
         let headers2 = {};
         results.meta['fields'].forEach(field => {
@@ -99,37 +127,13 @@ class Container extends React.Component {
         const reader = new FileReader();
         const scope = this;
         reader.onload = function(e) {
-            let plaintextDB = e.target.result;
+            let plaintextDB = e.target.result;            
             
-            let headerRow = plaintextDB.split('\n').shift();
-            let headerArray = Papa.parse(plaintextDB, {
-                header: true,
-                dynamicTyping: false,
-            }).meta['fields'];
-            
-            let sanitizedHeaders = [];
-            let blankIndex = 0;
-            headerArray.forEach(function(field) {
-                if (field.trim() != '') {
-                    sanitizedHeaders.push('"' + sanitize(field) + '"');
-                } else {
-                    while (sanitizedHeaders.includes('"BLANK' + + blankIndex + '"') && blankIndex < 1000) {
-                        blankIndex++
-                    }
-                    sanitizedHeaders.push('"BLANK' + blankIndex++ + '"');
-                }
-            });
-            
-            let sanitizedDB = sanitizedHeaders.join(',') + "\n" 
-            + plaintextDB.split('\n').slice(1).join("\n");
-            console.log(sanitizedDB);
-            let results = Papa.parse(sanitizedDB, {
-                header: true,
-                dynamicTyping: false,
-            });
-            console.log(results);
+            let results = scope.sanitizeDB(plaintextDB);
+                        
             let headers = {...scope.state.headers};
             let headers2 = {};
+            
             results.meta['fields'].forEach(field => {
                 if (!(field in headers)) {
                     headers[field] = {};
@@ -141,7 +145,6 @@ class Container extends React.Component {
                 data: results.data,
                 headers:headers,
                 headers2:headers2
-                // sanitizedheaders: sanitizedHeaders
             });
             console.log(scope.state);
             $('select.key').show();
@@ -195,8 +198,9 @@ class Container extends React.Component {
         this.setState({[keyName]: value}, function() {
             let row;
             let primarykey = this.state.primarykey;
-            // let secondarykey = this.state.secondarykey == null : primarykey ? this.state.secondarykey;
+    
             console.log(primarykey);
+            
             let keyval;
             let database = {...this.state.database};
             for (let i = 0; i < this.state.data.length; i++) {
@@ -230,13 +234,15 @@ class Container extends React.Component {
         const oldField = form.elements["old_col_name"].value;
         const field = form.elements["col_name"].value;
         let headers = {...this.state.headers};
-        const index = headers.indexOf(oldField);
-        headers[index] = field;
+        // const index = headers.indexOf(oldField);
+        // headers[index] = field;
+        headers[field] = {...headers[oldField]};        
         let database = {...this.state.database};
         Object.keys(database).map(key => {
             database[key][field] = database[key][oldField];
             delete database[key][oldField];
         });
+        delete headers[oldField];
         $('#rename_column').modal('toggle'); 
         this.setState({
             database:database, 
