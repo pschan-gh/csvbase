@@ -1,8 +1,5 @@
 function sanitize(str) {
-    // var str = str.replace(/^\s+|\s+$/g, "").replace(/\s/g, "_").replace(/[^a-z0-9_]/ig, "").toUpperCase();
-    var str = str.replace(/[^a-z0-9_\-]/ig, " ").replace(/\s+/g, ' ');
-    // str = str.replace(/([a-zA-Z])_(\d+)/g,"$1$2");
-    return str;
+    return str.replace(/[^a-z0-9_\-]/ig, " ").replace(/\s+/g, ' ');
 }
 
 function insertAtCursor(myField, myValue) {
@@ -47,9 +44,6 @@ function updateTableWidth(colWidths) {
     });
    
     $('#mainTable').css('width', tableWidth + 20);
-    // $('#table-container').css('width', tableWidth + 20);
-    // $('tbody tr').css('width', tableWidth);
-    // $('thead tr').css('width', tableWidth);
     $('th').each(function() {
         $(this).css('width', colWidths[$(this).attr('data-field')]);
     });

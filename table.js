@@ -18,8 +18,6 @@ function Sort(props) {
 }
 
 function TableRow(props) {
-    // let bgcolor = props.groupbyprimarykey ? '' : 'hsl(' + (props.groupindex * 85) % 360 + ', 45%, 95%)';    
-    // style={{backgroundColor:bgcolor}}
     let rank = props.index;
     return (
         <tr data-group-index={props.groupindex}>
@@ -177,9 +175,6 @@ class Table extends React.Component {
     
         let filterFunc =  new Function('item', 'return ' + filter);
         let datum;
-        // let routineStr = '';
-        // let value;
-        // let routineFunc;
         let groups = uniqueSorted.map(value => {
             let table = [];
             for (let i = 0; i < datalist.length; i++) {
@@ -187,27 +182,12 @@ class Table extends React.Component {
                 if (item[groupField] != value && groupField != this.props.primarykey) {
                     continue;
                 }
-                datum = {};
-                // Object.keys(headers).map(field => {
-                //     if (item[field] == null || typeof item[field] == 'undefined') {
-                //         datum[field] = '';
-                //     } else {
-                //         datum[field] = item[field];
-                //     }
-                // });
+                datum = {};                
                 for (let field in headers) {
                     if (item[field] == null || typeof item[field] == 'undefined') {
                         datum[field] = '';
                     } else {
-                        if (headers[field].routine == 'protected') {
-                            datum[field] = item[field];
-                        } else {
-                            datum[field] = item[field];
-                            // routineStr = headers[field].routine.replace(/\(@([^\)]+)\)/g, 'item["$1"]');
-                            // routineFunc = new Function('item',  routineStr);
-                            // value =  routineFunc(datum).toString();
-                            // datum[field] = value;
-                        }
+                        datum[field] = item[field];
                     }
                 }
                 table.push(datum);
@@ -312,15 +292,12 @@ class Table extends React.Component {
                 });
             }
         } else {
-            // $('div.count-number').hide();
             $('div.expandcollapse').hide();
         }
         
     }
 
     render() {        
-        // let groups =  this.updateTable();
-        // console.log(groups);
         return(
             <table id="mainTable" className="table table-bordered table-hover">
             <Header groups={this.state.groups} grouphandler={this.GroupHandler} groupfield={this.state.groupField} headers={this.props.headers} sortarray={this.state.sortArray} handlesort={this.handleSort} />

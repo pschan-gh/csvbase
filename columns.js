@@ -8,7 +8,7 @@ class RecalculateColumnModal extends React.Component {
             e.preventDefault();
             e.stopPropagation();
             // console.log(e);
-            insertAtCursor(document.getElementById('column_routine'), '+(@' + $(this).text() + ')');
+            insertAtCursor($(this).closest('.modal').find('textarea')[0], '+(@' + $(this).text() + ')');
         });
     }
     render() {

@@ -41,7 +41,7 @@ class Container extends React.Component {
             if (field.trim() != '') {
                 sanitizedHeaders.push('"' + sanitize(field) + '"');
             } else {
-                while ( ((('"BLANK' + + blankIndex + '"') in headers) 
+                while ( ((('"BLANK' + blankIndex + '"') in headers) 
                 || sanitizedHeaders.includes('"BLANK' + + blankIndex + '"'))
                 && blankIndex < 1000) {
                     blankIndex++
@@ -225,7 +225,7 @@ class Container extends React.Component {
                 database:database, 
                 headers2:[]
             }, function(){
-                this.table.current.resetGroups();                
+                this.recalculateDatabase();
                 $('.nav-item.calculated_column').show(); 
             });
         });                
@@ -283,7 +283,7 @@ class Container extends React.Component {
         e.preventDefault();
         const form = e.currentTarget;
         const routine = form.elements["column_routine"].value;
-        const field = form.elements["calc_col_name"].value;
+        let field = form.elements["calc_col_name"].value;
         let routineStr = '';
         let value;
         let routineFunc;
@@ -292,6 +292,14 @@ class Container extends React.Component {
             return 0;
         } else {
             let headers = {...this.state.headers};
+            let blankIndex = 0;
+            if (field.trim() == '') {
+                while ( (('BLANK' + blankIndex) in headers)
+                && blankIndex < 1000) {
+                    blankIndex++;
+                }
+                field = 'BLANK' + blankIndex++;
+            }
             headers[field] = {'routine':routine}
             $('#column_bin').modal('toggle'); 
             this.setState({
