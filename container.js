@@ -21,6 +21,7 @@ class Container extends React.Component {
         this.handleRenameColumn = this.handleRenameColumn.bind(this);
         this.handleAddColumn = this.handleAddColumn.bind(this);
         this.handleRecalculateColumn = this.handleRecalculateColumn.bind(this);
+        this.recalculateDatabase = this.recalculateDatabase.bind(this);
         this.fileInput = React.createRef(); 
         this.xlsxInput = React.createRef();    
         this.table = React.createRef();
@@ -240,8 +241,6 @@ class Container extends React.Component {
             return 0;
         }
         let headers = {...this.state.headers};
-        // const index = headers.indexOf(oldField);
-        // headers[index] = field;
         headers[field] = {...headers[oldField]};        
         let database = {...this.state.database};
         Object.keys(database).map(key => {
@@ -256,6 +255,30 @@ class Container extends React.Component {
         }, function(){this.table.current.resetGroups();});
     }
     
+    recalculateDatabase() {
+        let database = {...this.state.database};
+        let headers = this.state.headers;
+        let routineStr = '';
+        let value;
+        let routineFunc;
+        let item;
+        for (let field in headers) {
+            if (headers[field].routine != 'protected') {
+                Object.keys(database).map(key => {
+                    item = database[key];
+                    routineStr = headers[field].routine.replace(/\(@([^\)]+)\)/g, 'item["$1"]');
+                    console.log(routineStr);
+                    routineFunc = new Function('item',  routineStr);
+                    value =  routineFunc(item).toString();
+                    database[key][field] = value;
+                });
+            }
+        };
+        this.setState({
+            database:database
+        },  function(){this.table.current.resetGroups();});
+    }
+    
     handleAddColumn(e) {
         e.preventDefault();
         const form = e.currentTarget;
@@ -268,23 +291,12 @@ class Container extends React.Component {
             alert('FIELD NAME EXISTS');
             return 0;
         } else {
-            let database = {...this.state.database};
-            Object.keys(database).map(key => {
-                let item = database[key];
-                let routineStr = routine.replace(/\(@([^\)]+)\)/g, 'item["$1"]');
-                console.log(routineStr);
-                let routineFunc = new Function('item',  routineStr);
-                let value =  routineFunc(item).toString();
-                database[key][field] = value;
-                // console.log(database[key]);
-            });
             let headers = {...this.state.headers};
             headers[field] = {'routine':routine}
             $('#column_bin').modal('toggle'); 
             this.setState({
-                database:database, 
                 headers:headers
-            },  function(){this.table.current.resetGroups();});
+            },  function(){this.recalculateDatabase();});
         }
     }
     
@@ -294,14 +306,12 @@ class Container extends React.Component {
         const routine = form.elements["column_routine"].value;
         const field = form.elements["calc_col_name"].value;
         
-        let database = {...this.state.database};
         let headers = {...this.state.headers};
         headers[field] = {'routine':routine}
         $('#recalculate_column_bin').modal('toggle'); 
         this.setState({
-            database:database, 
             headers:headers
-        },  function(){this.table.current.resetGroups();});
+        },  function(){this.recalculateDatabase();});
     }
 
     handleQuery(e, queryItems) {
