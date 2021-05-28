@@ -71,7 +71,7 @@ class Container extends React.Component {
     }
     
     ExportHandler() {
-        $('th .triangle').html('');
+        // $('th .triangle').html('');
         
         let $table = $('#mainTable');
         var csv = $table.table2csv('return', {
@@ -84,7 +84,7 @@ class Container extends React.Component {
             "filename": "table.csv"
         });
 
-        csv = csv.replace(/RenameGroup byStatistics/g, '');
+        // csv = csv.replace(/RenameGroup byStatistics/g, '');
 
         // https://stackoverflow.com/questions/42462764/javascript-export-csv-encoding-utf-8-issue/42466254
         var universalBOM = "\uFEFF";
@@ -94,7 +94,7 @@ class Container extends React.Component {
         a.setAttribute('download', 'untitled.csv');
         a.click()
         // window.location.href = 'data:text/csv;charset=UTF-8,' + encodeURIComponent(universalBOM + csv);
-        $('th .triangle').html('&#x25ba;');
+        // $('th .triangle').html('&#x25ba;');
     }
     
     CsvPasteHandler(e) {
@@ -235,12 +235,23 @@ class Container extends React.Component {
         e.preventDefault();
         const form = e.currentTarget;
         const oldField = form.elements["old_col_name"].value;
-        const field = form.elements["col_name"].value;
-        if (field in this.state.headers) {
+        let field = form.elements["col_name"].value;
+        let headers = {...this.state.headers};
+        
+        if (field in headers) {
             alert('FIELD NAME EXISTS');
             return 0;
         }
-        let headers = {...this.state.headers};
+        
+        let blankIndex = 0;
+        if (field.trim() == '') {
+            while ( (('BLANK' + blankIndex) in headers)
+            && blankIndex < 1000) {
+                blankIndex++;
+            }
+            field = 'BLANK' + blankIndex++;
+        }
+        
         headers[field] = {...headers[oldField]};        
         let database = {...this.state.database};
         Object.keys(database).map(key => {
@@ -324,19 +335,19 @@ class Container extends React.Component {
 
     handleQuery(e, queryItems) {
         e.preventDefault();
-        queryItems.map(item => {
-            let filter;
+        let filter;
+        queryItems.map(item => {            
             if (item.field == 'Show All') { 
                 filter = 'true';
             } else {
                 filter = 'item["' + item.field + '"]' + ' ' + item.condition;
             }
-            console.log(filter);
-            $('.dropdown-menu.query').dropdown('toggle');
-            this.setState({
-                filter:filter,
-            }, function(){this.table.current.resetGroups();}); 
+            console.log(filter);            
         });
+        // $('.dropdown-menu.query').dropdown('toggle');                        
+        this.setState({
+            filter:filter,
+        }, function(){$('#query_modal').modal('toggle');this.table.current.resetGroups();}); 
     }
 
     render() {

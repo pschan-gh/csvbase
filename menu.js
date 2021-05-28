@@ -95,11 +95,7 @@ class Nav extends React.Component {
                 
             }            
             lastChecked = this;            
-        });
-        
-        $('.dropdown-menu.query').click(function(e) {
-            e.stopPropagation();
-        });
+        });        
     }
     render() {
         return (
@@ -128,17 +124,17 @@ class Nav extends React.Component {
         <CheckBoxes headers={this.props.headers} reorderheaders={this.props.reorderheaders} />
         </li>
         <li className="nav-item query">
-        <a className="nav-link query dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Query</a>
+        <a className="nav-link query" href="#" role="button" data-bs-toggle="modal" data-bs-target="#query_modal">Query</a>
         <Query filter={this.props.filter} handlequery={this.props.handlequery} headers={this.props.headers} />
         </li>
         <li className="nav-item calculated_column">
         <AddColumn />
         </li>
         <li className="nav-item dropdown" id="export">
-            <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Export
             </a>
-            <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+            <div className="dropdown-menu">
                 <a id="exportCSV" className="dropdown-item" onClick={this.props.exporthandler}>
                     Export to CSV
                 </a>
