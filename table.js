@@ -264,14 +264,10 @@ class Table extends React.Component {
         });
         
         updateTableWidth(computeColWidths(this.props.headers));
-        $('tr').off();
-        $('tr').on('click', function() {
-            $('td').css('color', '');
-            $(this).find('td').css('color', 'red');
-        });
         
+        $('tbody tr').off();        
+                
         if (this.state.groupField != this.props.primarykey && this.state.groupField != '') {
-            $('tbody tr').off();
             let groupCount = $('tbody').attr('data-group-count');
             for (let i = 0; i < groupCount; i++) {            
                 $('tbody tr[data-group-index="' + i + '"]:not(:first)').hide();
@@ -294,6 +290,10 @@ class Table extends React.Component {
         } else {
             $('div.expandcollapse').hide();
         }
+        $('tbody tr').on('click', function() {
+            $('td').css('color', '');
+            $(this).find('td').css('color', 'red');
+        });
         
     }
 
