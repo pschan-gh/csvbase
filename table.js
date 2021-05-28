@@ -32,6 +32,16 @@ function TableRow(props) {
     );
 }
 
+function RecalculateColumn(props) {
+    if (props.headers[props.field].routine != 'protected') {
+        return (
+            <a className="dropdown-item recalculate" data-bs-toggle="modal" data-bs-target="#recalculate_column_bin" href="#" onClick={()=>{$('#recalculate_column_bin input.column_name').val(props.field);$('#recalculate_column_bin textarea').val(props.headers[props.field].routine)}}>Recalculate Column</a>
+        );
+    } else {
+        return '';
+    }
+}
+
 class Header extends React.Component {
     constructor(props) {
         super(props); 
@@ -67,7 +77,8 @@ class Header extends React.Component {
                             <th key={field} data-field={field} className={groupby}>
                                 <a href="#" className="header" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{field}</a>
                                 <div className="dropdown-menu" aria-labelledby={field}>
-                                    <a className="dropdown-item rename" data-bs-toggle="modal" data-bs-target="#rename_column" onClick={() => this.ClickHandler(field)} href="#">Rename</a>                        
+                                    <a className="dropdown-item rename" data-bs-toggle="modal" data-bs-target="#rename_column" onClick={() => this.ClickHandler(field)} href="#">Rename</a>
+                                    <RecalculateColumn headers={this.props.headers} field={field} />                 
                                     <a className="dropdown-item group_by" data-field={field} href="#"  onClick={() => this.props.grouphandler(field)}>Group by</a>
                                     <a className="dropdown-item fields statistics" data-field={field} href="#" data-bs-toggle="modal" data-bs-target="#statistics" onClick={() => this.StatisticsHandler(field)}>Statistics</a>                        
                                 </div>
@@ -166,9 +177,9 @@ class Table extends React.Component {
     
         let filterFunc =  new Function('item', 'return ' + filter);
         let datum;
-        let routineStr = '';
-        let value;
-        let routineFunc;
+        // let routineStr = '';
+        // let value;
+        // let routineFunc;
         let groups = uniqueSorted.map(value => {
             let table = [];
             for (let i = 0; i < datalist.length; i++) {
@@ -191,11 +202,11 @@ class Table extends React.Component {
                         if (headers[field].routine == 'protected') {
                             datum[field] = item[field];
                         } else {
-                            routineStr = headers[field].routine.replace(/\(@([^\)]+)\)/g, 'item["$1"]');
-                            //     console.log(routineStr);
-                            routineFunc = new Function('item',  routineStr);
-                            value =  routineFunc(item).toString();
-                            datum[field] = value;
+                            datum[field] = item[field];
+                            // routineStr = headers[field].routine.replace(/\(@([^\)]+)\)/g, 'item["$1"]');
+                            // routineFunc = new Function('item',  routineStr);
+                            // value =  routineFunc(datum).toString();
+                            // datum[field] = value;
                         }
                     }
                 }

@@ -1,3 +1,47 @@
+class RecalculateColumnModal extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    componentDidUpdate(props) {
+        $('.field_reference button.field').off();
+        $('.field_reference button.field').click(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            // console.log(e);
+            insertAtCursor(document.getElementById('column_routine'), '+(@' + $(this).text() + ')');
+        });
+    }
+    render() {
+        return (
+        <div id="recalculate_column_bin" className="modal" tabIndex="-1" role="dialog" aria-labelledby="column_bin" aria-hidden="true">
+            <div className="modal-dialog modal-lg" role="dialog" >
+                <div className="modal-content">
+                    <form onSubmit={this.props.handlerecalculatecolumn}>
+                        <div className="modal-header">
+                            <h5 style={{display:'inline'}} className="modal-title">Calculate Column</h5>
+                            <input style={{display:'inline'}} className="form-control column_name" style={{fontFamily:'Courier'}} type="text" id="calc_col_name" name="calc_col_name" readOnly/>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="field_reference" style={{padding:'10px'}}>
+                            {Object.keys(this.props.headers).map(field =>
+                                <button key={field} className="field btn btn-outline-info btn-sm">{field}</button>
+                            )}
+                        </div>                                    
+                        <div className="modal-body">                
+                            <textarea style={{width:'100%',height:'25em',fontFamily:'Courier'}} id="column_routine"  name="column_routine" ></textarea>
+                        </div>
+                        <div className="modal-footer">
+                            <button id="column_recalculate" type="submit" className="btn btn-primary" >Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        );
+    }
+}
+
+
 class RenameColumnModal extends React.Component {
     constructor(props) {
         super(props);
