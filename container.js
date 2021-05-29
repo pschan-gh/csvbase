@@ -198,7 +198,7 @@ class Container extends React.Component {
         const scope = this;
         console.log(name);
         console.log(value);
-        this.setState({[keyName]: value}, function() {
+        this.setState({primarykey: value}, function() {
             let row;
             let primarykey = this.state.primarykey;
     
@@ -206,11 +206,26 @@ class Container extends React.Component {
             
             let keyval;
             let database = {...this.state.database};
+            let headers = {}
+            if (primarykey == 'ordinal_index') {
+                headers = {'count':{routine:'protected'}, 'rank':{routine:'protected'}};
+                headers['ordinal_index'] = {routine:'protected'};
+                for (let key in this.state.headers) {
+                    headers[key] = {...this.state.headers[key]};
+                }
+            } else {
+                headers = {...this.state.headers};
+            }
             for (let i = 0; i < this.state.data.length; i++) {
                 row = this.state.data[i];
-                keyval = row[primarykey];
-                if (!(keyval in database)) {
-                    database[keyval] = {};
+                if (primarykey != 'ordinal_index') {
+                    keyval = row[primarykey];
+                    if (!(keyval in database)) {
+                        database[keyval] = {};
+                    }
+                } else {
+                    keyval = i;
+                    database[keyval] = { ordinal_index : i };
                 }
                 Object.keys(this.state.headers).map(field => {
                     if (row[field] != null && typeof row[field] != 'undefined' ) {
@@ -223,6 +238,7 @@ class Container extends React.Component {
         
             this.setState({
                 database:database, 
+                headers:headers,
                 headers2:[]
             }, function(){
                 this.recalculateDatabase();
@@ -352,7 +368,7 @@ class Container extends React.Component {
 
     render() {
         return (
-        <div id="container">
+        <div className="inner-container">
             <Nav ref={this.nav} fileinput={this.fileInput} xlsxinput={this.xlsxInput} csvhandler={this.CsvHandler} xlsxhandler={this.XlsxHandler} csvpastehandler={this.CsvPasteHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery} handleaddcolumn={this.handleAddColumn} handlerenamecolumn={this.handleRenameColumn} reorderheaders={this.ReorderHeaders} exporthandler={this.ExportHandler}/>
             <div id="outer-table-container">
                 <div id="table-container">

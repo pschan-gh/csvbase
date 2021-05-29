@@ -88,6 +88,46 @@ th.groupby > a {
     background-color:SteelBlue;
 }
 
+thead th.col_count {
+    position:sticky;
+    left: 0;
+    z-index: 2;
+    background-color:#ddd;
+}
+thead th.col_rank {
+    position:sticky;
+    left: 60;
+    z-index: 2;
+    background-color:#ddd;
+}
+
+thead th:nth-child(3) {
+    position:sticky;
+    left: 110;
+    z-index: 2;
+    background-color:#ddd;
+}
+
+td.col_count {
+    position:sticky;
+    left: 0;
+    z-index: 1;
+    background-color:#eee;
+}
+td.col_rank {
+    position:sticky;
+    left: 60;
+    z-index: 1;
+    background-color:#eee;
+}
+
+td:nth-child(3) {
+    position:sticky;
+    left: 110;
+    z-index: 1;
+    background-color:#eee;
+}
+
 a.nav-link {
     color:#666 !important;
 }
@@ -109,6 +149,11 @@ a.header {
 }
 
 #container {
+    width:100%;
+    height:100%;
+}
+
+ .inner-container {
     position:relative;
     width:100%;
     height:100%;
@@ -127,7 +172,8 @@ a.header {
 #table-container {
     height:100%; 
     width:auto; 
-    overflow-y:auto;
+    /* overflow-y:auto; */
+    overflow:scroll;
     /* overflow-x:hidden;     */
 }
 

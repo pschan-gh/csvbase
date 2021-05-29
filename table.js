@@ -76,7 +76,7 @@ class Header extends React.Component {
                                 <a href="#" className="header" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{field}</a>
                                 <div className="dropdown-menu" aria-labelledby={field}>
                                     <a className="dropdown-item rename" data-bs-toggle="modal" data-bs-target="#rename_column" onClick={() => this.ClickHandler(field)} href="#">Rename</a>
-                                    <RecalculateColumn headers={this.props.headers} field={field} />                 
+                                    <RecalculateColumn headers={this.props.headers} field={field} />
                                     <a className="dropdown-item group_by" data-field={field} href="#"  onClick={() => this.props.grouphandler(field)}>Group by</a>
                                     <a className="dropdown-item fields statistics" data-field={field} href="#" data-bs-toggle="modal" data-bs-target="#statistics" onClick={() => this.StatisticsHandler(field)}>Statistics</a>                        
                                 </div>

@@ -36,6 +36,7 @@ class Key extends React.Component {
         return (
         <select name={this.props.name} className="form-control form-control-sm key" title="Set Key" onChange={this.props.keyhandler}>
             <option value="default">Select Key...</option>
+            <option value="ordinal_index">Ordinal Index</option>
             {Object.keys(this.props.headers).map((field, i) => {
                 return <option key={field} value={field}>{field}</option>;
             })}
@@ -103,7 +104,7 @@ class Nav extends React.Component {
             <div className="navbar-collapse collapse">
             <ul className="navbar-nav">
             <li className="nav-item dropdown new_database">
-            <a className="nav-link dropdown-toggle" href="#" id="databaseDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a className="nav-link dropdown-toggle" href="#" id="databaseDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Update Database
             </a>
             <div className="dropdown-menu" aria-labelledby="databaseDropdown" >
