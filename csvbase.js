@@ -49,3 +49,33 @@ function updateTableWidth(colWidths) {
     });
     $('tbody').css('margin-top', parseInt($('th').first().css('height')));
 }
+
+function freezeColumns(colWidths) {
+    console.log('freezing columns');
+    $('thead th').css('position', '');
+    $('thead th').css('left', '');
+    $('thead th').css('z-index', '');
+    $('thead th').css('background-color', '');
+    
+    $('tr td').css('position', '');
+    $('tr td').css('left', '');
+    $('tr td').css('z-index', '');
+    $('tr td').css('background-color', '');
+    
+    let colIndex = $(".sortable a").index($('#freezeCol')[0]);
+    let offset = 0;
+    let i;
+    for (i = 0; i < colIndex; i++) {
+        console.log(Object.keys(colWidths)[i]);        
+        $('thead th').eq(i).css('position', 'sticky');
+        $('thead th').eq(i).css('left', offset);
+        $('thead th').eq(i).css('z-index', 2);
+        // $('thead th').eq(i).css('background-color', '#ddd');
+        
+        $('tr td:nth-child(' + (i + 1) + ')').css('position', 'sticky');
+        $('tr td:nth-child(' + (i + 1) + ')').css('left', offset);
+        $('tr td:nth-child(' + (i + 1) + ')').css('z-index', 1);
+        $('tr td:nth-child(' + (i + 1) + ')').css('background-color', '#eee');        
+        offset += colWidths[Object.keys(colWidths)[i]];
+    }
+}

@@ -142,7 +142,7 @@ class FieldCheckBox extends React.Component {
     
     render() {
         return (
-            <a className="dropdown-item" key={this.props.field}>
+            <a className="dropdown-item field" key={this.props.field}>
             <input className='field_checkbox' defaultChecked={true} type='checkbox' data-field={this.props.field} name={this.props.field} onClick={this.props.handlecheckboxes} /><span>{this.props.field}</span>
             </a>
         );
@@ -153,7 +153,7 @@ class CheckBoxes extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            visible:{}
+            visible:{},
         }
         this.handleCheckboxes = this.handleCheckboxes.bind(this);
     }
@@ -184,12 +184,16 @@ class CheckBoxes extends React.Component {
                     $('th[data-field="' + field + '"], td[data-field="' + field + '"]').hide();
                 }
             });
-            updateTableWidth(computeColWidths(this.props.headers));
+            let widths = computeColWidths(this.props.headers);
+            updateTableWidth(widths);            
         });
     }
     
-    componentDidUpdate(props) {
-        $( function() {
+    componentDidUpdate() {
+        console.log(this.props.freezecolindex);
+        $(".freezeCol").remove();
+        $('<a id="freezeCol" class="dropdown-item freezeCol" key="freezeCol"><hr/></a>').insertAfter($('.sortable a.field').eq(this.props.freezecolindex));
+        $( function() {                        
             $( ".sortable" ).sortable();
             $( ".sortable" ).disableSelection();
         } );
@@ -198,8 +202,8 @@ class CheckBoxes extends React.Component {
     render() {
         return (            
         <div className="dropdown-menu sortable" id="columns_menu" aria-labelledby="dropdownMenuButton">
-            {Object.keys(this.props.headers).map(field => {
-                return <FieldCheckBox headers={this.props.headers} key={field} field={field} handlecheckboxes={this.handleCheckboxes} />
+            {Object.keys(this.props.headers).map((field, index) => {
+                return <FieldCheckBox headers={this.props.headers}  key={field} field={field} handlecheckboxes={this.handleCheckboxes} />
             })}
             <button className="btn btn-outline-secondary btn-sm ms-2" onClick={this.props.reorderheaders}>Reorder</button>
         </div>

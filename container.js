@@ -9,6 +9,7 @@ class Container extends React.Component {
             headers2: {},
             primarykey:null,
             filter:'true',
+            freezeColIndex:1
         };
         this.sanitizeDB = this.sanitizeDB.bind(this);
         this.ExportHandler = this.ExportHandler.bind(this);
@@ -60,14 +61,17 @@ class Container extends React.Component {
     }
 
     ReorderHeaders() {
-        // let menu = document.querySelector('#columns_menu');
         let $boxes = $('#columns_menu input');
         let oldHeaders = {...this.state.headers};
         let headers = {};
+        let freezeColIndex = $(".sortable a").index($('#freezeCol')[0]) - 1;
         $boxes.each(function() {
             headers[$(this).attr('data-field')] = oldHeaders[$(this).attr('data-field')];
         });
-        this.setState({headers: headers});
+        this.setState({
+            headers: headers,
+            freezeColIndex:freezeColIndex
+        });
     }
     
     ExportHandler() {
@@ -169,13 +173,15 @@ class Container extends React.Component {
             });
             const sheetName = workbook.SheetNames[0];
             const XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
-            console.log(XL_row_object);
-            const headers2 = Object.keys(XL_row_object[0]);
+            let headers2 = {};
+            Object.keys(XL_row_object[0]).forEach(field => {
+                headers2[field] = {routine:'protected'};
+            });
             
             let headers = {...scope.state.headers};
-            headers2.forEach(field => {
+            Object.keys(headers2).forEach(field => {
                 if (!(field in headers)) {
-                    headers[field] = {};
+                    headers[field] = {routine:'protected'};
                 }
             });
             
@@ -195,56 +201,46 @@ class Container extends React.Component {
         this.table.current.setState({groups:[]});
         // console.log(e.target);
         let {name, value} = e.target;
+        const primarykey = value;
         const scope = this;
-        console.log(name);
-        console.log(value);
-        this.setState({primarykey: value}, function() {
-            let row;
-            let primarykey = this.state.primarykey;
-    
-            console.log(primarykey);
-            
-            let keyval;
-            let database = {...this.state.database};
-            let headers = {}
-            if (primarykey == 'ordinal_index') {
-                headers = {'count':{routine:'protected'}, 'rank':{routine:'protected'}};
-                headers['ordinal_index'] = {routine:'protected'};
-                for (let key in this.state.headers) {
-                    headers[key] = {...this.state.headers[key]};
+        
+        console.log(primarykey);
+                
+        let keyval;
+        let database = {...this.state.database};
+        let headers = {}
+        if (primarykey == 'ordinal_index') {
+            headers = {'count':{routine:'protected'}, 'rank':{routine:'protected'}};
+            headers['ordinal_index'] = {routine:'protected'};
+            for (let key in this.state.headers) {
+                headers[key] = {...this.state.headers[key]};
+            }
+        } else {
+            headers = {...this.state.headers};
+        }
+        let row;        
+        for (let i = 0; i < this.state.data.length; i++) {
+            row = this.state.data[i];
+            if (primarykey != 'ordinal_index') {
+                keyval = row[primarykey];
+                if (!(keyval in database)) {
+                    database[keyval] = {};
                 }
             } else {
-                headers = {...this.state.headers};
+                keyval = i;
+                database[keyval] = { ordinal_index : i };
             }
-            for (let i = 0; i < this.state.data.length; i++) {
-                row = this.state.data[i];
-                if (primarykey != 'ordinal_index') {
-                    keyval = row[primarykey];
-                    if (!(keyval in database)) {
-                        database[keyval] = {};
-                    }
-                } else {
-                    keyval = i;
-                    database[keyval] = { ordinal_index : i };
+            Object.keys(this.state.headers).map(field => {
+                if (row[field] != null && typeof row[field] != 'undefined' ) {
+                    database[keyval][field] = row[field];
+                } else if (database[keyval] == null || typeof database[keyval] == 'undefined' ) {
+                    database[keyval][field] = '';
                 }
-                Object.keys(this.state.headers).map(field => {
-                    if (row[field] != null && typeof row[field] != 'undefined' ) {
-                        database[keyval][field] = row[field];
-                    } else if (database[keyval] == null || typeof database[keyval] == 'undefined' ) {
-                        database[keyval][field] = '';
-                    }
-                });
-            }
-        
-            this.setState({
-                database:database, 
-                headers:headers,
-                headers2:[]
-            }, function(){
-                this.recalculateDatabase();
-                $('.nav-item.calculated_column').show(); 
             });
-        });                
+        }
+        
+        this.recalculateDatabase(database, headers, primarykey);
+        $('.nav-item.calculated_column').show(); 
     }    
     
     handleRenameColumn(e) {
@@ -282,9 +278,7 @@ class Container extends React.Component {
         }, function(){this.table.current.resetGroups();});
     }
     
-    recalculateDatabase() {
-        let database = {...this.state.database};
-        let headers = this.state.headers;
+    recalculateDatabase(database, headers, primarykey = this.state.primarykey) {
         let routineStr = '';
         let value;
         let routineFunc;
@@ -302,7 +296,10 @@ class Container extends React.Component {
             }
         };
         this.setState({
-            database:database
+            primarykey:primarykey,
+            database:database,
+            headers:headers,
+            headers2:{}
         },  function(){this.table.current.resetGroups();});
     }
     
@@ -329,9 +326,7 @@ class Container extends React.Component {
             }
             headers[field] = {'routine':routine}
             $('#column_bin').modal('toggle'); 
-            this.setState({
-                headers:headers
-            },  function(){this.recalculateDatabase();});
+            this.recalculateDatabase({...this.state.database}, headers);
         }
     }
     
@@ -344,9 +339,8 @@ class Container extends React.Component {
         let headers = {...this.state.headers};
         headers[field] = {'routine':routine}
         $('#recalculate_column_bin').modal('toggle'); 
-        this.setState({
-            headers:headers
-        },  function(){this.recalculateDatabase();});
+        this.recalculateDatabase({...this.state.database}, headers);
+        
     }
 
     handleQuery(e, queryItems) {
@@ -369,10 +363,10 @@ class Container extends React.Component {
     render() {
         return (
         <div className="inner-container">
-            <Nav ref={this.nav} fileinput={this.fileInput} xlsxinput={this.xlsxInput} csvhandler={this.CsvHandler} xlsxhandler={this.XlsxHandler} csvpastehandler={this.CsvPasteHandler} keyhandler={this.KeyHandler} headers={this.state.headers} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery} handleaddcolumn={this.handleAddColumn} handlerenamecolumn={this.handleRenameColumn} reorderheaders={this.ReorderHeaders} exporthandler={this.ExportHandler}/>
+            <Nav ref={this.nav} fileinput={this.fileInput} xlsxinput={this.xlsxInput} csvhandler={this.CsvHandler} xlsxhandler={this.XlsxHandler} csvpastehandler={this.CsvPasteHandler} keyhandler={this.KeyHandler} headers={this.state.headers} freezecolindex={this.state.freezeColIndex} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery} handleaddcolumn={this.handleAddColumn} handlerenamecolumn={this.handleRenameColumn} reorderheaders={this.ReorderHeaders} exporthandler={this.ExportHandler}/>
             <div id="outer-table-container">
                 <div id="table-container">
-                    <Table ref={this.table} database={this.state.database} headers={this.state.headers} filter={this.state.filter} primarykey={this.state.primarykey}/>
+                    <Table ref={this.table} database={this.state.database} headers={this.state.headers} freezecolindex={this.state.freezeColIndex} filter={this.state.filter} primarykey={this.state.primarykey}/>
                 </div>
             </div>
             <RecalculateColumnModal headers={this.state.headers} handlerecalculatecolumn={this.handleRecalculateColumn} />

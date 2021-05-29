@@ -122,7 +122,7 @@ class Nav extends React.Component {
         <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Columns
         </a>
-        <CheckBoxes headers={this.props.headers} reorderheaders={this.props.reorderheaders} />
+        <CheckBoxes headers={this.props.headers} reorderheaders={this.props.reorderheaders} freezecolindex={this.props.freezecolindex} />
         </li>
         <li className="nav-item query">
         <a className="nav-link query" href="#" role="button" data-bs-toggle="modal" data-bs-target="#query_modal">Query</a>

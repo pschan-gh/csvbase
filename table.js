@@ -96,7 +96,6 @@ class Table extends React.Component {
         this.state = {
             sortArray:{},
             sortField:'',
-            prevSortField:'',
             groupField:'',
             groupValues:[''],
             filter:'true',
@@ -107,15 +106,16 @@ class Table extends React.Component {
         this.GroupHandler = this.GroupHandler.bind(this);
     }
 
-    GroupHandler(field = this.state.groupField) {
+    GroupHandler(groupField = this.state.groupField) {
+        console.log('GroupHandler');
         let values = Object.keys(this.props.database).map(key => {
-            return this.props.database[key][field];
+            return this.props.database[key][groupField];
         });
         let uniqueSorted;
-        if(field != this.props.primarykey) {
+        if(groupField != this.props.primarykey) {
             let unique = values.filter((value, index, self) => { return self.indexOf(value) === index; });
             uniqueSorted = unique.sort((a, b) => {
-                let clicked = this.state.sortArray[field];
+                let clicked = this.state.sortArray[groupField];
                 if (!(isNaN(parseFloat(a)) || isNaN(parseFloat(b)))) {
                     return clicked*(parseFloat(a) - parseFloat(b));
                 } else {
@@ -126,26 +126,27 @@ class Table extends React.Component {
             uniqueSorted = [''];
         }
         this.setState({
-            groupField:field,
             groupValues: uniqueSorted,
-        }, function(){this.updateTable();});
+        }, function(){this.updateTable(groupField);});
     }
 
     resetGroups() {
         console.log('resetting groups');
-        this.setState({groups:[]}, function() {this.GroupHandler();});
+        this.setState({
+            groups: [],
+        }, function() {this.GroupHandler();});        
     }
 
-    updateTable() {
+    updateTable(groupField = this.state.groupField, sortArray = {...this.state.sortArray}, sortField = this.state.sortField) {
         console.log('updating table');
         
         let headers = this.props.headers;
         let filter = this.props.filter;
         let database = this.props.database;
-        let groupField = this.state.groupField == '' ? this.props.primarykey : this.state.groupField;
+        groupField = groupField == '' ? this.props.primarykey : groupField;
         
         let uniqueSorted = this.state.groupValues.sort((a, b) => {
-            let clicked = this.state.sortArray[groupField];
+            let clicked = sortArray[groupField];
             if (!(isNaN(parseFloat(a)) || isNaN(parseFloat(b)))) {
                 return clicked*(parseFloat(a) - parseFloat(b));
             } else {
@@ -193,27 +194,24 @@ class Table extends React.Component {
                 table.push(datum);
             }
             return table.filter(filterFunc)
-                .sort((a, b) => {return this.sortByField(a, b, this.state.sortField, '')});
+                .sort((a, b) => {return this.sortByField(a, b, sortField, '')});
         });                
         
         this.setState({
             groups:groups,
+            groupField:groupField,
+            sortArray:sortArray,
+            sortField:sortField
         }
         );
     }
 
     handleSort(field) {
         console.log(field);
-        let sortArray = this.state.sortArray;
+        let sortArray = {...this.state.sortArray};
         let clicked = this.state.sortArray[field] == 1 ? -1 : 1;
         sortArray[field] = clicked;
-        let prevSortField = this.state.sortField;
-        console.log(prevSortField);
-        this.setState({
-            sortArray: sortArray,
-            sortField: field,
-            prevSortField:prevSortField
-        }, function(){this.updateTable();});
+        this.updateTable(this.state.groupField, sortArray, field);
     }
 
     sortByField(a, b, field, field2) {
@@ -244,7 +242,7 @@ class Table extends React.Component {
     }
     
     componentDidUpdate() {
-        console.log('use did update');
+        console.log('table.js did update');
         let sortArray = {...this.state.sortArray};
         let colWidths = {}
 
@@ -263,10 +261,15 @@ class Table extends React.Component {
             }
         });
         
-        updateTableWidth(computeColWidths(this.props.headers));
+        let widths = computeColWidths(this.props.headers);
+        updateTableWidth(widths);
+        freezeColumns(widths);
         
         $('tbody tr').off();        
-                
+        $('tbody tr').click(function() {
+            $('td').css('color', '');
+            $(this).find('td').css('color', 'red');
+        });
         if (this.state.groupField != this.props.primarykey && this.state.groupField != '') {
             let groupCount = $('tbody').attr('data-group-count');
             for (let i = 0; i < groupCount; i++) {            
@@ -290,17 +293,14 @@ class Table extends React.Component {
         } else {
             $('div.expandcollapse').hide();
         }
-        $('tbody tr').on('click', function() {
-            $('td').css('color', '');
-            $(this).find('td').css('color', 'red');
-        });
+        
         
     }
 
     render() {        
         return(
             <table id="mainTable" className="table table-bordered table-hover">
-            <Header groups={this.state.groups} grouphandler={this.GroupHandler} groupfield={this.state.groupField} headers={this.props.headers} sortarray={this.state.sortArray} handlesort={this.handleSort} />
+            <Header grouphandler={this.GroupHandler} groupfield={this.state.groupField} headers={this.props.headers} sortarray={this.state.sortArray} handlesort={this.handleSort} />
             <tbody data-group-count={this.state.groups.length}>
             {
                 this.state.groups.map((group, groupIndex) => {
