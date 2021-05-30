@@ -1,0 +1,596 @@
+ID,Incident Date,District,Bias Code,Bias Code_2,Bias,Status,# of Victims,Victim Type,# of Suspects,# Suspects < 18 of age,# Suspects 18-35 of age,# Suspects 36-45 of age,# Suspects 46-55 of age,# Suspects > 55 of age,Suspect Known/Unknown
+200023283,06/13/2020,1D,Anti-Asian,,Assault (simple),Open,1,Individual(s),1,,,,,,Unknown
+200023743,06/17/2020,6D,Anti-Multi-Racial,,Vandalism,Open,,Society,,,,,,,Unknown
+200023220,06/13/2020,2D,Anti-Black,,Vandalism,Closed-Arrest,,School/College,3,2,1,,,,Known
+200023881,06/18/2020,6D,Anti-Black,,Written Intimidation/Simple Assault,N/A,,Society,1,1,,,,,Known
+200022158,06/03/2020,3D,Anti-Black,,Written Intimidation/Simple Assault,N/A,1,Individual(s),1,1,,,,,Known
+200022595,06/08/2020,6D,Anti-Black,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+200024002,06/19/2020,5D,Anti-Multi-Racial,,Vandalism,Open,,Business/Financial Institution,,,,,,,Unknown
+200010306,03/01/2020,2D,Anti-Black,,Vandalism,Open,,School/College,1,1,,,,,Known
+200025151,06/28/2020,4D,Anti-Other Christian,Anti-Black,Verbal Intimidation/Simple Assault,Open,,Religious Organization,,,,,,,Unknown
+200024294,06/21/2020,6D,Anti-White,,Assault (simple),Open,1,Individual(s),1,,,,,,Unknown
+200025065,06/27/2020,5D,Anti-Hispanic,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),1,,1,,,,Known
+200021753,05/29/2020,2D,Anti-Asian,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),1,,,,,1,Known
+200025560,07/01/2020,4D,Anti-Black,,Other,N/A,1,Individual(s),,,,,,,Unknown
+200026050,07/05/2020,RCPD,Anti-Multi-Racial,,Vandalism,Open,,Society,,,,,,,Unknown
+200026919,07/11/2020,GCPD,Anti-Jewish,,Vandalism,Open,,Society,,,,,,,Unknown
+200027331,07/14/2020,4D,Anti-Jewish,,Vandalism,Open,,School/College,,,,,,,Unknown
+200026840,07/10/2020,6D,Anti-Other Ethnicity,,Assault (simple),Open,1,Individual(s),1,,,,,1,Known
+200027636,07/16/2020,GCPD,Anti-Multi-Racial,,Vandalism,Open,,Society,,,,,,,Unknown
+200027568,07/15/2020,3D,Anti-Black,,Written Intimidation/Simple Assault,Open,1,Individual(s),,,,,,,Unknown
+200035435,09/09/2020,4D,Anti-Hispanic,,Assault (physical),Open,1,Individual(s),1,,,,,,Unknown
+200034267,09/01/2020,4D,Anti-Black,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),1,,,,,,Unknown
+200035879,09/13/2020,6D,Anti-Multi-Racial,Anti-Jewish,Vandalism,Open,,Society,,,,,,,Unknown
+200031359,08/12/2020,4D,Anti-Black,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),1,,,,,1,Known
+200032313,08/18/2020,5D,Anti-Asian,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),1,,,,,,Unknown
+200030868,08/08/2020,2D,Anti-Jewish,,Written Intimidation/Simple Assault,N/A,0,Society,,,,,,,Unknown
+200031354,08/11/2020,5D,Anti-Homosexual,,Vandalism,Open,,School/College,,,,,,,Unknown
+200031255,08/11/2020,4D,Anti-Black,,Written Intimidation/Simple Assault,N/A,1,Individual(s),,,,,,,Unknown
+200032800,08/22/2020,5D,Anti-Hispanic,,Assault (physical),Open,2,Individual(s),1,,,,1,,Known
+200033310,08/25/2020,4D,Anti-Homosexual,,Other,N/A,1,Individual(s),,,,,,,Unknown
+200032905,08/23/2020,4D,Anti-Black,Anti-Homosexual,Vandalism,Open,,School/College,2,,,,,,Unknown
+200033474,08/27/2020,3D,Anti-White,Anti-Black,Written Intimidation/Simple Assault,Open,,Business/Financial Institution,,,,,,,Unknown
+200033510,08/27/2020,1D,Anti-Black,,Written Intimidation/Simple Assault,Open,1,Individual(s),,,,,,,Unknown
+200037324,09/01/2020,1D,Anti-Black,,Verbal Intimidation/Simple Assault,N/A,,School/College,,,,,,,Unknown
+200036770,09/19/2020,2D,Anti-Jewish,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),1,,1,,,,Known
+200033465,08/27/2020,3D,Anti-White,Anti-Black,Written Intimidation/Simple Assault,UNF,2,Business/Financial Institution,,,,,,,Unknown
+200034491,09/04/2020,3D,Anti-Jewish,,Other,N/A,1,Individual(s),,,,,,,Unknown
+200038765,10/01/2020,4D,Anti-Black,,Written Intimidation/Simple Assault,N/A,,Society,,,,,,,Unknown
+200040560,10/14/2020,5D,Anti-Black,Anti-Homosexual,Assault (simple),Closed-Arrest,1,Individual(s),1,1,,,,,Known
+200042228,10/26/2020,3D,Anti-Homosexual,,Written Intimidation/Simple Assault,N/A,1,Individual(s),,,,,,,Unknown
+200039661,10/08/2020,5D,Anti-White,,Vandalism,Open,1,Individual(s),1,,,,,,Known
+200039089,10/04/2020,3D,Anti-Jewish,,Verbal Intimidation/Simple Assault,N/A,,Religious Organization,,,,,,,Unknown
+200044170,11/09/2020,RCPD,Anti-Black,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),,,,,,,Unknown
+200043449,11/03/2020,2D,Anti-Jewish,,Vandalism,N/A,1,Individual(s),,,,,,,Unknown
+190025231,05/27/2019,2D,Anti-Black,,Vandalism,Open,,Society,,,,,,,Unknown
+190013103,03/21/2019,1D,Anti-Black,,Assault (simple),Closed-Admin,1,Individual(s),1,,1,,,,Known
+180055472,11/05/2018,1D,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Unknown
+190026176,06/02/2019,3D,Anti-Transgender,,Other,N/A,1,Individual(s),,,,,,,Known
+170515340,06/23/2017,2D,Anti-Homosexual,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+170520131,07/20/2017,4D,Anti-Black,,Verbal Intimidation/Simple Assault,UNF,2,Individual(s),1,,1,,,,Known
+170513601,06/12/2017,2D,Anti-Jewish,,Vandalism,Inactive,,Society,,,,,,,Unknown
+170542522,11/13/2017,1D,Anti-Black,,Vandalism,Open,,School/College,,,,,,,Unknown
+170512439,06/06/2017,1D,Anti-Other Ethnicity,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),1,,,1,,,Known
+180056039,11/08/2018,2D,Anti-Black,,Written Intimidation/Simple Assault,N/A,,School/College,1,1,,,,,Known
+200021658,05/11/2020,2D,Anti-Black,,Other,Open,1,Individual(s),,,,,,,Unknown
+180042888,08/28/2018,4D,Anti-Other Ethnicity,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),1,,,,,,Known
+180064394,12/24/2018,4D,Anti-Islamic,,Vandalism,Closed-Admin,,Religious Organization,,,,,,,Unknown
+170500285,03/30/2017,2D,Anti-Black,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),3,3,,,,,Known
+190011926,03/15/2019,4D,Anti-Asian,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+170539207,10/27/2017,6D,Anti-Homosexual,,Assault (physical),Open,1,Individual(s),1,,,,,,Unknown
+170511135,06/01/2017,1D,Anti-Jewish,,Vandalism,N/A,,School/College,1,1,,,,,Known
+17012598,02/27/2017,5D,Anti-Islamic,,Written Intimidation/Simple Assault,N/A,,Religious Organization,,,,,,,Unknown
+170501940,04/13/2017,4D,Anti-Black,,Vandalism,Inactive,1,Individual(s),,,,,,,Unknown
+16059010,11/10/2016,1D,Anti-Multi-Racial,,Written Intimidation/Simple Assault,N/A,,School/College,2,2,,,,,Known
+16020540,04/26/2016,2D,Anti-Black,,Written Intimidation/Simple Assault,UNF,1,Individual(s),,,,,,,Unknown
+180053615,10/26/2018,4D,Anti-Black,,Assault (physical),Open,1,Individual(s),1,,,,,,Known
+170542473,11/13/2017,4D,Anti-Homosexual,Anti-Transgender,Assault (physical),Open,1,Individual(s),1,,1,,,,Known
+180032468,07/01/2018,5D,Anti-Islamic,,Vandalism,Inactive,1,Individual(s),,,,,,,Unknown
+180026780,05/31/2018,5D,Anti-Black,,Flyer Left Behind,Inactive,1,Individual(s),,,,,,,Unknown
+200008286,02/18/2020,6D,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Unknown
+180011552,03/07/2018,1D,Anti-Multi-Racial,Anti-Multi-Religious Group,Written Intimidation/Simple Assault,Closed-Exception,,School/College,1,,,,1,,Known
+170538262,10/20/2017,GCPD,Anti-Black,,Vandalism,Inactive,,School/College,,,,,,,Unknown
+16046525,09/11/2016,6D,Anti-Homosexual,,Assault (physical),Closed-Arrest,1,Individual(s),1,,,,,,Unknown
+16018523,04/16/2016,2D,Anti-Black,,Assault (physical),Open,1,Individual(s),,,,,,,Unknown
+16047778,09/17/2016,5D,Anti-Other Ethnicity,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),,,,,,,Unknown
+170523171,08/05/2017,3D,Anti-Black,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+170520886,07/24/2017,RCPD,Anti-Black,,Physical Intimidation/Simple Assault,N/A,,School/College,4,4,,,,,Known
+170510517,05/29/2017,TPPD,Anti-Catholic,,Vandalism,Open,,School/College,,,,,,,Unknown
+170534164,10/01/2017,GCPD,Anti-Jewish,,Vandalism,Open,,Government,,,,,,,Unknown
+170548977,12/16/2017,2D,Anti-Black,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),1,,,,1,,Known
+170522789,08/03/2017,5D,Anti-Homosexual,Anti-Black,Written Intimidation/Simple Assault,Inactive,1,Individual(s),,,,,,,Unknown
+190035257,07/24/2019,4D,Anti-Jewish,,Vandalism,N/A,,Society,,,,,,,Unknown
+190034844,07/22/2019,RCPD,Anti-Jewish,,Vandalism,N/A,,Society,,,,,,,Unknown
+17012395,03/09/2017,1D,Anti-Black,Anti-Jewish,Vandalism,N/A,,School/College,,,,,,,Unknown
+180054635,10/31/2018,6D,Anti-Jewish,,Vandalism,Closed-Admin,,School/College,1,1,,,,,Known
+170526440,08/23/2017,4D,Anti-Black,,Assault (physical),Open,1,Individual(s),1,,,,1,,Known
+16064683,12/17/2016,6D,Anti-Transgender,,Assault (physical),Open,2,Individual(s),1,,1,,,,Known
+16043077,08/24/2016,5D,Anti-Jewish,,Written Intimidation/Simple Assault,Inactive,1,Individual(s),1,,,,,,Unknown
+170529740,09/10/2017,6D,Anti-Multi-Racial,,Vandalism,Open,,Business/Financial Institution,,,,,,,Unknown
+170528035,08/31/2017,6D,Anti-Multi-Racial,,Vandalism,Open,,Government,,,,,,,Unknown
+190044912,09/19/2019,1D,Anti-Jewish,,Written Intimidation/Simple Assault,N/A,,Society,1,,,,,,Unknown
+16000600,01/05/2016,1D,Anti-Black,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),1,,,,,1,Known
+190044661,09/18/2019,4D,Anti-Black,,Written Intimidation/Simple Assault,Open,1,Individual(s),,,,,,,Unknown
+16048759,09/22/2016,1D,Anti-Jewish,,Vandalism,Inactive,,School/College,,,,,,,Unknown
+16058747,11/14/2016,5D,Anti-Jewish,,Written Intimidation/Simple Assault,Open,1,Individual(s),,,,,,,Unknown
+16015330,03/21/2016,3D,Anti-Jewish,,Vandalism,Closed-Exception,,School/College,,,,,,,Unknown
+16058596,11/12/2016,6D,Anti-Black,,Verbal Intimidation/Simple Assault,Open,,Business/Financial Institution,,,,,,,Unknown
+180002565,01/13/2018,3D,Anti-Islamic,,Flyer Left Behind,Closed-Admin,2,Individual(s),,,,,,,Unknown
+180006627,02/07/2018,2D,Anti-Asian,,Other,Open,1,Individual(s),,,,,,,Unknown
+170537609,10/19/2017,6D,Anti-Black,,Assault (physical),Open,1,Individual(s),1,,1,,,,Known
+180036689,07/24/2018,5D,Anti-Black,,Vandalism,Open,3,Individual(s),,,,,,,Unknown
+200012238,03/12/2020,4D,Anti-Jewish,,Assault (physical),Closed-Arrest,1,Individual(s),1,,1,,,,Known
+16035647,07/15/2016,2D,Anti-Black,,Assault (physical),Open,1,Individual(s),1,,,,1,,Known
+200012130,03/11/2020,4D,Anti-Black,,Verbal Intimidation/Simple Assault,Closed-Exception,1,Individual(s),3,,,,,,Unknown
+170522344,08/01/2017,1D,Anti-Black,,Written Intimidation/Simple Assault,Inactive,1,Individual(s),,,,,,,Unknown
+180062118,12/11/2018,2D,Anti-Jewish,,Written Intimidation/Simple Assault,Open,,Religious Organization,,,,,,,Unknown
+180051193,10/12/2018,GCPD,Anti-Black,,Verbal Intimidation/Simple Assault,Closed-Arrest,1,Individual(s),1,,,1,,,Known
+180014425,03/23/2018,4D,Anti-Jewish,,Verbal Intimidation/Simple Assault,N/A,,Religious Organization,,,,,,,Unknown
+180051896,10/16/2018,2D,Anti-Homosexual,,Written Intimidation/Simple Assault,Open,2,Individual(s),1,,1,,,,Known
+190006264,02/07/2019,1D,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Unknown
+190017752,04/16/2019,2D,Anti-Black,,Written Intimidation/Simple Assault,N/A,,School/College,4,4,,,,,Known
+16033056,06/29/2016,5D,Anti-Hispanic,,Written Intimidation/Simple Assault,N/A,1,Individual(s),,,,,,,Unknown
+190048433,10/09/2019,4D,Anti-Black,,Vandalism,Open,,Society,,,,,,,Unknown
+180028849,06/11/2018,5D,Anti-White,,Assault (physical),Closed-Arrest,1,Individual(s),1,1,,,,,Known
+190010787,03/06/2019,1D,Anti-Jewish,,Vandalism,Open,,School/College,,,,,,,Known
+17008045,02/14/2017,RCPD,Anti-Black,,Vandalism,Open,,School/College,,,,,,,Unknown
+17015593,03/21/2017,RCPD,Anti-Jewish,,Vandalism,Inactive,,School/College,,,,,,,Unknown
+17001593,01/09/2017,2D,Anti-Jewish,,Verbal Intimidation/Simple Assault,Closed-Admin,1,Individual(s),,,,,,,Unknown
+190042835,09/07/2019,2D,Anti-Black,,Assault (physical),Open,1,Individual(s),2,,,1,,1,Known
+180012810,03/14/2018,2D,Anti-Multi-Racial,Anti-Multi-Religious Group,Written Intimidation/Simple Assault,Closed-Exception,,Other,1,,,,1,,Known
+170548562,12/14/2017,1D,Anti-Jewish,,Vandalism,Open,,School/College,,,,,,,Unknown
+17012040,03/02/2017,1D,Anti-Jewish,,Written Intimidation/Simple Assault,UNF,1,Individual(s),,,,,,,Unknown
+190053319,11/05/2019,RCPD,Anti-Jewish,,Other,Open,,Society,1,,,,,,Unknown
+16018453,04/15/2016,6D,Anti-Jewish,,Vandalism,Closed-Arrest,,Other,2,1,1,,,,Known
+17010896,03/01/2017,1D,Anti-Transgender,,Assault (physical),UNF,1,Individual(s),,,,,,,Unknown
+16007397,02/16/2016,3D,Anti-Black,,Verbal Intimidation/Simple Assault,Closed-Arrest,1,Individual(s),1,,,1,,,Known
+180003605,01/22/2018,RCPD,Anti-Jewish,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+180060752,12/05/2018,4D,Anti-Jewish,Anti-Homosexual,Vandalism,Open,1,School/College,,,,,,,Unknown
+16000094,01/01/2016,1D,Anti-Jewish,,Vandalism,Inactive,,Government,,,,,,,Unknown
+190031014,06/29/2019,4D,Anti-Other Religion,,Vandalism,Open,,Religious Organization,,,,,,,Unknown
+200021967,06/03/2020,6D,Anti-White,,Assault (physical),Open,1,Individual(s),1,,,,,,Unknown
+200017148,04/24/2020,4D,Anti-Catholic,,Vandalism,Open,,Religious Organization,,,,,,,Unknown
+16031785,06/23/2016,5D,Anti-Black,,Verbal Intimidation/Simple Assault,Closed-Arrest,1,Individual(s),1,,,1,,,Known
+200006186,02/06/2020,2D,Anti-Jewish,,Written Intimidation/Simple Assault,N/A,,School/College,,,,,,,Unknown
+190022287,05/11/2019,2D,Anti-Jewish,,Vandalism,Open,,Other,,,,,,,Unknown
+170512062,06/06/2017,6D,Anti-Black,,Vandalism,Closed-Admin,,Society,,,,,,,Unknown
+16056997,11/03/2016,2D,Anti-Jewish,,Vandalism,Closed-Exception,,School/College,,,,,,,Unknown
+170524265,08/11/2017,1D,Anti-Jewish,,Vandalism,Open,,Government,,,,,,,Unknown
+170519264,07/15/2017,2D,Anti-Homosexual,,Other,Open,,Religious Organization,,,,,,,Unknown
+190027831,06/11/2019,2D,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Known
+170508274,05/17/2017,5D,Anti-Black,,Other,N/A,,Society,,,,,,,Unknown
+16059407,11/17/2016,4D,Anti-Multi-Racial,,Vandalism,Closed-Exception,,School/College,,,,,,,Unknown
+170542741,11/13/2017,1D,Anti-Multi-Religious Group,,Other,UNF,1,Individual(s),1,1,,,,,Known
+190037812,08/08/2019,5D,Anti-White,,Assault (physical),Closed-Admin,1,Individual(s),1,,1,,,,Known
+190049612,09/05/2019,3D,Anti-Black,,Written Intimidation/Simple Assault,N/A,1,Individual(s),,,,,,,Unknown
+16028599,06/07/2016,5D,Anti-Islamic,,Assault (physical),UNF,1,Individual(s),1,,,,,,Unknown
+180058409,11/21/2018,2D,Anti-Black,,Written Intimidation/Simple Assault,N/A,,Religious Organization,,,,,,,Unknown
+170538425,10/24/2017,2D,Anti-Asian,,Physical Intimidation/Simple Assault,RTOJ,1,Individual(s),1,1,,,,,Known
+16065398,12/21/2016,2D,Anti-Jewish,,Vandalism,N/A,,School/College,4,4,,,,,Known
+190007372,02/13/2019,5D,Anti-Jewish,,Written Intimidation/Simple Assault,N/A,,School/College,1,1,,,,,Known
+200015360,04/08/2020,4D,Anti-Catholic,,Arson,Closed-Arrest,,Religious Organization,2,,2,,,,Known
+190045257,09/21/2019,2D,Anti-Jewish,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+190046803,09/29/2019,2D,Anti-Homosexual,,Vandalism,Open,2,Individual(s),2,2,,,,,Known
+16064150,12/14/2016,6D,Anti-Multi-Racial,,Vandalism,Inactive,,Other,,,,,,,Unknown
+16058679,11/10/2016,3D,Anti-Black,,Vandalism,UNF,,School/College,,,,,,,Unknown
+190039589,08/19/2019,1D,Anti-Black,,Verbal Intimidation/Simple Assault,N/A,2,Individual(s),,,,,,,Unknown
+16044286,08/30/2016,4D,Anti-Black,,Assault (physical),Closed-Arrest,1,Individual(s),1,,,1,,,Known
+180005117,01/30/2018,4D,Anti-Transgender,,Verbal Intimidation/Simple Assault,Closed-Admin,2,Individual(s),1,1,,,,,Known
+180023349,05/12/2018,4D,Anti-Jewish,,Vandalism,Inactive,,Society,,,,,,,Unknown
+17010515,02/27/2017,RCPD,Anti-White,,Vandalism,Inactive,,Society,,,,,,,Unknown
+16025158,05/20/2016,5D,Anti-Hispanic,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),1,,1,,,,Known
+190016987,04/11/2019,RCPD,Anti-Black,,Written Intimidation/Simple Assault,N/A,,Society,,,,,,,Unknown
+190038334,08/11/2019,6D,Anti-Black,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),,,,,,,Known
+16065937,12/20/2016,5D,Anti-Other Ethnicity,,Other,N/A,1,Individual(s),,,,,,,Unknown
+200014285,03/28/2020,RCPD,Anti-Jewish,,Vandalism,Closed-Arrest,,Religious Organization,1,,1,,,,Known
+180007406,02/12/2018,2D,Anti-Homosexual,,Assault (physical),Closed-Exception,1,Individual(s),1,1,,,,,Known
+190011995,03/15/2019,4D,Anti-Black,,Vandalism,Open,,Government,,,,,,,Unknown
+190024312,05/22/2019,2D,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Unknown
+200022388,06/07/2020,5D,Anti-Jewish,,Vandalism,Open,,Society,,,,,,,Unknown
+170513456,06/12/2017,2D,Anti-White,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),1,1,,,,,Known
+180062235,12/13/2018,4D,Anti-Homosexual,,Written Intimidation/Simple Assault,Closed-Exception,1,Individual(s),3,2,1,,,,Known
+190060496,12/15/2019,2D,Anti-Transgender,,Assault (physical),Open,1,Individual(s),1,,,,,1,Known
+16035615,07/14/2016,2D,Anti-Black,,Other,Inactive,,Religious Organization,,,,,,,Unknown
+170546720,12/04/2017,4D,Anti-Jewish,,Vandalism,Closed-Admin,,School/College,1,1,,,,,Known
+190025730,05/30/2019,2D,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Unknown
+17006589,02/07/2017,RCPD,Anti-Jewish,,Vandalism,Open,,School/College,,,,,,,Unknown
+170515518,06/24/2017,4D,Anti-Homosexual,,Vandalism,Inactive,1,Individual(s),,,,,,,Unknown
+190041672,08/31/2019,TPPD,Anti-Homosexual,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+16060434,11/24/2016,3D,Anti-Black,,Verbal Intimidation/Simple Assault,UNF,3,Individual(s),,,,,,,Unknown
+16000451,01/03/2016,2D,Anti-Black,,Vandalism,Inactive,,School/College,,,,,,,Unknown
+200006007,02/05/2020,3D,Anti-Black,,Written Intimidation/Simple Assault,N/A,1,Individual(s),1,,,,1,,Known
+16014662,03/28/2016,6D,Anti-Jewish,,Written Intimidation/Simple Assault,Open,1,Individual(s),,,,,,,Unknown
+17005427,01/31/2017,6D,Anti-Islamic,,Written Intimidation/Simple Assault,Closed-Admin,1,Individual(s),,,,,,,Unknown
+170528788,09/05/2017,2D,Anti-Jewish,,Flyer Left Behind,N/A,1,Individual(s),,,,,,,Unknown
+180036812,07/25/2018,1D,Anti-Jewish,,Flyer Left Behind,N/A,2,Individual(s),,,,,,,Unknown
+200008665,02/20/2020,2D,Anti-Jewish,,Written Intimidation/Simple Assault,N/A,,School/College,1,1,,,,,Known
+16061372,11/30/2016,3D,Anti-White,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+190043357,09/10/2019,4D,Anti-Asian,,Assault (physical),Open,1,Individual(s),1,,,1,,,Known
+170545799,11/30/2017,5D,Anti-Jewish,,Vandalism,Inactive,,School/College,,,,,,,Unknown
+200011976,03/11/2020,4D,Anti-Jewish,,Vandalism,Open,,School/College,,,,,,,Unknown
+17000751,01/05/2017,RCPD,Anti-Jewish,,Vandalism,Inactive,,Government,,,,,,,Unknown
+170505864,05/10/2017,2D,Anti-Homosexual,,Verbal Intimidation/Simple Assault,Closed-Arrest,1,Individual(s),1,1,,,,,Known
+190024373,05/22/2019,1D,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Unknown
+190003079,01/19/2019,RCPD,Anti-Jewish,,Vandalism,Open,,School/College,,,,,,,Unknown
+17001426,01/09/2017,1D,Anti-Jewish,,Verbal Intimidation/Simple Assault,Closed-Admin,,Religious Organization,,,,,,,Unknown
+16031132,06/20/2016,2D,Anti-Multi-Religious Group,,Vandalism,N/A,,School/College,,,,,,,Unknown
+16022796,05/08/2016,3D,Anti-Hispanic,,Assault (physical),Closed-Exception,1,Individual(s),,,,,,,Unknown
+190020026,04/27/2019,2D,Anti-Black,,Verbal Intimidation/Simple Assault,N/A,,School/College,2,2,,,,,Known
+16064736,12/16/2016,2D,Anti-Homosexual,,Vandalism,Inactive,,Religious Organization,,,,,,,Unknown
+170513786,06/15/2017,3D,Anti-Jewish,,Vandalism,Open,,School/College,,,,,,,Unknown
+190021275,05/06/2019,5D,Anti-Transgender,,Vandalism,Open,,Business/Financial Institution,1,1,,,,,Known
+200014895,04/01/2020,GCPD,Anti-Jewish,,Verbal Intimidation/Simple Assault,Closed-Admin,,Religious Organization,2,,,,,,Unknown
+200012482,03/13/2020,4D,Anti-Jewish,,Written Intimidation/Simple Assault,Closed-Arrest,2,Individual(s),1,,1,,,,Known
+180039198,08/07/2018,2D,Anti-Jewish,,Written Intimidation/Simple Assault,Open,1,Individual(s),1,,1,,,,Known
+16045255,09/04/2016,3D,Anti-Jewish,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+180036489,07/23/2018,5D,Anti-Multi-Racial,Anti-Multi-Religious Group,Flyer Left Behind,N/A,1,Individual(s),,,,,,,Unknown
+200015942,04/13/2020,5D,Anti-Jewish,Anti-Bisexual,Written Intimidation/Simple Assault,Open,1,Individual(s),1,,,,,,Known
+16022218,05/05/2016,1D,Anti-Multi-Racial,,Vandalism,Inactive,,School/College,,,,,,,Unknown
+16062433,12/05/2016,4D,Anti-Jewish,,Vandalism,Open,,School/College,,,,,,,Unknown
+180009756,02/25/2018,1D,Anti-Black,,Other,N/A,,Government,,,,,,,Unknown
+16035346,07/12/2016,3D,Anti-Homosexual,,Assault (physical),Closed-Arrest,2,Individual(s),1,,1,,,,Known
+16002798,01/15/2016,5D,Anti-Transgender,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),,,,,,,Unknown
+170521252,07/25/2017,RCPD,Anti-Jewish,,Written Intimidation/Simple Assault,Open,1,Individual(s),,,,,,,Unknown
+170523413,08/06/2017,4D,Anti-Black,,Vandalism,UNF,1,Individual(s),,,,,,,Unknown
+190022870,05/15/2019,RCPD,Anti-Hispanic,,Vandalism,Inactive,,Business/Financial Institution,,,,,,,Unknown
+190023755,05/19/2019,2D,Anti-Other Ethnicity,,Vandalism,N/A,,School/College,,,,,,,Unknown
+190056448,11/21/2019,2D,Anti-Jewish,,Vandalism,N/A,1,Individual(s),1,1,,,,,Known
+200003519,01/22/2020,5D,Anti-Jewish,,Vandalism,Open,,School/College,,,,,,,Unknown
+170524454,08/12/2017,6D,Anti-Homosexual,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),1,,,1,,,Known
+180023500,05/10/2018,RCPD,Anti-Islamic,,Written Intimidation/Simple Assault,Closed-Admin,1,Individual(s),,,,,,,Unknown
+17010637,02/28/2017,5D,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Unknown
+190025582,05/31/2019,2D,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Unknown
+180010731,03/02/2018,TPPD,Anti-Transgender,,Assault (physical),Closed-Exception,1,Individual(s),2,,,,,,Unknown
+16001171,01/07/2016,2D,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Unknown
+16064844,12/18/2016,6D,Anti-Homosexual,,Vandalism,Inactive,,Other,,,,,,,Unknown
+170528411,09/02/2017,6D,Anti-Black,,Physical Intimidation/Simple Assault,Open,1,Individual(s),3,3,,,,,Known
+170531517,09/18/2017,2D,Anti-Black,,Verbal Intimidation/Simple Assault,Closed-Admin,1,Individual(s),1,1,,,,,Known
+190023112,05/16/2019,1D,Anti-Jewish,,Vandalism,Open,,School/College,,,,,,,Unknown
+180000925,01/06/2018,2D,Anti-Asian,,Written Intimidation/Simple Assault,Open,1,Individual(s),,,,,,,Unknown
+16067112,12/31/2016,1D,Anti-Jewish,,Vandalism,Inactive,,Other,,,,,,,Unknown
+180036383,07/22/2018,GCPD,Anti-Arab,,Vandalism,Open,2,Individual(s),,,,,,,Unknown
+190041233,08/28/2019,RCPD,Anti-Other Ethnicity,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),1,,,,,1,Known
+16030098,06/14/2016,4D,Anti-Asian,,Verbal Intimidation/Simple Assault,N/A,2,Individual(s),2,,,,,2,Known
+190040984,08/26/2019,4D,Anti-Jewish,,Vandalism,Open,,Other,,,,,,,Unknown
+200002368,01/14/2020,4D,Anti-Islamic,,Written Intimidation/Simple Assault,N/A,1,Individual(s),,,,,,,Unknown
+180034717,07/13/2018,2D,Anti-Black,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),,,,,,,Unknown
+16031655,06/16/2016,2D,Anti-Islamic,,Assault (physical),Closed-Arrest,1,Individual(s),1,,1,,,,Known
+17011943,03/06/2017,1D,Anti-Jewish,,Written Intimidation/Simple Assault,Open,,Religious Organization,,,,,,,Unknown
+180053627,10/25/2018,1D,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Unknown
+200001627,01/04/2020,4D,Anti-Jewish,Anti-Multi-Racial,Flyer Left Behind,N/A,,Society,,,,,,,Unknown
+170528121,09/01/2017,RCPD,Anti-Multi-Racial,,Flyer Left Behind,Open,,Society,,,,,,,Unknown
+16020209,04/24/2016,1D,Anti-Jewish,,Vandalism,Inactive,,School/College,,,,,,,Unknown
+180005896,01/31/2018,3D,Anti-Homosexual,,Vandalism,Closed-Admin,1,Individual(s),,,,,,,Unknown
+190022028,05/10/2019,4D,Anti-Jewish,,Vandalism,N/A,,Society,,,,,,,Unknown
+16058486,11/12/2016,3D,Anti-Hispanic,,Vandalism,Open,,Religious Organization,,,,,,,Unknown
+16058581,11/13/2016,4D,Anti-Hispanic,,Assault (physical),Closed-Arrest,1,Individual(s),1,,1,,,,Known
+16042149,08/20/2016,3D,Anti-Black,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),1,,,,,1,Known
+200021910,06/03/2020,4D,Anti-Black,,Vandalism,Open,,Business/Financial Institution,1,,,,,,Unknown
+200010934,03/05/2020,RCPD,Anti-Asian,,Written Intimidation/Simple Assault,N/A,1,Individual(s),,,,,,,Unknown
+190030534,06/24/2019,1D,Anti-Hispanic,,Assault (physical),Open,1,Individual(s),4,,4,,,,Unknown
+17000401,01/03/2017,2D,Anti-Black,,Written Intimidation/Simple Assault,Closed-Admin,1,Individual(s),1,,1,,,,Known
+200011796,03/10/2020,RCPD,Anti-Multi-Racial,Anti-Homosexual,Written Intimidation/Simple Assault,N/A,,School/College,,,,,,,Unknown
+16012552,03/14/2016,1D,Anti-Black,,Written Intimidation/Simple Assault,N/A,1,Individual(s),1,,,,,,Known
+190015763,04/04/2019,2D,Anti-Homosexual,,Assault (physical),Closed-Arrest,1,Individual(s),1,,1,,,,Known
+180004831,01/28/2018,RCPD,Anti-Gender Non-Conforming,,Assault (physical),Closed-Arrest,1,Individual(s),1,,1,,,,Known
+16014707,03/25/2016,TPPD,Anti-Black,,Verbal Intimidation/Simple Assault,Closed-Arrest,1,Individual(s),1,,,,1,,Known
+180061842,12/11/2018,6D,Anti-Homosexual,Anti-Jewish,Vandalism,Closed-Admin,1,School/College,1,1,,,,,Known
+190018069,04/17/2019,2D,Anti-Jewish,,Vandalism,Open,,Society,,,,,,,Unknown
+170535772,10/08/2017,1D,Anti-Islamic,,Written Intimidation/Simple Assault,Closed-Admin,1,Individual(s),2,2,,,,,Known
+16052215,10/03/2016,1D,Anti-Black,,Written Intimidation/Simple Assault,N/A,1,Individual(s),,,,,,,Unknown
+17007821,02/13/2017,GCPD,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Unknown
+190006274,02/08/2019,1D,Anti-Black,,Written Intimidation/Simple Assault,N/A,1,Individual(s),4,4,,,,,Known
+180011551,03/07/2018,1D,Anti-White,,Written Intimidation/Simple Assault,Closed-Arrest,,School/College,1,,,,1,,Known
+180008200,02/16/2018,2D,Anti-Jewish,,Written Intimidation/Simple Assault,Inactive,1,Individual(s),,,,,,,Unknown
+170526402,08/23/2017,RCPD,Anti-Jewish,Anti-Islamic,Flyer Left Behind,Open,,Other,,,,,,,Unknown
+16058365,11/12/2016,3D,Anti-Islamic,,Verbal Intimidation/Simple Assault,N/A,,Religious Organization,1,,,,,1,Known
+190049702,10/16/2019,3D,Anti-Black,,Vandalism,Closed-Arrest,1,Individual(s),2,,1,1,,,Known
+180044692,09/07/2018,4D,Anti-Jewish,,Vandalism,Closed-Arrest,,Religious Organization,1,,1,,,,Known
+180014001,03/21/2018,2D,Anti-Jewish,,Written Intimidation/Simple Assault,Closed-Admin,1,Individual(s),1,,1,,,,Known
+190003502,01/23/2019,4D,Anti-Islamic,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),1,,,,,,Known
+16063483,12/10/2016,2D,Anti-Jewish,,Flyer Left Behind,Closed-Exception,1,Individual(s),,,,,,,Unknown
+170507863,05/15/2017,2D,Anti-Black,,Vandalism,N/A,,School/College,,,,,,,Unknown
+200005776,02/04/2020,4D,Anti-Black,,Vandalism,N/A,,School/College,,,,,,,Unknown
+190007085,02/13/2019,5D,Anti-Black,,Assault (simple),Closed-Arrest,1,Individual(s),1,,,1,,,Known
+180056355,11/08/2018,4D,Anti-Transgender,,Assault (physical),Closed-Exception,1,Individual(s),1,,,,,,Known
+16060113,11/22/2016,2D,Anti-Other Ethnicity,,Written Intimidation/Simple Assault,N/A,1,Individual(s),,,,,,,Unknown
+170516376,06/28/2017,GCPD,Anti-Black,,Vandalism,Inactive,3,Individual(s),,,,,,,Unknown
+190030993,06/28/2019,1D,Anti-Black,,Vandalism,Open,,Other,,,,,,,Unknown
+190021305,05/07/2019,4D,Anti-Asian,Anti-Homosexual,Vandalism,Open,,Individual(s),,,,,,,Unknown
+180007926,02/15/2018,1D,Anti-Black,,Vandalism,Open,,School/College,,,,,,,Unknown
+190019957,04/28/2019,6D,Anti-Homosexual,,Assault (physical),Inactive,1,Individual(s),2,,,,,,Unknown
+200003031,01/18/2020,RCPD,Anti-Black,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),1,,,,1,,Known
+170508252,05/17/2017,2D,Anti-Black,,Verbal Intimidation/Simple Assault,Closed-Admin,1,Individual(s),1,,,,,,Unknown
+200001072,01/07/2020,TPPD,Anti-Jewish,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),1,,,,,1,Known
+17012521,03/09/2017,1D,Anti-Catholic,,Vandalism,Closed-Admin,4,Individual(s),1,1,,,,,Known
+17004089,01/23/2017,3D,Anti-Jewish,,Vandalism,Open,,School/College,,,,,,,Unknown
+180012537,03/13/2018,6D,Anti-Black,,Vandalism,Open,,Government,,,,,,,Unknown
+180001592,01/10/2018,4D,Anti-Multi-Racial,Anti-Jewish,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+180054728,11/01/2018,6D,Anti-Jewish,,Written Intimidation/Simple Assault,Open,,Religious Organization,1,,,,,,Known
+16061267,11/29/2016,1D,Anti-Black,,Vandalism,Inactive,,School/College,,,,,,,Unknown
+16010040,02/29/2016,6D,Anti-Jewish,,Vandalism,Open,,Other,,,,,,,Unknown
+16034348,07/07/2016,2D,Anti-Jewish,,Vandalism,Inactive,,Government,,,,,,,Unknown
+190037127,08/04/2019,4D,Anti-Black,,Vandalism,Closed-Admin,1,Individual(s),,,,,,,Unknown
+200012207,03/12/2020,2D,Anti-Black,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),,,,,,,Unknown
+190043481,09/10/2019,GCPD,Anti-Multi-Racial,,Vandalism,Open,,Society,,,,,,,Unknown
+200005935,02/05/2020,4D,Anti-Transgender,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),1,1,,,,,Unknown
+200015065,04/05/2020,RCPD,Anti-Jewish,,Vandalism,Open,,Business/Financial Institution,,,,,,,Unknown
+180036449,07/23/2018,5D,Anti-Jewish,Anti-Black,Flyer Left Behind,N/A,2,Individual(s),,,,,,,Unknown
+200012731,03/15/2020,RCPD,Anti-Jewish,,Verbal Intimidation/Simple Assault,N/A,7,Individual(s),1,,,1,,,Known
+190048760,10/10/2019,GCPD,Anti-Asian,,Assault (physical),Open,2,Individual(s),1,,1,,,,Known
+170540409,11/01/2017,2D,Anti-Jewish,,Written Intimidation/Simple Assault,Open,,School/College,1,1,,,,,Known
+170542528,11/13/2017,4D,Anti-Islamic,,Written Intimidation/Simple Assault,Open,1,Individual(s),,,,,,,Unknown
+170513374,06/13/2017,4D,Anti-Black,,Vandalism,Open,,School/College,1,1,,,,,Known
+180060495,12/03/2018,5D,Anti-Black,,Assault (physical),Closed-Arrest,1,Individual(s),1,,,,,1,Known
+17010553,02/27/2017,4D,Anti-Islamic,,Written Intimidation/Simple Assault,N/A,,Religious Organization,,,,,,,Unknown
+200006894,02/10/2020,2D,Anti-Jewish,,Vandalism,N/A,,School/College,1,1,,,,,Known
+190015019,03/26/2019,2D,Anti-Black,,Written Intimidation/Simple Assault,N/A,1,Individual(s),,,,,,,Known
+180014071,03/21/2018,2D,Anti-Jewish,,Written Intimidation/Simple Assault,Closed-Admin,1,Individual(s),,,,,,,Unknown
+17005248,01/30/2017,6D,Anti-Black,,Assault (physical),UNF,1,Individual(s),1,,,,,,Unknown
+190059278,12/05/2019,1D,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Unknown
+190014251,03/27/2019,1D,Anti-Hispanic,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),,,,,,,Known
+180011102,03/04/2018,4D,Anti-White,,Written Intimidation/Simple Assault,UNF,1,Individual(s),4,4,,,,,Known
+17010455,02/27/2017,2D,Anti-Jewish,,Verbal Intimidation/Simple Assault,RTOJ,,School/College,,,,,,,Unknown
+170532001,09/21/2017,3D,Anti-Jewish,,Vandalism,Open,,Government,,,,,,,Unknown
+180022971,05/09/2018,RCPD,Anti-Black,,Assault (physical),UNF,1,Individual(s),2,,,,,,Unknown
+16020077,04/23/2016,4D,Anti-Black,,Other,N/A,,School/College,,,,,,,Unknown
+190033954,07/17/2019,4D,Anti-Black,,Written Intimidation/Simple Assault,Open,1,Individual(s),,,,,,,Known
+170526017,08/20/2017,4D,Anti-Homosexual,,Vandalism,Inactive,2,Individual(s),,,,,,,Unknown
+170537332,10/16/2017,1D,Anti-Black,,Physical Intimidation/Simple Assault,RTOJ,,Government,,,,,,,Unknown
+190031138,06/30/2019,RCPD,Anti-Homosexual,,Assault (physical),Open,1,Individual(s),1,,1,,,,Known
+16007812,02/16/2016,4D,Anti-Multi-Racial,,Vandalism,Open,,Other,,,,,,,Unknown
+17005552,02/01/2017,5D,Anti-Other Ethnicity,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),1,,,1,,,Known
+17008261,02/15/2017,4D,Anti-Jewish,,Written Intimidation/Simple Assault,Closed-Admin,1,Individual(s),3,1,,,,,Unknown
+180015906,04/02/2018,2D,Anti-Transgender,,Assault (physical),Open,1,Individual(s),1,,,,,1,Known
+17001156,01/07/2017,RCPD,Anti-Jewish,,Written Intimidation/Simple Assault,Inactive,1,Individual(s),,,,,,,Unknown
+190011458,03/11/2019,3D,Anti-Jewish,,Written Intimidation/Simple Assault,N/A,1,Individual(s),1,1,,,,,Known
+180020921,04/29/2018,GCPD,Anti-Multi-Racial,,Vandalism,Inactive,,Society,,,,,,,Unknown
+16053043,10/15/2016,5D,Anti-White,,Assault (physical),Closed-Arrest,1,Individual(s),1,,1,,,,Known
+190019923,04/28/2019,RCPD,Anti-Jewish,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+180049428,10/03/2018,4D,Anti-Black,,Written Intimidation/Simple Assault,Closed-Admin,,School/College,1,1,,,,,Known
+200009369,02/25/2020,2D,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Unknown
+16038833,08/01/2016,4D,Anti-Transgender,,Assault (physical),Closed-Arrest,2,Individual(s),2,,2,,,,Known
+16030124,06/14/2016,5D,Anti-White,,Assault (physical),Closed-Exception,1,Individual(s),1,,,,,,Known
+200013722,03/20/2020,2D,Anti-Jewish,,Written Intimidation/Simple Assault,N/A,,Religious Organization,,,,,,,Unknown
+190041063,08/27/2019,5D,Anti-Multi-Racial,,Written Intimidation/Simple Assault,N/A,,Business/Financial Institution,,,,,,,Known
+190009605,02/28/2019,3D,Anti-Homosexual,,Assault (physical),Open,1,Individual(s),2,,,,,,Unknown
+180057207,11/14/2018,4D,Anti-Asian,,Verbal Intimidation/Simple Assault,Closed-Arrest,,Business/Financial Institution,1,,,1,,,Known
+16032895,06/26/2016,3D,Anti-Black,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+16052250,10/10/2016,2D,Anti-Jewish,,Vandalism,Closed-Exception,,School/College,,,,,,,Unknown
+180008956,02/20/2018,3D,Anti-Hispanic,,Vandalism,Open,,Society,,,,,,,Unknown
+17012225,03/08/2017,2D,Anti-Black,Anti-Jewish,Vandalism,Closed-Admin,,School/College,,,,,,,Unknown
+17014656,03/22/2017,1D,Anti-Hispanic,,Verbal Intimidation/Simple Assault,Inactive,,School/College,,,,,,,Unknown
+190019525,04/26/2019,2D,Anti-Homosexual,,Written Intimidation/Simple Assault,Open,,Religious Organization,1,,,,,1,Known
+180052330,10/18/2018,TPPD,Anti-Jewish,,Vandalism,Closed-Arrest,1,Individual(s),1,,,,,1,Known
+170533042,09/22/2017,1D,Anti-Black,,Vandalism,Open,,School/College,,,,,,,Unknown
+200020889,04/21/2020,1D,Anti-Jewish,,Written Intimidation/Simple Assault,Open,,Religious Organization,,,,,,,Unknown
+200021971,06/03/2020,4D,Anti-Black,Anti-Jewish,Vandalism,Open,,Business/Financial Institution,,,,,,,Unknown
+190016854,04/11/2019,RCPD,Anti-Jewish,,Written Intimidation/Simple Assault,Open,1,Individual(s),1,,,,1,,Known
+17008392,02/16/2017,1D,Anti-Jewish,,Vandalism,Closed-Admin,,School/College,3,3,,,,,Known
+17000839,01/05/2017,6D,Anti-Islamic,,Written Intimidation/Simple Assault,N/A,,Religious Organization,,,,,,,Unknown
+16054220,10/13/2016,1D,Anti-Jewish,,Vandalism,Inactive,,School/College,,,,,,,Unknown
+180029724,06/15/2018,2D,Anti-Jewish,,Vandalism,Inactive,,School/College,,,,,,,Unknown
+180043768,09/01/2018,5D,Anti-Other Religion,,Verbal Intimidation/Simple Assault,Open,,Religious Organization,,,,,,,Unknown
+180053595,10/25/2018,RCPD,Anti-Homosexual,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+190020400,05/01/2019,4D,Anti-Black,,Vandalism,Inactive,,Society,,,,,,,Known
+180026302,05/28/2018,GCPD,Anti-Jewish,,Flyer Left Behind,Inactive,1,Individual(s),,,,,,,Unknown
+190043750,09/12/2019,2D,Anti-Jewish,Anti-Homosexual,Vandalism,Inactive,2,Individual(s),,,,,,,Unknown
+170516892,07/01/2017,4D,Anti-Islamic,,Vandalism,Closed-Arrest,1,Individual(s),1,,,,,1,Known
+190036323,07/31/2019,5D,Anti-Black,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),,,,,,,Unknown
+17016332,03/31/2017,RCPD,Anti-Hispanic,,Assault (physical),Open,1,Individual(s),,,,,,,Unknown
+180007511,02/13/2018,6D,Anti-Gender Non-Conforming,,Verbal Intimidation/Simple Assault,UNF,1,Individual(s),2,,,,,,Unknown
+190014980,03/30/2019,2D,Anti-Black,Anti-Hispanic,Vandalism,Open,,School/College,,,,,,,Known
+190004730,01/12/2019,3D,Anti-Homosexual,,Flyer Left Behind,N/A,,Society,,,,,,,Unknown
+190000566,01/04/2019,2D,Anti-Black,Anti-Jewish,Vandalism,Inactive,,Business/Financial Institution,,,,,,,Unknown
+190030991,06/28/2019,2D,Anti-Jewish,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+190005702,02/05/2019,1D,Anti-Jewish,,Vandalism,N/A,,School/College,1,1,,,,,Known
+16061017,11/28/2016,6D,Anti-Jewish,,Vandalism,Open,,Government,,,,,,,Unknown
+170547368,12/08/2017,GCPD,Anti-Jewish,,Vandalism,Open,,School/College,,,,,,,Unknown
+200000206,01/01/2020,TPPD,Anti-Homosexual,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+17015428,03/26/2017,RCPD,Anti-Hispanic,,Flyer Left Behind,N/A,,Society,,,,,,,Unknown
+180009214,02/22/2018,4D,Anti-Hispanic,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),1,,,,,,Known
+17008087,02/14/2017,GCPD,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Unknown
+16014473,03/25/2016,2D,Anti-Jewish,,Flyer Left Behind,N/A,,Other,,,,,,,Unknown
+17015199,03/25/2017,4D,Anti-Hispanic,,Verbal Intimidation/Simple Assault,N/A,,Society,1,,,,,1,Known
+190038025,08/09/2019,RCPD,Anti-Black,,Written Intimidation/Simple Assault,N/A,,Society,,,,,,,Unknown
+190024385,05/22/2019,4D,Anti-Homosexual,,Written Intimidation/Simple Assault,Closed-Exception,1,Individual(s),1,1,,,,,Known
+16065935,12/23/2016,1D,Anti-Jewish,,Vandalism,Open,,Government,,,,,,,Unknown
+170514039,06/16/2017,6D,Anti-Homosexual,,Vandalism,Inactive,,Society,,,,,,,Unknown
+16064888,12/18/2016,2D,Anti-Jewish,,Flyer Left Behind,N/A,1,Individual(s),,,,,,,Unknown
+180040116,08/12/2018,3D,Anti-Other Religion,,Vandalism,Inactive,,Religious Organization,,,,,,,Unknown
+180056319,11/09/2018,4D,Anti-Homosexual,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),1,1,,,,,Known
+180000185,01/02/2018,5D,Anti-Black,,Verbal Intimidation/Simple Assault,Inactive,1,Individual(s),1,,,,,,Unknown
+170501371,04/09/2017,RCPD,Anti-Multi-Racial,,Flyer Left Behind,N/A,,Society,,,,,,,Unknown
+180030512,06/20/2018,RCPD,Anti-Jewish,,Written Intimidation/Simple Assault,Open,,Religious Organization,,,,,,,Unknown
+190006227,02/08/2019,RCPD,Anti-Jewish,Anti-Black,Vandalism,Open,,Society,,,,,,,Unknown
+180054345,10/30/2018,4D,Anti-Jewish,,Vandalism,Open,2,Individual(s),,,,,,,Unknown
+16055886,10/30/2016,2D,Anti-Jewish,,Vandalism,Inactive,,School/College,,,,,,,Unknown
+16019185,04/19/2016,5D,Anti-Multi-Racial,,Flyer Left Behind,N/A,,Individual(s),,,,,,,Unknown
+200007845,02/16/2020,TPPD,Anti-White,,Vandalism,N/A,,Society,,,,,,,Unknown
+17016198,03/29/2017,5D,Anti-White,,Assault (physical),Closed-Exception,1,Individual(s),2,2,,,,,Known
+170513635,06/14/2017,2D,Anti-Black,,Display of Noose,Closed-Admin,1,Individual(s),1,1,,,,,Known
+16020705,04/27/2016,2D,Anti-Multi-Religious Group,,Vandalism,Open,,Government,,,,,,,Unknown
+170511952,06/05/2017,3D,Anti-Islamic,,Written Intimidation/Simple Assault,Closed-Admin,2,Individual(s),,,,,,,Unknown
+190013251,03/22/2019,6D,Anti-Islamic,,Assault (physical),Closed-Admin,1,Individual(s),1,,1,,,,Known
+180023060,05/10/2018,TPPD,Anti-Transgender,,Assault (physical),Closed-Arrest,1,Individual(s),1,1,,,,,Known
+16065495,12/21/2016,3D,Anti-White,,Vandalism,Open,,School/College,,,,,,,Unknown
+180048816,09/30/2018,5D,Anti-Other Ethnicity,,Vandalism,Inactive,6,Individual(s),2,,,,,,Known
+190034718,07/21/2019,5D,Anti-Black,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),1,,,,1,,Known
+16019492,04/20/2016,5D,Anti-Multi-Racial,,Flyer Left Behind,N/A,3,Individual(s),,,,,,,Unknown
+190002042,01/13/2019,4D,Anti-Multi-Racial,,Vandalism,Open,,School/College,,,,,,,Known
+190058606,12/05/2019,4D,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Unknown
+190033899,07/17/2019,4D,Anti-Black,,Verbal Intimidation/Simple Assault,N/A,2,Individual(s),1,,,,,1,Known
+180025325,05/22/2018,4D,Anti-Jewish,,Verbal Intimidation/Simple Assault,Inactive,1,Individual(s),1,,,,,,Unknown
+190010757,03/08/2019,4D,Anti-Black,,Vandalism,N/A,,School/College,,,,,,,Unknown
+180054970,11/03/2018,4D,Anti-Hispanic,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),1,,,,,1,Known
+17009753,02/23/2017,5D,Anti-Homosexual,,Written Intimidation/Simple Assault,N/A,1,Individual(s),2,,,,2,,Known
+180025757,05/25/2018,6D,Anti-Homosexual,,Vandalism,Closed-Exception,1,Individual(s),1,,1,,,,Known
+17016212,03/30/2017,1D,Anti-Black,Anti-Jewish,Vandalism,Inactive,1,School/College,,,,,,,Unknown
+16059730,11/19/2016,3D,Anti-Jewish,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+190049032,10/11/2019,5D,Anti-Black,,Other,Open,,Society,,,,,,,Unknown
+190010572,03/07/2019,4D,Anti-Black,,Written Intimidation/Simple Assault,N/A,,School/College,1,1,,,,,Known
+170500969,04/07/2017,1D,Anti-Multi-Racial,,Flyer Left Behind,N/A,,Society,,,,,,,Unknown
+16059494,11/18/2016,1D,Anti-Black,,Verbal Intimidation/Simple Assault,Inactive,1,Individual(s),,,,,,,Unknown
+200000380,01/03/2020,TPPD,Anti-Homosexual,,Vandalism,Open,1,Individual(s),3,,,,,,Unknown
+16061405,11/29/2016,1D,Anti-Jewish,,Vandalism,Inactive,,School/College,,,,,,,Unknown
+190042422,09/01/2019,6D,Anti-Jewish,Anti-Multi-Racial,Vandalism,N/A,,Society,,,,,,,Unknown
+170534673,10/03/2017,4D,Anti-Black,,Assault (physical),Closed-Admin,1,Individual(s),3,3,,,,,Known
+16058195,11/11/2016,2D,Anti-Jewish,,Vandalism,Closed-Exception,,School/College,,,,,,,Unknown
+170521486,07/27/2017,3D,Anti-Hispanic,,Assault (physical),Closed-Admin,2,Individual(s),1,,,,,1,Known
+190058610,12/05/2019,5D,Anti-Black,,Vandalism,Closed-Admin,,School/College,,,,,,,Unknown
+180045932,09/14/2018,4D,Anti-Black,,Assault (physical),Closed-Exception,1,Individual(s),1,,,,,,Known
+16048796,09/22/2016,2D,Anti-Transgender,,Assault (physical),Open,1,Individual(s),1,,,1,,,Known
+190061126,12/19/2019,4D,Anti-Black,Anti-Hispanic,Assault (physical),Open,1,Individual(s),1,,,,1,,Known
+190057278,11/22/2019,2D,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Unknown
+16060360,11/23/2016,4D,Anti-Hispanic,,Assault (physical),Inactive,3,Individual(s),,,,,,,Unknown
+170509521,05/23/2017,6D,Anti-Black,,Vandalism,Open,,School/College,,,,,,,Unknown
+180040663,08/15/2018,4D,Anti-Hispanic,,Assault (physical),Closed-Admin,1,Individual(s),1,,1,,,,Known
+16037478,07/24/2016,1D,Anti-Homosexual,,Written Intimidation/Simple Assault,Inactive,2,Individual(s),,,,,,,Unknown
+16037182,07/22/2016,2D,Anti-Hispanic,,Assault (physical),Closed-Arrest,1,Individual(s),1,,,,,1,Known
+190057974,12/02/2019,4D,Anti-Black,Anti-Jewish,Vandalism,N/A,,School/College,,,,,,,Unknown
+170526290,08/22/2017,3D,Anti-Islamic,,Verbal Intimidation/Simple Assault,UNF,1,Individual(s),1,,1,,,,Known
+180059646,11/29/2018,3D,Anti-Jewish,,Written Intimidation/Simple Assault,Open,1,Individual(s),,,,,,,Unknown
+170515971,06/26/2017,3D,Anti-Black,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+190001026,01/04/2019,RCPD,Anti-Catholic,,Vandalism,Open,,Religious Organization,,,,,,,Unknown
+170521739,07/28/2017,GCPD,Anti-Hispanic,,Assault (physical),Closed-Arrest,2,Individual(s),1,,1,,,,Known
+17002238,01/13/2017,3D,Anti-Jewish,,Vandalism,Open,,School/College,,,,,,,Unknown
+170543121,11/15/2017,4D,Anti-Jewish,Anti-Black,Written Intimidation/Simple Assault,Open,,Individual(s),3,3,,,,,Known
+180031107,06/24/2018,3D,Anti-Black,Anti-Homosexual,Vandalism,Closed-Admin,,Religious Organization,,,,,,,Unknown
+190029874,06/22/2019,2D,Anti-Black,,Vandalism,Open,,Business/Financial Institution,,,,,,,Unknown
+16026270,05/26/2016,TPPD,Anti-White,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),1,1,,,,,Unknown
+180022825,05/09/2018,4D,Anti-Homosexual,,Vandalism,N/A,,School/College,,,,,,,Unknown
+170548729,12/15/2017,6D,Anti-Jewish,Anti-Black,Written Intimidation/Simple Assault,Open,1,Individual(s),,,,,,,
+180062542,12/14/2018,2D,Anti-Black,,Other,N/A,,School/College,,,,,,,Unknown
+190012119,03/15/2019,TPPD,Anti-Asian,,Verbal Intimidation/Simple Assault,Open,,Society,1,,,,,,Unknown
+190018079,04/17/2019,RCPD,Anti-Black,,Assault (simple),Inactive,1,Individual(s),1,,,,1,,Known
+190020981,05/04/2019,5D,Anti-Black,,Vandalism,Open,,Society,3,,,,,,Unknown
+170526194,08/22/2017,GCPD,Anti-Asian,Anti-Jewish,Vandalism,Open,,Government,,,,,,,Unknown
+200006187,02/06/2020,2D,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Unknown
+16024967,05/19/2016,3D,Anti-Jewish,,Flyer Left Behind,Open,2,Individual(s),,,,,,,Unknown
+200001377,01/08/2020,2D,Anti-Homosexual,,Verbal Intimidation/Simple Assault,N/A,,Society,2,,,,,,Unknown
+16036103,07/16/2016,1D,Anti-Black,,Vandalism,Inactive,,Government,,,,,,,Unknown
+190056339,11/01/2019,2D,Anti-Black,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),1,1,,,,,Known
+190038139,08/10/2019,2D,Anti-Homosexual,,Vandalism,Open,2,Individual(s),,,,,,,Unknown
+190056404,11/22/2019,RCPD,Anti-Black,,Verbal Intimidation/Simple Assault,Open,,Society,1,,,,,1,Known
+170516427,06/29/2017,2D,Anti-Asian,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),,,,,,,Unknown
+180016500,04/05/2018,4D,Anti-Black,,Vandalism,Inactive,,School/College,,,,,,,Unknown
+190049765,10/17/2019,TPPD,Anti-Black,,Vandalism,Open,,Government,,,,,,,Unknown
+16060209,11/23/2016,2D,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Unknown
+170514643,06/18/2017,4D,Anti-Black,,Physical Intimidation/Simple Assault,N/A,,Society,,,,,,,Unknown
+170502163,04/14/2017,1D,Anti-Homosexual,,Assault (physical),UNF,2,Individual(s),1,,1,,,,Known
+180031855,06/28/2018,3D,Anti-Black,,Written Intimidation/Simple Assault,Closed-Admin,1,Individual(s),1,,,,,,Known
+180054204,10/29/2018,3D,Anti-Hispanic,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),1,,,,,,Unknown
+16065054,12/19/2016,2D,Anti-Multi-Racial,,Vandalism,Open,,Religious Organization,,,,,,,Unknown
+190013600,03/24/2019,5D,Anti-Islamic,,Vandalism,Open,2,Individual(s),1,,,,,,Unknown
+170514215,06/17/2017,3D,Anti-Black,,Vandalism,Closed-Admin,1,Individual(s),,,,,,,Unknown
+16054366,10/22/2016,4D,Anti-Homosexual,,Assault (physical),Closed-Arrest,4,Individual(s),2,,2,,,,Known
+200003575,01/22/2020,2D,Anti-Homosexual,Anti-Black,Written Intimidation/Simple Assault,Open,1,Individual(s),1,,1,,,,Known
+190054013,11/08/2019,6D,Anti-Black,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+190059858,12/12/2019,RCPD,Anti-Black,,Verbal Intimidation/Simple Assault,Open,,Business/Financial Institution,1,,,,,1,Known
+170530867,09/17/2017,6D,Anti-Black,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),1,,1,,,,Known
+180017177,04/08/2018,4D,Anti-Black,,Written Intimidation/Simple Assault,N/A,1,Individual(s),,,,,,,Unknown
+180027544,06/04/2018,GCPD,Anti-White,,Assault (physical),Closed-Arrest,2,Individual(s),1,,1,,,,Known
+180055692,11/06/2018,2D,Anti-Jewish,,Verbal Intimidation/Simple Assault,N/A,,Religious Organization,,,,,,,Unknown
+16035635,07/14/2016,2D,Anti-Black,,Verbal Intimidation/Simple Assault,Closed-Arrest,1,Individual(s),1,,,,1,,Known
+190021692,05/09/2019,6D,Anti-Homosexual,,Assault (physical),N/A,1,Individual(s),1,,,1,,,Known
+17014825,03/22/2017,6D,Anti-Black,,Written Intimidation/Simple Assault,Open,1,Individual(s),,,,,,,Unknown
+16066413,12/27/2016,6D,Anti-Hispanic,,Verbal Intimidation/Simple Assault,Closed-Arrest,1,Individual(s),1,,,1,,,Known
+180023857,05/15/2018,2D,Anti-Black,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),1,,,1,,,Known
+190022915,05/15/2019,2D,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Unknown
+16035697,07/14/2016,4D,Anti-Jewish,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),,,,,,,Unknown
+17013994,03/18/2017,6D,Anti-Black,,Assault (physical),Open,2,Individual(s),1,,,,,,Unknown
+200007854,02/16/2020,4D,Anti-Black,,Vandalism,Open,,Society,,,,,,,Unknown
+180003892,01/23/2018,2D,Anti-Black,,Verbal Intimidation/Simple Assault,Closed-Arrest,1,Individual(s),1,,,,,1,Known
+17016633,04/01/2017,1D,Anti-Black,,Verbal Intimidation/Simple Assault,N/A,2,Individual(s),1,,1,,,,Known
+180064275,12/24/2018,RCPD,Anti-Black,,Written Intimidation/Simple Assault,N/A,,School/College,,,,,,,Unknown
+190023313,05/17/2019,2D,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Unknown
+16020631,04/26/2016,2D,Anti-Black,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),1,,,,1,,Known
+170512466,06/02/2017,2D,Anti-Jewish,,Vandalism,N/A,,School/College,,,,,,,Unknown
+17014459,03/21/2017,1D,Anti-Jewish,Anti-Black,Vandalism,Open,,School/College,,,,,,,Unknown
+190004111,01/25/2019,RCPD,Anti-Catholic,,Vandalism,Open,,Religious Organization,,,,,,,Unknown
+190006643,02/11/2019,2D,Anti-Black,,Display of Noose,N/A,,Business/Financial Institution,,,,,,,Known
+180040392,08/14/2018,2D,Anti-Black,,Vandalism,Closed-Admin,1,Individual(s),1,,1,,,,Known
+190016883,04/11/2019,4D,Anti-Homosexual,,Written Intimidation/Simple Assault,N/A,2,Individual(s),1,1,,,,,Known
+16027958,06/04/2016,5D,Anti-Islamic,,Assault (physical),Open,2,Individual(s),1,,1,,,,Known
+170510497,05/29/2017,1D,Anti-Jewish,,Vandalism,Open,,School/College,,,,,,,Unknown
+190051237,10/25/2019,4D,Anti-Multi-Racial,,Flyer Left Behind,N/A,,Society,,,,,,,Unknown
+16024255,05/16/2016,TPPD,Anti-Jewish,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+170513795,06/15/2017,6D,Anti-Black,,Physical Intimidation/Simple Assault,N/A,,Society,,,,,,,Unknown
+16032044,06/19/2016,6D,Anti-Multi-Religious Group,,Vandalism,N/A,,Government,,,,,,,Unknown
+170524634,08/13/2017,1D,Anti-Islamic,,Assault (physical),Open,2,Individual(s),,,,,,,Unknown
+190023546,05/18/2019,5D,Anti-Jewish,Anti-Homosexual,Vandalism,N/A,,School/College,,,,,,,Unknown
+170522548,08/02/2017,5D,Anti-Homosexual,Anti-Black,Written Intimidation/Simple Assault,Inactive,1,Individual(s),,,,,,,Unknown
+16048388,09/20/2016,4D,Anti-Jewish,,Written Intimidation/Simple Assault,Closed-Arrest,2,Individual(s),1,,,1,,,Known
+17005568,02/01/2017,4D,Anti-Islamic,,Verbal Intimidation/Simple Assault,Inactive,1,Individual(s),1,,,,,1,Known
+16019138,04/19/2016,5D,Anti-Hispanic,,Written Intimidation/Simple Assault,N/A,1,Individual(s),,,,,,,Unknown
+200014771,04/02/2020,6D,Anti-Black,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),1,,,1,,,Known
+170512854,06/11/2017,GCPD,Anti-Jewish,,Vandalism,Open,,Society,,,,,,,Unknown
+190013820,03/25/2019,2D,Anti-Black,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),1,,,,1,,Known
+190008048,02/19/2019,1D,Anti-Gender Non-Conforming,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),1,,,,,,Known
+190012351,03/17/2019,5D,Anti-Black,,Written Intimidation/Simple Assault,Closed-Arrest,1,Individual(s),1,,,,,,Unknown
+180008473,02/18/2018,3D,Anti-Jewish,,Written Intimidation/Simple Assault,Closed-Admin,1,Individual(s),,,,,,,Unknown
+200010779,02/28/2020,5D,Anti-Black,,Vandalism,Open,,School/College,,,,,,,Unknown
+200044534,11/09/2020,2D,Anti-Jewish,Anti-Black,Vandalism,Open,,School/College,2,,,,,,Unknown
+200044976,11/14/2020,5D,Anti-White,,Assault (simple),Open,2,Individual(s),1,,,,,,Unknown
+200046728,11/26/2020,6D,Anti-Black,,Assault (simple),Open,1,Individual(s),1,,,,,,Unknown
+200046805,11/27/2020,1D,Anti-Transgender,,Written Intimidation/Simple Assault,Open,1,Individual(s),1,1,,,,,Unknown
+200045586,11/18/2020,2D,Anti-Jewish,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+200046789,11/27/2020,1D,Anti-Jewish,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+200045934,11/20/2020,1D,Anti-Jewish,,Verbal Intimidation/Simple Assault,Open,0,Religious Organization,,,,,,,Unknown
+200046530,11/25/2020,3D,Anti-Arab,,Verbal Intimidation/Simple Assault,Open,2,Individual(s),3,,,,,,Unknown
+200048870,12/11/2020,6D,Anti-Jewish,,Vandalism,Open,,School/College,,,,,,,Unknown
+200049849,12/18/2020,2D,Anti-Black,,Vandalism,Open,,Business/Financial Institution,,,,,,,Unknown
+200007490,02/14/2020,4D,Anti-Asian,Anti-Black,Assault (physical),Closed-Admin,1,Individual(s),1,,,,,1,Known
+200047241,11/30/2020,6D,Anti-Asian,,Verbal Intimidation/Simple Assault,Closed-Admin,,Business/Financial Institution,1,,,,,,Unknown
+200040555,10/14/2020,2D,Anti-Black,,Display of Noose,Closed-Arrest,,School/College,2,2,,,,,Known
+200012538,03/14/2020,2D,Anti-Hispanic,,Assault (physical),Closed-Admin,1,Individual(s),3,,,,,,Unknown
+210000722,01/06/2021,2D,Anti-Jewish,,Verbal Intimidation/Simple Assault,N/A,,Other,,,,,,,Unknown
+200014302,03/28/2020,5D,Anti-Other Religion,,Vandalism,Inactive,,Religious Organization,,,,,,,Unknown
+200040693,10/16/2020,4D,Anti-Homosexual,,Physical Intimidation/Simple Assault,Inactive,1,Individual(s),1,,,,,,Unknown
+200000046,01/01/2020,3D,Anti-White,,Verbal Intimidation/Simple Assault,Inactive,1,Individual(s),3,,,,,,Unknown
+200021449,05/30/2020,2D,Anti-Homosexual,,Assault (physical),Closed-Arrest,1,Individual(s),4,3,,,,,Known
+200011351,03/07/2020,2D,Anti-Hispanic,,Assault (physical),Closed-Arrest,2,Individual(s),1,,1,,,,Known
+200049739,12/18/2020,TPPD,Anti-Jewish,,Vandalism,Inactive,1,Individual(s),,,,,,,Unknown
+200019612,05/14/2020,4D,Anti-Homosexual,,Written Intimidation/Simple Assault,Inactive,1,Individual(s),4,,,,,,Unknown
+200019091,05/11/2020,4D,Anti-Black,,Assault (simple),Closed-Arrest,1,Individual(s),1,,,,,1,Known
+200031285,08/11/2020,5D,Anti-White,,Assault (physical),Inactive,1,Individual(s),4,,,,,,Unknown
+200023370,06/14/2020,4D,Anti-Black,,Assault (simple),Closed-Admin,1,Individual(s),1,,,,,,Unknown
+200048557,12/09/2020,5D,Anti-Jewish,,Vandalism,UNF,,Government,,,,,,,Unknown
+210001148,01/09/2021,1D,Anti-Jewish,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),,,,,,,Unknown
+210000904,01/08/2021,3D,Anti-Black,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+210001455,01/12/2021,1D,Anti-Black,,Written Intimidation/Simple Assault,N/A,,Society,,,,,,,Unknown
+210002778,01/22/2021,1D,Anti-Jewish,,Other,Closed-Arrest,,Religious Organization,1,,,,1,,Known
+210003890,01/30/2021,4D,Anti-Black,,Assault (physical),Open,1,Individual(s),2,,,,,,Unknown
+180055941,11/07/2018,2D,Anti-Homosexual,,Assault (physical),Closed-Arrest,1,Individual(s),,,,,,,Unknown
+210003894,01/30/2021,6D,Anti-Black,,Assault (simple),Open,2,Individual(s),1,,,,,,Unknown
+180014801,03/28/2018,1D,Anti-Jewish,,Verbal Intimidation/Simple Assault,Closed-Arrest,,Religious Organization,1,,,1,,,Known
+200050312,12/22/2020,5D,Anti-Black,,Written Intimidation/Simple Assault,N/A,1,Individual(s),1,1,,,,,Known
+210004342,02/03/2021,1D,Anti-Homosexual,,Written Intimidation/Simple Assault,Open,1,Individual(s),,,,,,,Unknown
+200045948,11/20/2020,6D,Anti-Homosexual,,Assault (physical),Closed-Admin,1,Individual(s),2,,,,,,Unknown
+200033347,08/26/2020,5D,Anti-Asian,,Verbal Intimidation/Simple Assault,Inactive,1,Individual(s),1,,1,,,,Known
+200035694,09/11/2020,6D,Anti-Multi-Racial,,Verbal Intimidation/Simple Assault,N/A,,Business/Financial Institution,1,,,,,1,Known
+200034523,09/03/2020,5D,Anti-Asian,,Assault (simple),Closed-Arrest,1,Individual(s),1,,1,,,,Known
+200026933,07/11/2020,RCPD,Anti-Black,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+210005097,02/08/2021,1D,Anti-Jewish,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+210005985,02/15/2021,5D,Anti-Black,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),1,,1,,,,Known
+210005984,02/15/2021,1D,Anti-Black,Anti-Homosexual,Other,Open,1,Individual(s),,,,,,,Unknown
+210004662,02/05/2021,4D,Anti-Black,,Other,Open,1,Individual(s),1,,,,,,Unknown
+210006155,02/17/2021,1D,Anti-Jewish,,Written Intimidation/Simple Assault,Open,1,Individual(s),1,,,1,,,Known
+210007292,02/25/2021,4D,Anti-Black,,Written Intimidation/Simple Assault,Open,1,Individual(s),,,,,,,Unknown
+210003964,01/29/2021,5D,Anti-Homosexual,,Other,Open,,Society,,,,,,,Unknown
+210008727,03/08/2021,3D,Anti-Jewish,,Written Intimidation/Simple Assault,N/A,,Religious Organization,,,,,,,Unknown
+210009903,03/16/2021,6D,Anti-Black,,Vandalism,Open,,Society,,,,,,,Unknown
+210008201,03/04/2021,RCPD,Anti-Asian,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),1,,,,,1,Known
+210000899,01/08/2021,1D,Anti-Jewish,,Verbal Intimidation/Simple Assault,N/A,,Religious Organization,1,,,1,,,Known
+210010631,03/21/2021,3D,Anti-Black,,Vandalism,Open,,Religious Organization,,,,,,,Unknown
+210010483,03/20/2021,3D,Anti-Black,,Assault (simple),Open,1,Individual(s),1,,1,,,,Known
+210012100,03/31/2021,3D,Anti-Asian,,Vandalism,Open,1,Individual(s),,,,,,,Unknown
+210007743,03/02/2021,2D,Anti-Jewish,,Written Intimidation/Simple Assault,Open,,Society,1,,,,1,,Known
+210011282,03/25/2021,6D,Anti-Male Homosexual,,Assault (physical),Open,1,Individual(s),1,,1,,,,Known
+210010222,03/18/2021,6D,Anti-Asian,,Verbal Intimidation/Simple Assault,N/A,1,Individual(s),1,,,,,1,Known
+210010838,03/22/2021,6D,Anti-Black,,Written Intimidation/Simple Assault,N/A,1,Individual(s),,,,,,,Unknown
+210011626,03/28/2021,2D,Anti-Multi-Racial,Anti-Multi-Religious Group,Other,Open,1,Individual(s),,,,,,,Unknown
+210011781,03/29/2021,4D,Anti-Asian,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),1,,,1,,,Known
+210010292,03/19/2021,2D,Anti-Asian,,Vandalism,Open,3,Individual(s),,,,,,,Unknown
+210007875,03/02/2021,1D,Anti-Jewish,,Other,Open,1,Individual(s),1,,,,,,Unknown
+210008930,03/09/2021,1D,Anti-Arab,,Assault (simple),Closed-Arrest,1,Individual(s),1,,,,,1,Known
+210012676,04/05/2021,6D,Anti-Black,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),3,2,1,,,,Known
+210012796,04/06/2021,5D,Anti-Jewish,,Written Intimidation/Simple Assault,N/A,,Religious Organization,,,,,,,Unknown
+210013204,04/09/2021,2D,Anti-Black,,Vandalism,Open,1,Business/Financial Institution,,,,,,,Unknown
+210013389,04/10/2021,3D,Anti-Black,,Written Intimidation/Simple Assault,N/A,1,Individual(s),2,,,,,,Unknown
+210012351,04/02/2021,4D,Anti-Black,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),1,,,,1,,Known
+210013835,04/13/2021,3D,Anti-Islamic,,Verbal Intimidation/Simple Assault,Open,1,Religious Organization,1,,,,,,Unknown
+210012682,04/05/2021,1D,Anti-Asian,,Assault (simple),Open,1,Individual(s),1,,,,,,Unknown
+210014626,04/14/2021,1D,Anti-White,,Verbal Intimidation/Simple Assault,Open,1,Individual(s),,,,,,,Unknown
+210013872,04/13/2021,TPPD,,,Vandalism,Open,1,Government,2,,,,,,Unknown
+210009506,04/08/2021,2D,Anti-Black,Anti-Jewish,Written Intimidation/Simple Assault,Open,1,Individual(s),,,,,,,Unknown
+210014482,04/19/2021,3D,Anti-Homosexual,,Verbal Intimidation/Simple Assault,Closed-Arrest,1,Individual(s),1,,,,,1,Known
+210014477,04/19/2021,3D,Anti-Homosexual,,Verbal Intimidation/Simple Assault,Closed-Arrest,1,Society,2,,,,,2,Known
+210015820,04/28/2021,1D,Anti-Multi-Racial,,Assault (simple),Open,1,Individual(s),1,,,1,,,Known
+210015684,04/27/2021,6D,Anti-White,,Assault (physical),Open,2,Individual(s),1,,,,,,Unknown
+210017900,05/12/2021,1D,Anti-Black,,Verbal Intimidation/Simple Assault,Open,3,Individual(s),1,,,,1,,Known
+210016994,05/06/2021,5D,Anti-Black,,Written Intimidation/Simple Assault,UNF,1,Individual(s),1,,,1,,,Known
+210017606,05/10/2021,1D,Anti-Black,Anti-Jewish,Vandalism,Open,1,Government,,,,,,,Unknown
+210016348,05/02/2021,2D,Anti-Black,,Assault (simple),Open,1,Individual(s),1,,1,,,,Known
+210016786,05/04/2021,5D,Anti-Multi-Racial,,Assault (physical),Open,2,Individual(s),1,,1,1,,,Known
+210019248,05/21/2021,2D,Anti-White,,Assault (simple),Open,,,,,,,,,
