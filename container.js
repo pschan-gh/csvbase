@@ -295,12 +295,14 @@ class Container extends React.Component {
                 });
             }
         };
+        console.log(database);
         this.setState({
             primarykey:primarykey,
             database:database,
             headers:headers,
             headers2:{}
-        },  function(){this.table.current.resetGroups();});
+        });
+        // function(){this.table.current.resetGroups();}
     }
     
     handleAddColumn(e) {

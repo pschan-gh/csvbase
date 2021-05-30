@@ -93,6 +93,7 @@ class Header extends React.Component {
 class Tbody extends React.Component {
     constructor(props) {
         super(props); 
+        this.updateTable = this.updateTable.bind(this);
     }    
     componentDidUpdate() {
         $('tbody tr').off();
@@ -125,12 +126,84 @@ class Tbody extends React.Component {
             $('div.expandcollapse').hide();
         }
     }
+    updateTable(gf = this.props.groupfield, groups = this.props.groups.slice(), sortArray = {...this.props.sortarray}, sortField = this.props.sortfield) {
+        console.log('updating table in tbody');
+        
+        let headers = this.props.headers;
+        let filter = this.props.filter;
+        // let database = this.props.database;
+        console.log(groups);
+        let groupField = gf == '' ? this.props.primarykey : gf;
+        
+        let datalist = [].concat.apply([], groups);
+        let values = datalist.map(datum => {
+            return datum[groupField];
+        });
+        console.log(values);
+        
+        let uniqueSorted;
+        if(groupField != this.props.primarykey) {
+            let unique = values.filter((value, index, self) => { return self.indexOf(value) === index; });
+            let clicked = sortArray[groupField];
+            uniqueSorted = unique.sort((a, b) => {                
+                if (!(isNaN(parseFloat(a)) || isNaN(parseFloat(b)))) {
+                    return clicked*(parseFloat(a) - parseFloat(b));
+                } else {
+                    return clicked*a.localeCompare(b); 
+                }
+            });            
+        } else {
+            uniqueSorted = [''];
+        }
+        
+        // if (groups.length == 0) {
+        //     datalist = [];
+        //     let datum;                        
+        //     for (let key in database) {
+        //         datum = {};
+        //         Object.keys(headers).map(field => {
+        //             if (database[key][field] == null || typeof database[key][field] == 'undefined') {
+        //                 datum[field] = '';
+        //             } else {
+        //                 datum[field] = database[key][field];
+        //             }
+        //         });
+        //         datalist.push(datum);
+        //     }
+        // } else {
+        //     datalist = [].concat.apply([], groups);
+        // }
     
+        let filterFunc =  new Function('item', 'return ' + filter);
+        let datum;
+        let updatedGroups = uniqueSorted.map(value => {
+            let table = [];
+            for (let i = 0; i < datalist.length; i++) {
+                let item = datalist[i];
+                if (item[groupField] != value && groupField != this.props.primarykey) {
+                    continue;
+                }
+                datum = {};                
+                for (let field in headers) {
+                    if (item[field] == null || typeof item[field] == 'undefined') {
+                        datum[field] = '';
+                    } else {
+                        datum[field] = item[field];
+                    }
+                }
+                table.push(datum);
+            }
+            return table.filter(filterFunc)
+                .sort((a, b) => {return this.sortByField(sortArray, a, b, sortField, '')});
+        });                
+        return updatedGroups;
+    }
+
     render() {
         return (
             <tbody data-group-count={this.props.groups.length}>
             {
-                this.props.groups.map((group, groupIndex) => {
+                this.updateTable().map((group, groupIndex) => {
                     return group.map((row, index, group) => {
                         return <TableRow groupbyprimarykey={this.props.groupbyprimarykey} groupindex={groupIndex + 1} row={row} count={group.length} headers={this.props.headers} index={index + 1} key={group.toString() + (index + 1).toString()} />
                     })
@@ -145,16 +218,17 @@ class Tbody extends React.Component {
 class Table extends React.Component {
     constructor(props) {
         super(props); 
+        // const groups = this.updateGroups(this.props.database, this.props.filter);
         this.state = {
             sortArray:{},
             sortField:'',
             groupField:'',
-            groupValues:[''],
             filter:'true',
-            groups:[],      
+            groups:this.updateGroups(props.headers, props.database, props.primarykey, props.filter),
         };
         this.handleSort = this.handleSort.bind(this);
         this.updateTable = this.updateTable.bind(this);
+        this.updateGroups = this.updateGroups.bind(this);
         // this.GroupHandler = this.GroupHandler.bind(this);
     }    
 
@@ -165,6 +239,53 @@ class Table extends React.Component {
             sortArray[field] = 0;
         });
         this.updateTable(this.state.groupField, [], sortArray);        
+    }
+
+    updateGroups(headers, database, primarykey, filter) {
+        console.log('updating groups');
+        
+        let values = Object.keys(this.props.database).map(key => {
+            return database[key][groupField];
+        });
+        let unique = values.filter((value, index, self) => { return self.indexOf(value) === index; });
+        
+        let datalist;
+                
+        datalist = [];
+        let datum;                        
+        for (let key in database) {
+            datum = {};
+            Object.keys(headers).map(field => {
+                if (database[key][field] == null || typeof database[key][field] == 'undefined') {
+                    datum[field] = '';
+                } else {
+                    datum[field] = database[key][field];
+                }
+            });
+            datalist.push(datum);
+        }
+    
+        let filterFunc =  new Function('item', 'return ' + filter);
+        let updatedGroups = unique.map(value => {
+            let table = [];
+            for (let i = 0; i < datalist.length; i++) {
+                let item = datalist[i];
+                if (item[groupField] != value && groupField != primarykey) {
+                    continue;
+                }
+                datum = {};                
+                for (let field in headers) {
+                    if (item[field] == null || typeof item[field] == 'undefined') {
+                        datum[field] = '';
+                    } else {
+                        datum[field] = item[field];
+                    }
+                }
+                table.push(datum);
+            }
+            return table
+        });
+        return updatedGroups;             
     }
 
     updateTable(gf = this.state.groupField, groups = this.state.groups, sortArray = {...this.state.sortArray}, sortField = this.state.sortField) {
@@ -195,7 +316,7 @@ class Table extends React.Component {
         
         let datalist;
         
-        if (groups == 0) {
+        if (groups.length == 0) {
             datalist = [];
             let datum;                        
             for (let key in database) {
@@ -309,7 +430,7 @@ class Table extends React.Component {
         return(
             <table id="mainTable" className="table table-bordered table-hover">
             <Header groups={this.state.groups} grouphandler={this.updateTable} groupfield={this.state.groupField} headers={this.props.headers} sortarray={this.state.sortArray} handlesort={this.handleSort} />
-            <Tbody groups={this.state.groups} groupfield={this.state.groupField} primarykey={this.props.primarykey} groupbyprimarykey={this.props.primarykey == this.state.groupField || this.state.groupField == ''} headers={this.props.headers} />
+            <Tbody groups={this.state.groups} groupfield={this.state.groupField} primarykey={this.props.primarykey} groupbyprimarykey={this.props.primarykey == this.state.groupField || this.state.groupField == ''} headers={this.props.headers} sortarray={this.state.sortArray} sortfield={this.state.sortfield} />
             </table>
         )
     }
