@@ -53,7 +53,7 @@ class Container extends React.Component {
         
         let sanitizedDB = sanitizedHeaders.join(',') + "\n" 
         + plaintextDB.split('\n').slice(1).join("\n");
-        console.log(sanitizedDB);
+        // console.log(sanitizedDB);
         return Papa.parse(sanitizedDB, {
             header: true,
             dynamicTyping: false,
