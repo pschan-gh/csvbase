@@ -8,6 +8,7 @@ class Container extends React.Component {
             headers: {'count':{routine:'protected'}, 'rank':{routine:'protected'}},
             headers2: {},
             primarykey:null,
+            prevPrimarykey:null,
             filter:'true',
             freezeColIndex:1
         };
@@ -124,6 +125,7 @@ class Container extends React.Component {
         });
         console.log(this.state);
         $('select.key').show();
+        $('select.key').prop('disabled', false);
     }
 
     CsvHandler(e, fileinput) {
@@ -155,6 +157,7 @@ class Container extends React.Component {
             });
             console.log(scope.state);
             $('select.key').show();
+            $('select.key').prop('disabled', false);
         }
         reader.readAsText(fileinput.current.files[0]);
     }
@@ -192,6 +195,7 @@ class Container extends React.Component {
             });
             console.log(scope.state);
             $('select.key').show();
+            $('select.key').prop('disabled', false);
         }
         reader.readAsBinaryString(e.target.files[0]);
     }
@@ -201,7 +205,7 @@ class Container extends React.Component {
         this.table.current.setState({groups:[]});
         // console.log(e.target);
         let {name, value} = e.target;
-        const primarykey = value;
+        const primarykey = value;        
         const scope = this;
         
         console.log(primarykey);
@@ -231,16 +235,17 @@ class Container extends React.Component {
                 database[keyval] = { ordinal_index : i };
             }
             Object.keys(this.state.headers).map(field => {
-                if (row[field] != null && typeof row[field] != 'undefined' ) {
+                if (row[field] != '' && row[field] != null && typeof row[field] != 'undefined' ) {
                     database[keyval][field] = row[field];
-                } else if (database[keyval] == null || typeof database[keyval] == 'undefined' ) {
+                } else if (database[keyval][field] == null || typeof database[keyval][field] == 'undefined') {
                     database[keyval][field] = '';
-                }
-            });
+                }                
+            });            
         }
         
         this.recalculateDatabase(database, headers, primarykey);
         $('.nav-item.calculated_column').show(); 
+        $('#key_div select').prop('disabled', true);
     }    
     
     handleRenameColumn(e) {
@@ -283,6 +288,19 @@ class Container extends React.Component {
         let value;
         let routineFunc;        
         let item;
+        
+        const prevPrimarykey = this.state.prevPrimarykey;
+        
+        if(prevPrimarykey != null) {
+            Object.keys(database).map(keyval => {
+                if (database[keyval][primarykey] == '' 
+                || database[keyval][primarykey] == null 
+                || database[keyval][primarykey] == 'undefined') {
+                    database[keyval][primarykey] = database[keyval][prevPrimarykey];
+                }
+            });
+        }
+        
         for (let field in headers) {
             if (headers[field].routine != 'protected') {
                 Object.keys(database).map(key => {
@@ -302,6 +320,7 @@ class Container extends React.Component {
         };
         this.setState({
             primarykey:primarykey,
+            prevPrimarykey:primarykey,
             database:database,
             headers:headers,
             headers2:{}

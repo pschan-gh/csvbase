@@ -168,6 +168,7 @@ class Table extends React.Component {
 
     resetGroups() {
         console.log('resetting groups');
+
         let sortArray = {};
         let datalist = [];
         let datum;
@@ -188,7 +189,7 @@ class Table extends React.Component {
         Object.keys(this.props.headers).map(field => {
             sortArray[field] = 0;
         });
-        this.updateTable(this.state.groupField, sortArray, this.state.sortField, datalist);        
+        this.updateTable(this.props.primarykey, sortArray, this.state.sortField, datalist);        
     }
 
     updateTable(gf = this.state.groupField, sortArray = {...this.state.sortArray}, sortField = this.state.sortField, datalist = this.state.datalist.slice()) {
@@ -197,28 +198,7 @@ class Table extends React.Component {
         const headers = this.props.headers;
         const filter = this.props.filter;
         const database = this.props.database;
-        const groupField = gf == '' ? this.props.primarykey : gf;        
-        
-        console.log(datalist);
-        
-        // let datalist;        
-        // if (groups.length == 0) {
-        //     datalist = [];
-        //     let datum;                        
-        //     for (let key in database) {
-        //         datum = {};
-        //         Object.keys(headers).map(field => {
-        //             if (database[key][field] == null || typeof database[key][field] == 'undefined') {
-        //                 datum[field] = '';
-        //             } else {
-        //                 datum[field] = database[key][field];
-        //             }
-        //         });
-        //         datalist.push(datum);
-        //     }
-        // } else {
-        //     datalist = [].concat.apply([], this.state.groups);
-        // }
+        const groupField = gf == '' ? this.props.primarykey : gf;
     
         let values = datalist.map(item => {
             return item[groupField];
@@ -268,7 +248,7 @@ class Table extends React.Component {
             groupField:groupField,
             sortArray:{...sortArray},
             sortField:sortField,
-            datalist: datalist
+            datalist: datalist,
         });
     }
 

@@ -32,7 +32,7 @@ class Key extends React.Component {
         super(props);        
     }
     
-    render() {
+    render() {        
         return (
         <select name={this.props.name} className="form-control form-control-sm key" title="Set Key" onChange={this.props.keyhandler}>
             <option value="default">Select Key...</option>
