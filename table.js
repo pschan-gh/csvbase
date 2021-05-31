@@ -33,7 +33,7 @@ function TableRow(props) {
 function RecalculateColumn(props) {
     if (props.headers[props.field].routine != 'protected') {
         return (
-            <a className="dropdown-item recalculate" data-bs-toggle="modal" data-bs-target="#recalculate_column_bin" href="#" onClick={()=>{$('#recalculate_column_bin input.column_name').val(props.field);$('#recalculate_column_bin textarea').val(props.headers[props.field].routine)}}>Recalculate Column</a>
+            <a className="dropdown-item recalculate" data-bs-toggle="modal" data-bs-target="#recalculate_column_bin" href="#" onClick={()=>{props.recalculatecolumn.current.setState({field:props.field});}}>Recalculate Column</a>
         );
     } else {
         return '';
@@ -58,8 +58,10 @@ class Header extends React.Component {
         statistics(values, field);
     }
     
-    ClickHandler(field) {
-        console.log(field);
+    handleRename(field) {
+        this.props.renamecolumn.current.setState({
+            name:field,
+        });
         $('#rename_column input[name="old_col_name"]').val(field);
     }
     
@@ -75,8 +77,8 @@ class Header extends React.Component {
                             <th key={field} data-field={field} className={groupby}>
                                 <a href="#" className="header" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{field}</a>
                                 <div className="dropdown-menu" aria-labelledby={field}>
-                                    <a className="dropdown-item rename" data-bs-toggle="modal" data-bs-target="#rename_column" onClick={() => this.ClickHandler(field)} href="#">Rename</a>
-                                    <RecalculateColumn headers={this.props.headers} field={field} />
+                                    <a className="dropdown-item rename" data-bs-toggle="modal" data-bs-target="#rename_column" onClick={() => {this.handleRename(field);}} href="#">Rename</a>
+                                    <RecalculateColumn recalculatecolumn={this.props.recalculatecolumn} headers={this.props.headers} field={field} />
                                     <a className="dropdown-item group_by" data-field={field} href="#"  onClick={() => this.props.grouphandler(field)}>Group by</a>
                                     <a className="dropdown-item fields statistics" data-field={field} href="#" data-bs-toggle="modal" data-bs-target="#statistics" onClick={() => this.StatisticsHandler(field)}>Statistics</a>                        
                                 </div>
@@ -280,14 +282,14 @@ class Table extends React.Component {
     
     componentDidUpdate() {
         console.log('table.js did update');
-        const sortArray = {...this.state.sortArray};
+        // const sortArray = {...this.state.sortArray};
         let colWidths = {}
         const headers = this.props.headers;
-        Object.keys(this.props.headers).map(field => {
-            if ( sortArray[field] == null || typeof sortArray[field] == 'undefined') {
-                sortArray[field] = 1;
-            }            
-        });
+        // Object.keys(this.props.headers).map(field => {
+        //     if ( sortArray[field] == null || typeof sortArray[field] == 'undefined') {
+        //         sortArray[field] = 1;
+        //     }            
+        // });
         
         // $(function() {
             $('.field_checkbox').each(function() {
@@ -307,7 +309,7 @@ class Table extends React.Component {
     render() {        
         return(
             <table id="mainTable" className="table table-bordered table-hover">
-            <Header groups={this.state.groups} grouphandler={this.updateTable} groupfield={this.state.groupField} headers={this.props.headers} sortarray={this.state.sortArray} handlesort={this.handleSort} />
+            <Header renamecolumn={this.props.renamecolumn} recalculatecolumn={this.props.recalculatecolumn} groups={this.state.groups} grouphandler={this.updateTable} groupfield={this.state.groupField} headers={this.props.headers} sortarray={this.state.sortArray} handlesort={this.handleSort} />
             <Tbody groups={this.state.groups} groupfield={this.state.groupField} primarykey={this.props.primarykey} groupbyprimarykey={this.props.primarykey == this.state.groupField || this.state.groupField == ''} headers={this.props.headers} />
             </table>
         )

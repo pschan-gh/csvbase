@@ -1,6 +1,10 @@
 class RecalculateColumnModal extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            field:null,
+        }
+        // $('#recalculate_column_bin input.column_name').val(props.field);$('#recalculate_column_bin textarea').val(props.headers[props.field].routine)
     }
     componentDidUpdate(props) {
         $('.field_reference button.field').off();
@@ -17,6 +21,8 @@ class RecalculateColumnModal extends React.Component {
         });
     }
     render() {
+        const field = this.state.field == null ? '' : this.state.field;
+        const routine = this.state.field == null ? '' : this.props.headers[this.state.field].routine;
         return (
         <div id="recalculate_column_bin" className="modal" tabIndex="-1" role="dialog" aria-labelledby="column_bin" aria-hidden="true">
             <div className="modal-dialog modal-lg" role="dialog" >
@@ -24,7 +30,7 @@ class RecalculateColumnModal extends React.Component {
                     <form onSubmit={this.props.handlerecalculatecolumn}>
                         <div className="modal-header">
                             <h5 style={{display:'inline'}} className="modal-title">Calculate Column</h5>
-                            <input style={{display:'inline'}} className="form-control column_name" style={{fontFamily:'Courier'}} type="text" name="calc_col_name" readOnly/>
+                            <input style={{display:'inline'}} className="form-control column_name" style={{fontFamily:'Courier'}} type="text" name="calc_col_name" defaultValue={field} readOnly/>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="field_reference" style={{padding:'10px'}}>
@@ -33,7 +39,7 @@ class RecalculateColumnModal extends React.Component {
                             )}
                         </div>                                    
                         <div className="modal-body">                
-                            <textarea style={{width:'100%',height:'25em',fontFamily:'Courier'}} id="column_routine"  name="column_routine" ></textarea>
+                            <textarea style={{width:'100%',height:'25em',fontFamily:'Courier'}} id="column_routine"  name="column_routine" defaultValue={routine}></textarea>
                         </div>
                         <div className="modal-footer">
                             <button id="column_recalculate" type="submit" className="btn btn-primary" >Submit</button>
@@ -50,8 +56,11 @@ class RecalculateColumnModal extends React.Component {
 class RenameColumnModal extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            name:'',
+        };
     }
-
+    
     render() {
         return (
         <div id="rename_column" className="modal" tabIndex="-1" role="dialog" aria-labelledby="rename_column_label" aria-hidden="true">
@@ -65,7 +74,7 @@ class RenameColumnModal extends React.Component {
                         <div className="modal-body">
                             <div className="row">
                                 <div className="col">
-                                    <input style={{display:'inline'}} className="form-control column_name" style={{fontFamily:'Courier'}} type="text" name="old_col_name" readOnly/>
+                                    <input style={{display:'inline'}} className="form-control column_name" style={{fontFamily:'Courier'}} type="text" name="old_col_name" value={this.state.name} readOnly/>
                                 </div>
                                 <div className="col" style={{textAlign:'center',marginTop:'10px'}}><i className="bi bi-arrow-right"></i></div>
                                 <div className="col">

@@ -151,7 +151,6 @@ class Nav extends React.Component {
         </div>
         <CsvPasteModal csvpastehandler={this.props.csvpastehandler} />
         <AddColumnModal headers={this.props.headers} handleaddcolumn={this.props.handleaddcolumn} />
-        <RenameColumnModal handlerenamecolumn={this.props.handlerenamecolumn} />     
         </nav> 
         )
     }

@@ -27,7 +27,9 @@ class Container extends React.Component {
         this.fileInput = React.createRef(); 
         this.xlsxInput = React.createRef();    
         this.table = React.createRef();
-        this.nav = React.createRef()
+        this.nav = React.createRef();
+        this.renamecolumn = React.createRef();
+        this.recalculatecolumn = React.createRef();
     }
 
     sanitizeDB(plaintextDB, headers) {
@@ -390,10 +392,11 @@ class Container extends React.Component {
             <Nav ref={this.nav} fileinput={this.fileInput} xlsxinput={this.xlsxInput} csvhandler={this.CsvHandler} xlsxhandler={this.XlsxHandler} csvpastehandler={this.CsvPasteHandler} keyhandler={this.KeyHandler} headers={this.state.headers} freezecolindex={this.state.freezeColIndex} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery} handleaddcolumn={this.handleAddColumn} handlerenamecolumn={this.handleRenameColumn} reorderheaders={this.ReorderHeaders} exporthandler={this.ExportHandler}/>
             <div id="outer-table-container">
                 <div id="table-container">
-                    <Table ref={this.table} database={this.state.database} headers={this.state.headers} freezecolindex={this.state.freezeColIndex} filter={this.state.filter} primarykey={this.state.primarykey}/>
+                    <Table ref={this.table} database={this.state.database} headers={this.state.headers} renamecolumn={this.renamecolumn} recalculatecolumn={this.recalculatecolumn} freezecolindex={this.state.freezeColIndex} filter={this.state.filter} primarykey={this.state.primarykey}/>
                 </div>
             </div>
-            <RecalculateColumnModal headers={this.state.headers} handlerecalculatecolumn={this.handleRecalculateColumn} />
+            <RenameColumnModal ref={this.renamecolumn} handlerenamecolumn={this.handleRenameColumn} /> 
+            <RecalculateColumnModal ref={this.recalculatecolumn} headers={this.state.headers} handlerecalculatecolumn={this.handleRecalculateColumn} />
         </div>
         )
     }
