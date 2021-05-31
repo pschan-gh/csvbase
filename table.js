@@ -173,8 +173,9 @@ class Table extends React.Component {
         let datalist = [];
         let datum;
         const database = this.props.database;
-        const headers = this.props.headers;
-          
+        const headers = this.props.headers;        
+        const filterFunc =  new Function('item', 'return ' + this.props.filter);
+        
         for (let key in database) {
             datum = {};
             Object.keys(headers).map(field => {
@@ -189,14 +190,14 @@ class Table extends React.Component {
         Object.keys(this.props.headers).map(field => {
             sortArray[field] = 0;
         });
-        this.updateTable(this.props.primarykey, sortArray, this.state.sortField, datalist);        
+        this.updateTable(this.props.primarykey, sortArray, this.state.sortField, datalist.filter(filterFunc));     
     }
 
     updateTable(gf = this.state.groupField, sortArray = {...this.state.sortArray}, sortField = this.state.sortField, datalist = this.state.datalist.slice()) {
         console.log('updating table');
         
         const headers = this.props.headers;
-        const filter = this.props.filter;
+        // const filter = this.props.filter;
         const database = this.props.database;
         const groupField = gf == '' ? this.props.primarykey : gf;
     
@@ -218,7 +219,7 @@ class Table extends React.Component {
             });            
         }
     
-        let filterFunc =  new Function('item', 'return ' + filter);
+        // let filterFunc =  new Function('item', 'return ' + filter);
         let datum;
         let updatedGroups = uniqueSorted.map(value => {
             let table = [];
@@ -237,8 +238,9 @@ class Table extends React.Component {
                 }
                 table.push(datum);
             }
-            return table.filter(filterFunc)
-                .sort((a, b) => {return this.sortByField(sortArray, a, b, sortField);});
+            // return table.filter(filterFunc)
+            //     .sort((a, b) => {return this.sortByField(sortArray, a, b, sortField);});
+            return table.sort((a, b) => {return this.sortByField(sortArray, a, b, sortField);});
         });                
         
         datalist = [].concat.apply([], updatedGroups);
