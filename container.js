@@ -281,17 +281,22 @@ class Container extends React.Component {
     recalculateDatabase(database, headers, primarykey = this.state.primarykey) {
         let routineStr = '';
         let value;
-        let routineFunc;
+        let routineFunc;        
         let item;
         for (let field in headers) {
             if (headers[field].routine != 'protected') {
                 Object.keys(database).map(key => {
                     item = database[key];
-                    routineStr = headers[field].routine.replace(/\(@([^\)]+)\)/g, 'item["$1"]');
-                    console.log(routineStr);
+                    routineStr = headers[field].routine.replace(/\(@([^\)]+)\)/g, 'item["$1"]');                    
+                    // console.log(routineStr);
                     routineFunc = new Function('item',  routineStr);
-                    value =  routineFunc(item).toString();
-                    database[key][field] = value;
+                    // console.log(routineFunc(item));
+                    try {
+                        value = routineFunc(item).toString();
+                        database[key][field] = value;
+                    } catch (error) {
+                        database[key][field] = 'undefined';
+                    }
                 });
             }
         };

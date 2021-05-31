@@ -97,40 +97,40 @@ class Tbody extends React.Component {
     componentDidUpdate() {
         console.log('tbody did update');
         
-        let groupField = this.props.groupfield;
-        let primaryKey = this.props.primarykey;
+        const groupField = this.props.groupfield;
+        const primaryKey = this.props.primarykey;
         
-        $(function() {
-            $('tbody tr').off();
-            $('td.col_count').off();
-            $('tbody tr').click(function() {
-                $('td').css('color', '');
-                $(this).find('td').css('color', 'red');
-            });
-            if (groupField != primaryKey && groupField != '') {
-                let groupCount = $('tbody').attr('data-group-count');
-                for (let i = 1; i <= groupCount; i++) {            
-                    $('tbody tr[data-group-index=' + i + ']').not(":eq(0)").hide();
-                    $('tbody tr[data-group-index="' + i + '"] div.expandcollapse').text('+');
-                    $('tbody tr[data-group-index="' + i + '"] td.col_count').click(() => {
-                        if ($('tbody tr[data-group-index="' + i + '"]').length > 1) {
-                            if ($('tbody tr[data-group-index="' + i + '"]:eq(1)').is(":visible")) {
-                                $('tbody tr[data-group-index="' + i + '"]:not(:first)').hide();
-                                $('tbody tr[data-group-index="' + i + '"] div.expandcollapse').text('+');
-                                $('tbody tr[data-group-index="' + i + '"]').css('background-color', '');
-                            } else {
-                                $('tbody tr[data-group-index="' + i + '"]').show();
-                                $('tbody tr[data-group-index="' + i + '"] div.expandcollapse').text('-');
-                                let bgcolor = 'hsl(' + (i * 150) % 360 + ', 55%, 95%)';
-                                $('tbody tr[data-group-index="' + i + '"]').css('background-color', bgcolor);
-                            }
-                        }
-                    });
-                }
-            } else {
-                $('div.expandcollapse').hide();
-            }
+        // $(function() {
+        $('tbody tr').off();
+        $('td.col_count').off();
+        $('tbody tr').click(function() {
+            $('td').css('color', '');
+            $(this).find('td').css('color', 'red');
         });
+        if (groupField != primaryKey && groupField != '') {
+            let groupCount = $('tbody').attr('data-group-count');
+            for (let i = 1; i <= groupCount; i++) {            
+                $('tbody tr[data-group-index=' + i + ']').not(":eq(0)").hide();
+                $('tbody tr[data-group-index="' + i + '"] div.expandcollapse').text('+');
+                $('tbody tr[data-group-index="' + i + '"] td.col_count').click(() => {
+                    if ($('tbody tr[data-group-index="' + i + '"]').length > 1) {
+                        if ($('tbody tr[data-group-index="' + i + '"]:eq(1)').is(":visible")) {
+                            $('tbody tr[data-group-index="' + i + '"]:not(:first)').hide();
+                            $('tbody tr[data-group-index="' + i + '"] div.expandcollapse').text('+');
+                            $('tbody tr[data-group-index="' + i + '"]').css('background-color', '');
+                        } else {
+                            $('tbody tr[data-group-index="' + i + '"]').show();
+                            $('tbody tr[data-group-index="' + i + '"] div.expandcollapse').text('-');
+                            let bgcolor = 'hsl(' + (i * 150) % 360 + ', 55%, 95%)';
+                            $('tbody tr[data-group-index="' + i + '"]').css('background-color', bgcolor);
+                        }
+                    }
+                });
+            }
+        } else {
+            $('div.expandcollapse').hide();
+        }
+        // });
     }
     
     render() {
@@ -158,7 +158,8 @@ class Table extends React.Component {
             groupField:'',
             groupValues:[''],
             filter:'true',
-            groups:[],      
+            groups:[],
+            datalist:[]
         };
         this.handleSort = this.handleSort.bind(this);
         this.updateTable = this.updateTable.bind(this);
@@ -168,38 +169,56 @@ class Table extends React.Component {
     resetGroups() {
         console.log('resetting groups');
         let sortArray = {};
+        let datalist = [];
+        let datum;
+        const database = this.props.database;
+        const headers = this.props.headers;
+          
+        for (let key in database) {
+            datum = {};
+            Object.keys(headers).map(field => {
+                if (database[key][field] == null || typeof database[key][field] == 'undefined') {
+                    datum[field] = '';
+                } else {
+                    datum[field] = database[key][field];
+                }
+            });
+            datalist.push(datum);
+        }
         Object.keys(this.props.headers).map(field => {
             sortArray[field] = 0;
         });
-        this.updateTable(this.state.groupField, [], sortArray);        
+        this.updateTable(this.state.groupField, sortArray, this.state.sortField, datalist);        
     }
 
-    updateTable(gf = this.state.groupField, groups = this.state.groups, sortArray = {...this.state.sortArray}, sortField = this.state.sortField) {
+    updateTable(gf = this.state.groupField, sortArray = {...this.state.sortArray}, sortField = this.state.sortField, datalist = this.state.datalist.slice()) {
         console.log('updating table');
         
-        let headers = this.props.headers;
-        let filter = this.props.filter;
-        let database = this.props.database;
-        let groupField = gf == '' ? this.props.primarykey : gf;        
-                
-        let datalist;        
-        if (groups.length == 0) {
-            datalist = [];
-            let datum;                        
-            for (let key in database) {
-                datum = {};
-                Object.keys(headers).map(field => {
-                    if (database[key][field] == null || typeof database[key][field] == 'undefined') {
-                        datum[field] = '';
-                    } else {
-                        datum[field] = database[key][field];
-                    }
-                });
-                datalist.push(datum);
-            }
-        } else {
-            datalist = [].concat.apply([], this.state.groups);
-        }
+        const headers = this.props.headers;
+        const filter = this.props.filter;
+        const database = this.props.database;
+        const groupField = gf == '' ? this.props.primarykey : gf;        
+        
+        console.log(datalist);
+        
+        // let datalist;        
+        // if (groups.length == 0) {
+        //     datalist = [];
+        //     let datum;                        
+        //     for (let key in database) {
+        //         datum = {};
+        //         Object.keys(headers).map(field => {
+        //             if (database[key][field] == null || typeof database[key][field] == 'undefined') {
+        //                 datum[field] = '';
+        //             } else {
+        //                 datum[field] = database[key][field];
+        //             }
+        //         });
+        //         datalist.push(datum);
+        //     }
+        // } else {
+        //     datalist = [].concat.apply([], this.state.groups);
+        // }
     
         let values = datalist.map(item => {
             return item[groupField];
@@ -242,11 +261,14 @@ class Table extends React.Component {
                 .sort((a, b) => {return this.sortByField(sortArray, a, b, sortField);});
         });                
         
+        datalist = [].concat.apply([], updatedGroups);
+        
         this.setState({
             groups:updatedGroups,
             groupField:groupField,
             sortArray:{...sortArray},
-            sortField:sortField
+            sortField:sortField,
+            datalist: datalist
         });
     }
 
@@ -254,7 +276,7 @@ class Table extends React.Component {
         console.log(field);
         let sortArray = {...this.state.sortArray};
         sortArray[field] = this.state.sortArray[field] == 1 ? -1 : 1;
-        this.updateTable(this.state.groupField, this.state.groups, sortArray, field);
+        this.updateTable(this.state.groupField, sortArray, field);
     }
 
     sortByField(sortArray, a, b, field) {
@@ -276,16 +298,16 @@ class Table extends React.Component {
     
     componentDidUpdate() {
         console.log('table.js did update');
-        let sortArray = {...this.state.sortArray};
+        const sortArray = {...this.state.sortArray};
         let colWidths = {}
-        let headers = this.props.headers;
+        const headers = this.props.headers;
         Object.keys(this.props.headers).map(field => {
             if ( sortArray[field] == null || typeof sortArray[field] == 'undefined') {
                 sortArray[field] = 1;
             }            
         });
         
-        $(function() {
+        // $(function() {
             $('.field_checkbox').each(function() {
                 let field = $(this).attr('data-field');
                 if(this.checked) {                
@@ -297,8 +319,7 @@ class Table extends React.Component {
             let widths = computeColWidths(headers);
             updateTableWidth(widths);
             freezeColumns(widths);
-        });        
-        
+        // });        
     }
 
     render() {        
