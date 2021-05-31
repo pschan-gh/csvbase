@@ -267,10 +267,10 @@ class Table extends React.Component {
         let clicked = sortArray[field];
         
         let diff;
-        if (!(isNaN(parseFloat(a[field])) || isNaN(parseFloat(b[field])))) {
-            diff =  clicked*(parseFloat(a[field]) - parseFloat(b[field]));
+        if (!(isNaN(a[field]) || isNaN(b[field]))) {
+            diff =  clicked*(+a[field] - +b[field]);
         } else {
-            diff = clicked*a[field].localeCompare(b[field]); 
+            diff = clicked*a[field].toString().localeCompare(b[field].toString()); 
         }
         
         return diff;
