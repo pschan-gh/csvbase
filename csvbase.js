@@ -52,6 +52,7 @@ function updateTableWidth(colWidths) {
 
 function freezeColumns(colWidths) {
     console.log('freezing columns');
+    console.log(colWidths);
     $('thead th').css('position', '');
     $('thead th').css('left', '');
     $('thead th').css('z-index', '');
@@ -63,10 +64,11 @@ function freezeColumns(colWidths) {
     $('tr td').css('background-color', '');
     
     let colIndex = $(".sortable a").index($('#freezeCol')[0]);
+    let $frozen = $(".sortable a").slice(0, colIndex);
     let offset = 0;
     let i;
     for (i = 0; i < colIndex; i++) {
-        console.log(Object.keys(colWidths)[i]);        
+        console.log($frozen.eq(i));        
         $('thead th').eq(i).css('position', 'sticky');
         $('thead th').eq(i).css('left', offset);
         $('thead th').eq(i).css('z-index', 2);
@@ -76,6 +78,6 @@ function freezeColumns(colWidths) {
         $('tr td:nth-child(' + (i + 1) + ')').css('left', offset);
         $('tr td:nth-child(' + (i + 1) + ')').css('z-index', 1);
         $('tr td:nth-child(' + (i + 1) + ')').css('background-color', '#eee');        
-        offset += colWidths[Object.keys(colWidths)[i]];
+        offset += colWidths[$frozen.eq(i).find('input').attr('data-field')];
     }
 }
