@@ -161,21 +161,22 @@ class Table extends React.Component {
             groupValues:[''],
             filter:'true',
             groups:[],
-            datalist:[]
+            datalist:[],
+            headers:[]
         };
         this.handleSort = this.handleSort.bind(this);
         this.updateTable = this.updateTable.bind(this);
         // this.GroupHandler = this.GroupHandler.bind(this);
     }    
 
-    resetGroups() {
+    resetGroups(database, headers) {
         console.log('resetting groups');
 
         let sortArray = {};
         let datalist = [];
         let datum;
-        const database = this.props.database;
-        const headers = this.props.headers;        
+        // const database = this.props.database;
+        // const headers = this.props.headers;        
         const filterFunc =  new Function('item', 'return ' + this.props.filter);
         
         for (let key in database) {
@@ -189,18 +190,18 @@ class Table extends React.Component {
             });
             datalist.push(datum);
         }
-        Object.keys(this.props.headers).map(field => {
+        Object.keys(headers).map(field => {
             sortArray[field] = 0;
         });
-        this.updateTable(this.props.primarykey, sortArray, this.state.sortField, datalist.filter(filterFunc));     
+        this.updateTable(this.props.primarykey, sortArray, this.state.sortField, datalist.filter(filterFunc), headers);     
     }
 
-    updateTable(gf = this.state.groupField, sortArray = {...this.state.sortArray}, sortField = this.state.sortField, datalist = this.state.datalist.slice()) {
+    updateTable(gf = this.state.groupField, sortArray = {...this.state.sortArray}, sortField = this.state.sortField, datalist = this.state.datalist.slice(), headers = this.state.headers) {
         console.log('updating table');
         
-        const headers = this.props.headers;
+        // const headers = this.props.headers;
         // const filter = this.props.filter;
-        const database = this.props.database;
+        // const database = this.props.database;
         const groupField = gf == '' ? this.props.primarykey : gf;
     
         let values = datalist.map(item => {
@@ -253,6 +254,7 @@ class Table extends React.Component {
             sortArray:{...sortArray},
             sortField:sortField,
             datalist: datalist,
+            headers:{...headers}
         });
     }
 
@@ -284,7 +286,7 @@ class Table extends React.Component {
         console.log('table.js did update');
         // const sortArray = {...this.state.sortArray};
         let colWidths = {}
-        const headers = this.props.headers;
+        const headers = this.state.headers;
         // Object.keys(this.props.headers).map(field => {
         //     if ( sortArray[field] == null || typeof sortArray[field] == 'undefined') {
         //         sortArray[field] = 1;
@@ -309,8 +311,8 @@ class Table extends React.Component {
     render() {        
         return(
             <table id="mainTable" className="table table-bordered table-hover">
-            <Header renamecolumn={this.props.renamecolumn} recalculatecolumn={this.props.recalculatecolumn} groups={this.state.groups} grouphandler={this.updateTable} groupfield={this.state.groupField} headers={this.props.headers} sortarray={this.state.sortArray} handlesort={this.handleSort} />
-            <Tbody groups={this.state.groups} groupfield={this.state.groupField} primarykey={this.props.primarykey} groupbyprimarykey={this.props.primarykey == this.state.groupField || this.state.groupField == ''} headers={this.props.headers} />
+            <Header groups={this.state.groups} headers={this.state.headers} renamecolumn={this.props.renamecolumn} recalculatecolumn={this.props.recalculatecolumn} grouphandler={this.updateTable} groupfield={this.state.groupField} sortarray={this.state.sortArray} handlesort={this.handleSort} />
+            <Tbody groups={this.state.groups} headers={this.state.headers} groupfield={this.state.groupField} primarykey={this.props.primarykey} groupbyprimarykey={this.props.primarykey == this.state.groupField || this.state.groupField == ''} />
             </table>
         )
     }
