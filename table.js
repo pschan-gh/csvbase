@@ -155,24 +155,6 @@ class Tbody extends React.Component {
         } else {
             uniqueSorted = [''];
         }
-        
-        // if (groups.length == 0) {
-        //     datalist = [];
-        //     let datum;                        
-        //     for (let key in database) {
-        //         datum = {};
-        //         Object.keys(headers).map(field => {
-        //             if (database[key][field] == null || typeof database[key][field] == 'undefined') {
-        //                 datum[field] = '';
-        //             } else {
-        //                 datum[field] = database[key][field];
-        //             }
-        //         });
-        //         datalist.push(datum);
-        //     }
-        // } else {
-        //     datalist = [].concat.apply([], groups);
-        // }
     
         let filterFunc =  new Function('item', 'return ' + filter);
         let datum;
