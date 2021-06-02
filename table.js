@@ -109,7 +109,8 @@ class Tbody extends React.Component {
             $('td').css('color', '');
             $(this).find('td').css('color', 'red');
         });
-        if (groupField != primaryKey && groupField != '') {
+        // if (groupField != primaryKey && groupField != '') {
+        if (this.props.groups.length > 1) {
             let groupCount = $('tbody').attr('data-group-count');
             for (let i = 1; i <= groupCount; i++) {            
                 $('tbody tr[data-group-index=' + i + ']').not(":eq(0)").hide();
@@ -234,46 +235,48 @@ class Table extends React.Component {
             return item[groupField];
         });
         
-        let uniqueSorted = [''];
-        
-        if(groupField != primarykey) {
-            let unique = values.filter((value, index, self) => { return self.indexOf(value) === index; });
-            // let clicked = sortArray[groupField];
-            let clicked = headers[groupField].sort;
-            uniqueSorted = unique.sort((a, b) => {                
-                if (!(isNaN(parseFloat(a)) || isNaN(parseFloat(b)))) {
-                    return clicked*(parseFloat(a) - parseFloat(b));
-                } else {
-                    return clicked*a.localeCompare(b); 
-                }
-            });            
-        }
+        let unique = values.filter((value, index, self) => { return self.indexOf(value) === index; });
+        // let clicked = sortArray[groupField];
+        let clicked = headers[groupField].sort;
+        let uniqueSorted = unique.sort((a, b) => {                
+            if (!(isNaN(parseFloat(a)) || isNaN(parseFloat(b)))) {
+                return clicked*(parseFloat(a) - parseFloat(b));
+            } else {
+                return clicked*a.localeCompare(b); 
+            }
+        });            
     
         // let filterFunc =  new Function('item', 'return ' + filter);
         let datum;
-        let updatedGroups = uniqueSorted.map(value => {
-            let table = [];
-            for (let i = 0; i < datalist.length; i++) {
-                let item = datalist[i];
-                if (item[groupField] != value && groupField != primarykey) {
-                    continue;
-                }
-                datum = {};                
-                for (let field in headers) {
-                    if (item[field] == null || typeof item[field] == 'undefined') {
-                        datum[field] = '';
-                    } else {
-                        datum[field] = item[field];
+        let updatedGroups;
+        console.log(uniqueSorted.length);
+        console.log(datalist.length);
+        if (uniqueSorted.length == datalist.length) {
+            updatedGroups = [ datalist.sort((a, b) => {return this.sortByField(headers, a, b, sortField);}) ];
+        } else {
+            updatedGroups = uniqueSorted.map(value => {
+                let table = [];
+                for (let i = 0; i < datalist.length; i++) {
+                    let item = datalist[i];
+                    if (item[groupField] != value && groupField != primarykey) {
+                        continue;
                     }
+                    datum = {};                
+                    for (let field in headers) {
+                        if (item[field] == null || typeof item[field] == 'undefined') {
+                            datum[field] = '';
+                        } else {
+                            datum[field] = item[field];
+                        }
+                    }
+                    table.push(datum);
                 }
-                table.push(datum);
-            }
-            // return table.filter(filterFunc)
-            //     .sort((a, b) => {return this.sortByField(sortArray, a, b, sortField);});
-            return table.sort((a, b) => {return this.sortByField(headers, a, b, sortField);});
-        });                
-        
-        datalist = [].concat.apply([], updatedGroups);
+                // return table.filter(filterFunc)
+                //     .sort((a, b) => {return this.sortByField(sortArray, a, b, sortField);});
+                return table.sort((a, b) => {return this.sortByField(headers, a, b, sortField);});
+            });
+            datalist = [].concat.apply([], updatedGroups);
+        }        
         
         let displayedGroups = [];
         if (updatedGroups.length == 1) {            
