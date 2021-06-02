@@ -284,7 +284,7 @@ class Container extends React.Component {
         this.setState({
             database:database, 
             headers:headers
-        }, function(){this.table.current.resetGroups(database, headers);});
+        }, function(){this.table.current.resetGroups(database, headers, this.state.primarykey);});
     }
     
     recalculateDatabase(database, headers, primarykey = this.state.primarykey) {
@@ -328,7 +328,7 @@ class Container extends React.Component {
             database:database,
             headers:headers,
             headers2:{}
-        },  function(){this.table.current.resetGroups(database, headers);});
+        },  function(){this.table.current.resetGroups(database, headers, primarykey);});
     }
     
     handleAddColumn(e) {
@@ -385,7 +385,21 @@ class Container extends React.Component {
         // $('.dropdown-menu.query').dropdown('toggle');                        
         this.setState({
             filter:filter,
-        }, function(){$('#query_modal').modal('toggle');this.table.current.resetGroups(this.state.database, this.state.headers);}); 
+        }, function(){$('#query_modal').modal('toggle');this.table.current.resetGroups(this.state.database, this.state.headers, this.state.primarykey);}); 
+    }
+    
+    handleScroll() {
+        const height = this.offsetHeight;
+        const scrollTop = this.scrollTop;
+        // console.log(height);
+        // console.log(scrollTop);
+        if (scrollTop / height > 0.75) {
+            // console.log(scrollTop);
+        }
+    }
+    
+    componentDidUpdate() {
+        $('#table-container').scroll(this.handleScroll);
     }
 
     render() {
@@ -394,7 +408,7 @@ class Container extends React.Component {
             <Nav ref={this.nav} fileinput={this.fileInput} xlsxinput={this.xlsxInput} csvhandler={this.CsvHandler} xlsxhandler={this.XlsxHandler} csvpastehandler={this.CsvPasteHandler} keyhandler={this.KeyHandler} headers={this.state.headers} freezecolindex={this.state.freezeColIndex} headers2={this.state.headers2} filter={this.state.filter} handlequery={this.handleQuery} handleaddcolumn={this.handleAddColumn} handlerenamecolumn={this.handleRenameColumn} reorderheaders={this.ReorderHeaders} exporthandler={this.ExportHandler}/>
             <div id="outer-table-container">
                 <div id="table-container">
-                    <Table ref={this.table} renamecolumn={this.renamecolumn} recalculatecolumn={this.recalculatecolumn} filter={this.state.filter} primarykey={this.state.primarykey}/>
+                    <Table ref={this.table} renamecolumn={this.renamecolumn} recalculatecolumn={this.recalculatecolumn} filter={this.state.filter} />
                 </div>
             </div>
             <RenameColumnModal ref={this.renamecolumn} handlerenamecolumn={this.handleRenameColumn} /> 

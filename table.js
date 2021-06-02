@@ -1,10 +1,10 @@
 function Sort(props) {
-    if (props.sortarray[props.field] == 1) {
+    if (props.sort == 1) {
         return(
             // <a className="triangle" onClick={() => props.handlesort(props.field)}>&#x25B2;</a>
             <a className="triangle" onClick={() => props.handlesort(props.field)}><i className="bi bi-caret-up-fill"></i></a>
         );
-    } else if (props.sortarray[props.field] == -1) {
+    } else if (props.sort == -1) {
         return(
             // <a className="triangle" onClick={() => props.handlesort(props.field)}>&#x25BC;</a>
             <a className="triangle" onClick={() => props.handlesort(props.field)}><i className="bi bi-caret-down-fill"></i></a>
@@ -82,7 +82,7 @@ class Header extends React.Component {
                                     <a className="dropdown-item group_by" data-field={field} href="#"  onClick={() => this.props.grouphandler(field)}>Group by</a>
                                     <a className="dropdown-item fields statistics" data-field={field} href="#" data-bs-toggle="modal" data-bs-target="#statistics" onClick={() => this.StatisticsHandler(field)}>Statistics</a>                        
                                 </div>
-                                <Sort handlesort={this.props.handlesort} field={field} sortarray={this.props.sortarray} />
+                                <Sort handlesort={this.props.handlesort} sort={this.props.headers[field].sort} field={field} />
                             </th>
                         )
                     })}
@@ -141,7 +141,7 @@ class Tbody extends React.Component {
             {
                 this.props.groups.map((group, groupIndex) => {
                     return group.map((row, index, group) => {
-                        return <TableRow groupbyprimarykey={this.props.groupbyprimarykey} groupindex={groupIndex + 1} row={row} count={group.length} headers={this.props.headers} index={index + 1} key={group.toString() + (index + 1).toString()} />
+                        return <TableRow groupindex={groupIndex + 1} row={row} count={group.length} headers={this.props.headers} index={index + 1} key={group.toString() + (index + 1).toString()} />
                     })
                 })
             }
@@ -155,24 +155,41 @@ class Table extends React.Component {
     constructor(props) {
         super(props); 
         this.state = {
-            sortArray:{},
+            // sortArray:{},
             sortField:'',
             groupField:'',
+            primarykey:null,
             groupValues:[''],
             filter:'true',
             groups:[],
             datalist:[],
-            headers:[]
+            displayedGroups:[],
+            headers:{}
         };
         this.handleSort = this.handleSort.bind(this);
         this.updateTable = this.updateTable.bind(this);
+        this.updateDisplay = this.updateDisplay.bind(this);
         // this.GroupHandler = this.GroupHandler.bind(this);
     }    
 
-    resetGroups(database, headers) {
+    updateDisplay() {
+        let displayedGroups;
+        if (this.state.groups.length == 1) {
+            displayedGroups = this.state.displayedGroups.slice();
+            displayedGroups.push(this.state.groups[0].slice(this.state.displayedGroups.length, this.state.displayedGroups.length + 50));
+            console.log(displayedGroups);
+        } else {
+            displayedGroups = this.state.groups;
+        }
+        this.setState({
+            displayedGroups:displayedGroups
+        });
+    }
+
+    resetGroups(database, headers, primarykey) {
         console.log('resetting groups');
 
-        let sortArray = {};
+        // let sortArray = {};
         let datalist = [];
         let datum;
         // const database = this.props.database;
@@ -190,19 +207,28 @@ class Table extends React.Component {
             });
             datalist.push(datum);
         }
-        Object.keys(headers).map(field => {
-            sortArray[field] = 0;
+        // Object.keys(headers).map(field => {
+        //     sortArray[field] = 0;
+        // });
+        
+        let updatedHeaders = {...headers}
+        Object.keys(updatedHeaders).map(field => {
+            updatedHeaders[field].sort = 0;
         });
-        this.updateTable(this.props.primarykey, sortArray, this.state.sortField, datalist.filter(filterFunc), headers);     
+        
+        this.updateTable(primarykey, this.state.sortField, datalist.filter(filterFunc), updatedHeaders, primarykey);     
     }
 
-    updateTable(gf = this.state.groupField, sortArray = {...this.state.sortArray}, sortField = this.state.sortField, datalist = this.state.datalist.slice(), headers = this.state.headers) {
+    updateTable(
+        gf = this.state.groupField, 
+        sortField = this.state.sortField, 
+        datalist = this.state.datalist.slice(), 
+        headers = this.state.headers,
+        primarykey = this.state.primarykey
+    ) {        
         console.log('updating table');
         
-        // const headers = this.props.headers;
-        // const filter = this.props.filter;
-        // const database = this.props.database;
-        const groupField = gf == '' ? this.props.primarykey : gf;
+        const groupField = gf == '' ? primarykey : gf;
     
         let values = datalist.map(item => {
             return item[groupField];
@@ -210,9 +236,10 @@ class Table extends React.Component {
         
         let uniqueSorted = [''];
         
-        if(groupField != this.props.primarykey) {
+        if(groupField != primarykey) {
             let unique = values.filter((value, index, self) => { return self.indexOf(value) === index; });
-            let clicked = sortArray[groupField];
+            // let clicked = sortArray[groupField];
+            let clicked = headers[groupField].sort;
             uniqueSorted = unique.sort((a, b) => {                
                 if (!(isNaN(parseFloat(a)) || isNaN(parseFloat(b)))) {
                     return clicked*(parseFloat(a) - parseFloat(b));
@@ -228,7 +255,7 @@ class Table extends React.Component {
             let table = [];
             for (let i = 0; i < datalist.length; i++) {
                 let item = datalist[i];
-                if (item[groupField] != value && groupField != this.props.primarykey) {
+                if (item[groupField] != value && groupField != primarykey) {
                     continue;
                 }
                 datum = {};                
@@ -243,34 +270,64 @@ class Table extends React.Component {
             }
             // return table.filter(filterFunc)
             //     .sort((a, b) => {return this.sortByField(sortArray, a, b, sortField);});
-            return table.sort((a, b) => {return this.sortByField(sortArray, a, b, sortField);});
+            return table.sort((a, b) => {return this.sortByField(headers, a, b, sortField);});
         });                
         
         datalist = [].concat.apply([], updatedGroups);
         
+        let displayedGroups = [];
+        if (updatedGroups.length == 1) {            
+            displayedGroups.push(updatedGroups[0].slice(this.state.displayedGroups.length, this.state.displayedGroups.length + 50));
+            console.log(displayedGroups);
+        } else {
+            displayedGroups = updatedGroups;
+        }
+        
         this.setState({
             groups:updatedGroups,
             groupField:groupField,
-            sortArray:{...sortArray},
+            // sortArray:{...sortArray},
             sortField:sortField,
             datalist: datalist,
-            headers:{...headers}
+            displayedGroups : displayedGroups,
+            headers:{...headers},
+            primarykey:primarykey
         });
     }
 
     handleSort(field) {
         console.log(field);
-        let sortArray = {...this.state.sortArray};
-        sortArray[field] = this.state.sortArray[field] == 1 ? -1 : 1;
-        this.updateTable(this.state.groupField, sortArray, field);
+        // let sortArray = {...this.state.sortArray};
+        // sortArray[field] = this.state.sortArray[field] == 1 ? -1 : 1;
+        // this.updateTable(this.state.groupField, sortArray, field);
+        let headers = {...this.state.headers};
+        headers[field].sort = headers[field].sort == 1 ? -1 : 1;
+        this.updateTable(this.state.groupField, field, this.state.datalist.slice(), headers);
     }
 
-    sortByField(sortArray, a, b, field) {
+    sortByField_old(sortArray, a, b, field) {
         if (field == '') {
             return true;
         }
         
         let clicked = sortArray[field];
+        
+        let diff;
+        if (!(isNaN(a[field]) || isNaN(b[field]))) {
+            diff =  clicked*(+a[field] - +b[field]);
+        } else {
+            diff = clicked*a[field].toString().localeCompare(b[field].toString()); 
+        }
+        
+        return diff;
+    }
+    
+    sortByField(headers, a, b, field) {
+        if (field == '') {
+            return true;
+        }
+        
+        let clicked = headers[field].sort;
         
         let diff;
         if (!(isNaN(a[field]) || isNaN(b[field]))) {
@@ -311,8 +368,8 @@ class Table extends React.Component {
     render() {        
         return(
             <table id="mainTable" className="table table-bordered table-hover">
-            <Header groups={this.state.groups} headers={this.state.headers} renamecolumn={this.props.renamecolumn} recalculatecolumn={this.props.recalculatecolumn} grouphandler={this.updateTable} groupfield={this.state.groupField} sortarray={this.state.sortArray} handlesort={this.handleSort} />
-            <Tbody groups={this.state.groups} headers={this.state.headers} groupfield={this.state.groupField} primarykey={this.props.primarykey} groupbyprimarykey={this.props.primarykey == this.state.groupField || this.state.groupField == ''} />
+            <Header groups={this.state.groups} headers={this.state.headers} renamecolumn={this.props.renamecolumn} recalculatecolumn={this.props.recalculatecolumn} grouphandler={this.updateTable} groupfield={this.state.groupField} handlesort={this.handleSort} />
+            <Tbody groups={this.state.groups} headers={this.state.headers} groupfield={this.state.groupField} primarykey={this.state.primarykey} />
             </table>
         )
     }
