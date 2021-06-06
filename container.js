@@ -373,20 +373,43 @@ class Container extends React.Component {
 
     handleQuery(e, queryItems) {
         e.preventDefault();
-        let filter;
-        queryItems.map(item => {            
-            if (item.field == 'Show All') { 
+        console.log(e);
+        console.log(queryItems);
+        let filter = 'true';
+        queryItems.map(query => {            
+            if (query.field == 'Show All') { 
                 filter = 'true';
             } else {
-                filter = 'item["' + item.field + '"]' + ' ' + item.condition;
+                filter += ' ' + query.conjunction +  ' (item["' + query.field + '"] ' + query.condition + ')';
             }
             console.log(filter);            
         });
-        // $('.dropdown-menu.query').dropdown('toggle');                        
+        $('#query_modal').modal('toggle');
+        console.log(filter);
         this.setState({
             filter:filter,
-        }, function(){$('#query_modal').modal('toggle');this.table.current.resetGroups(this.state.database, this.state.headers, this.state.primarykey);}); 
+        }, function(){
+            $('#query_modal').modal('toggle');
+            this.table.current.resetGroups(this.state.database, this.state.headers, this.state.primarykey);
+        }); 
     }
+
+    // handleQuery(e, queryItems) {
+    //     e.preventDefault();
+    //     let filter;
+    //     queryItems.map(item => {            
+    //         if (item.field == 'Show All') { 
+    //             filter = 'true';
+    //         } else {
+    //             filter = 'item["' + item.field + '"]' + ' ' + item.condition;
+    //         }
+    //         console.log(filter);            
+    //     });
+    //     // $('.dropdown-menu.query').dropdown('toggle');                        
+    //     this.setState({
+    //         filter:filter,
+    //     }, function(){$('#query_modal').modal('toggle');this.table.current.resetGroups(this.state.database, this.state.headers, this.state.primarykey);}); 
+    // }
     
     handleScroll() {
         const height = this.offsetHeight;
