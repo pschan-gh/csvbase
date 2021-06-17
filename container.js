@@ -307,14 +307,14 @@ class Container extends React.Component {
         
         for (let field in headers) {
             if (headers[field].routine != 'protected') {
-                Object.keys(database).map(key => {
+                Object.keys(database).map((key, index) => {
                     item = database[key];
                     routineStr = headers[field].routine.replace(/\(@([^\)]+)\)/g, 'item["$1"]');                    
                     // console.log(routineStr);
-                    routineFunc = new Function('item',  routineStr);
+                    routineFunc = new Function('item', 'index',  routineStr);
                     // console.log(routineFunc(item));
                     try {
-                        value = routineFunc(item).toString();
+                        value = routineFunc(item, index).toString();
                         database[key][field] = value;
                     } catch (error) {
                         database[key][field] = 'undefined';
