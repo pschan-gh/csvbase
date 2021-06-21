@@ -231,6 +231,9 @@ class Container extends React.Component {
             row = this.state.data[i];
             if (primarykey != 'ordinal_index') {
                 keyval = row[primarykey];
+                if (keyval == null || typeof keyval == 'undefined' || keyval == '') {
+                    keyval = 'undefined';
+                }
                 if (!(keyval in database)) {
                     database[keyval] = {};
                 }
