@@ -24,7 +24,7 @@ function TableRow(props) {
         <td key='count' data-field='count' className='col_count' data-count={props.count}><div className="count-number" style={{float:'left'}}>{props.count}</div><div style={{float:'right'}} className="expandcollapse">+</div></td>
         <td key='rank' data-field='rank' className='col_rank' >{rank}</td>        
         {Object.keys(props.headers).filter(field => field != 'rank' && field != 'count').map((field, index) => {
-            return <td key={field} data-field={field}>{props.row[field]}</td>;
+            return <td key={field} data-field={field}><span>{props.row[field]}</span></td>;
         })}                            
         </tr>    
     );
@@ -69,8 +69,8 @@ class Header extends React.Component {
         return(
             <thead>
                 <tr id="header_row" className="table-secondary">
-                    <th key='count' data-field='count' className='col_count'>Count</th>
-                    <th key='rank' data-field='rank' className='col_rank'>Rank</th>                    
+                    <th key='count' data-field='count' className='col_count'><a>Count</a></th>
+                    <th key='rank' data-field='rank' className='col_rank'><a>Rank</a></th>                    
                     {Object.keys(this.props.headers).filter(field => {return (field != 'rank' && field != 'count');}).map((field, i) => {
                         let groupby = this.props.groupfield == field ? 'groupby' : '';
                         return (

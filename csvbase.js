@@ -23,17 +23,51 @@ function insertAtCursor(myField, myValue) {
 
 function computeColWidths(headers) {
     let colWidths = {};
-    let widths;
+    let tableWidth = 0;
+    // let widths;
+    // Object.keys(headers).map(field => {
+    //     widths = [];
+    //     $("td[data-field='" + field + "']").each(function() {
+    //         widths.push($(this).text().length);
+    //     });
+    //     $("th[data-field='" + field + "']").each(function() {
+    //         widths.push($(this).find('a.header').text().length);
+    //     });
+    //     colWidths[field] = Math.min(400, Math.max(...widths)*10) + 20;
+    // });
+    // return colWidths;
+    // 
     Object.keys(headers).map(field => {
-        widths = [];
-        $("td[data-field='" + field + "']").each(function() {
-            widths.push($(this).text().length);
+        tableWidth += 400;
+        $('th[data-field="' + field + '"]').each(function() {
+            $(this).css('width', 400);
         });
-        $("th[data-field='" + field + "']").each(function() {
-            widths.push($(this).find('a.header').text().length);
+        $('td[data-field="' + field + '"]').each(function() {
+            $(this).css('width', 400);
         });
-        colWidths[field] = Math.min(400, Math.max(...widths)*10) + 20;
     });
+    
+    $('table').css('width', tableWidth + 20);
+    
+    let width;
+    let currWidth;
+    Object.keys(headers).map(field => {
+        width = 0;
+        $("td[data-field='" + field + "']").each(function() {
+            if ($(this).find('span, div').length) {
+                currWidth = $(this).find('span, div')[0].offsetWidth;
+                width = currWidth > width ? currWidth : width;
+            }
+        });
+        if ($("th[data-field='" + field + "'] a").length) {
+            currWidth = $("th[data-field='" + field + "'] a")[0].offsetWidth;
+            width = currWidth > width ? currWidth : width;
+        }
+        console.log(field + ' ' + width);
+        // colWidths[field] = Math.min(400, Math.max(...widths)) + 50;
+        colWidths[field] = field.match(/count|rank/i) ? Math.min(400, width) : Math.min(400, width) + 40;
+    });
+    console.log(colWidths);            
     return colWidths;
 }
 
