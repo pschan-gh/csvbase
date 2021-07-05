@@ -77,8 +77,11 @@ function updateTableWidth(colWidths) {
         tableWidth += colWidths[$(this).attr('data-field')];
     });
    
-    $('#mainTable').css('width', tableWidth + 20);
+    $('table').css('width', tableWidth + 20);
     $('th').each(function() {
+        $(this).css('width', colWidths[$(this).attr('data-field')]);
+    });
+    $('td').each(function() {
         $(this).css('width', colWidths[$(this).attr('data-field')]);
     });
     $('tbody').css('margin-top', parseInt($('th').first().css('height')));
