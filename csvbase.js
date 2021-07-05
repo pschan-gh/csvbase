@@ -65,7 +65,7 @@ function computeColWidths(headers) {
         }
         console.log(field + ' ' + width);
         // colWidths[field] = Math.min(400, Math.max(...widths)) + 50;
-        colWidths[field] = field.match(/count|rank/i) ? Math.min(400, width) : Math.min(400, width) + 40;
+        colWidths[field] = field.match(/count|rank/i) ? Math.min(400, width) + 20 : Math.min(400, width) + 40;
     });
     console.log(colWidths);            
     return colWidths;
