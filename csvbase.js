@@ -61,11 +61,11 @@ function computeColWidths(headers) {
         });
         if ($("th[data-field='" + field + "'] a").length) {
             currWidth = $("th[data-field='" + field + "'] a")[0].offsetWidth;
-            width = currWidth > width ? currWidth : width;
+            width = currWidth/3 > width ? currWidth/3 : width;
         }
         console.log(field + ' ' + width);
         // colWidths[field] = Math.min(400, Math.max(...widths)) + 50;
-        colWidths[field] = field.match(/count|rank/i) ? Math.min(400, width) + 20 : Math.min(400, width) + 40;
+        colWidths[field] = field.match(/count|rank/i) ? Math.max(30, width) + 20 : Math.min(400, width) + 40;
     });
     console.log(colWidths);            
     return colWidths;
