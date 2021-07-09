@@ -34,10 +34,13 @@ class Container extends React.Component {
 
     sanitizeDB(plaintextDB, headers) {
         
-        let headerArray = Papa.parse(plaintextDB, {
+        let prelimDB = Papa.parse(plaintextDB, {
             header: true,
             dynamicTyping: false,
-        }).meta['fields'];
+        });
+        
+        let headerArray = prelimDB.meta['fields'];
+        let delimiter = prelimDB.meta['delimiter'];
         
         let sanitizedHeaders = [];
         let blankIndex = 0;
@@ -53,10 +56,11 @@ class Container extends React.Component {
                 sanitizedHeaders.push('"BLANK' + blankIndex++ + '"');
             }
         });
-        
-        let sanitizedDB = sanitizedHeaders.join(',') + "\n" 
-        + plaintextDB.split('\n').slice(1).join("\n");
-        // console.log(sanitizedDB);
+        // let delimiter = plaintextDB.split('\n')[0].match(/\t/g) ? "\t" : ",";
+        let sanitizedDB = sanitizedHeaders.join(delimiter) + "\n" 
+            + plaintextDB.split('\n').slice(1).join("\n");
+
+        console.log(sanitizedDB);
         return Papa.parse(sanitizedDB, {
             header: true,
             dynamicTyping: false,
@@ -112,16 +116,17 @@ class Container extends React.Component {
         const csv = form.elements["csv"].value;
         
         let results = this.sanitizeDB(csv, this.state.headers);
-        
+        console.log(results);
         let headers = {...this.state.headers};
         let headers2 = {};
+        
         results.meta['fields'].forEach(field => {
             if (!(field in headers)) {
-                headers[field] = {};
+                headers[field] = {'routine':'protected'};
             }
-            headers2[field] = {};
+            headers2[field] = {'routine':'protected'};
         });
-                
+        
         this.setState({
             data: results.data,
             headers:headers,
