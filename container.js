@@ -2,7 +2,7 @@ class Container extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            // table: [], 
+            // table: [],
             data:null,
             database:{},
             headers: {'count':{routine:'protected'}, 'rank':{routine:'protected'}},
@@ -24,8 +24,8 @@ class Container extends React.Component {
         this.handleAddColumn = this.handleAddColumn.bind(this);
         this.handleRecalculateColumn = this.handleRecalculateColumn.bind(this);
         this.recalculateDatabase = this.recalculateDatabase.bind(this);
-        this.fileInput = React.createRef(); 
-        this.xlsxInput = React.createRef();    
+        this.fileInput = React.createRef();
+        this.xlsxInput = React.createRef();
         this.table = React.createRef();
         this.nav = React.createRef();
         this.renamecolumn = React.createRef();
@@ -33,22 +33,22 @@ class Container extends React.Component {
     }
 
     sanitizeDB(plaintextDB, headers) {
-        
+
         let prelimDB = Papa.parse(plaintextDB, {
             header: true,
             dynamicTyping: false,
         });
-        
+
         let headerArray = prelimDB.meta['fields'];
         let delimiter = prelimDB.meta['delimiter'];
-        
+
         let sanitizedHeaders = [];
         let blankIndex = 0;
         headerArray.forEach(function(field) {
             if (field.trim() != '') {
                 sanitizedHeaders.push('"' + sanitize(field) + '"');
             } else {
-                while ( ((('"BLANK' + blankIndex + '"') in headers) 
+                while ( ((('"BLANK' + blankIndex + '"') in headers)
                 || sanitizedHeaders.includes('"BLANK' + + blankIndex + '"'))
                 && blankIndex < 1000) {
                     blankIndex++
@@ -57,7 +57,7 @@ class Container extends React.Component {
             }
         });
         // let delimiter = plaintextDB.split('\n')[0].match(/\t/g) ? "\t" : ",";
-        let sanitizedDB = sanitizedHeaders.join(delimiter) + "\n" 
+        let sanitizedDB = sanitizedHeaders.join(delimiter) + "\n"
             + plaintextDB.split('\n').slice(1).join("\n");
 
         console.log(sanitizedDB);
@@ -82,10 +82,10 @@ class Container extends React.Component {
             this.table.current.setState({headers:headers});
         });
     }
-    
+
     ExportHandler() {
         // $('th .triangle').html('');
-        
+
         let $table = $('#mainTable');
         var csv = $table.table2csv('return', {
             "separator": ",",
@@ -109,24 +109,24 @@ class Container extends React.Component {
         // window.location.href = 'data:text/csv;charset=UTF-8,' + encodeURIComponent(universalBOM + csv);
         // $('th .triangle').html('&#x25ba;');
     }
-    
+
     CsvPasteHandler(e) {
         e.preventDefault();
         const form = e.currentTarget;
         const csv = form.elements["csv"].value;
-        
+
         let results = this.sanitizeDB(csv, this.state.headers);
         console.log(results);
         let headers = {...this.state.headers};
         let headers2 = {};
-        
+
         results.meta['fields'].forEach(field => {
             if (!(field in headers)) {
                 headers[field] = {'routine':'protected'};
             }
             headers2[field] = {'routine':'protected'};
         });
-        
+
         this.setState({
             data: results.data,
             headers:headers,
@@ -138,27 +138,27 @@ class Container extends React.Component {
     }
 
     CsvHandler(e, fileinput) {
-        e.preventDefault();        
+        e.preventDefault();
         console.log(
         `Selected file - ${fileinput.current.files[0].name}`
         );
         const reader = new FileReader();
         const scope = this;
         reader.onload = function(e) {
-            let plaintextDB = e.target.result;            
-            
+            let plaintextDB = e.target.result;
+
             let results = scope.sanitizeDB(plaintextDB, scope.state.headers);
-                        
+
             let headers = {...scope.state.headers};
             let headers2 = {};
-            
+
             results.meta['fields'].forEach(field => {
                 if (!(field in headers)) {
                     headers[field] = {'routine':'protected'};
                 }
                 headers2[field] = {'routine':'protected'};
             });
-            
+
             scope.setState({
                 data: results.data,
                 headers:headers,
@@ -170,9 +170,9 @@ class Container extends React.Component {
         }
         reader.readAsText(fileinput.current.files[0]);
     }
-    
+
     XlsxHandler(e, fileinput) {
-        e.preventDefault();        
+        e.preventDefault();
         console.log(
         `Selected file - ${fileinput.current.files[0].name}`
         );
@@ -189,14 +189,14 @@ class Container extends React.Component {
             Object.keys(XL_row_object[0]).forEach(field => {
                 headers2[field] = {routine:'protected'};
             });
-            
+
             let headers = {...scope.state.headers};
             Object.keys(headers2).forEach(field => {
                 if (!(field in headers)) {
                     headers[field] = {routine:'protected'};
                 }
             });
-            
+
             scope.setState({
                 data: XL_row_object,
                 headers:headers,
@@ -208,17 +208,17 @@ class Container extends React.Component {
         }
         reader.readAsBinaryString(e.target.files[0]);
     }
-    
+
     KeyHandler(e, keyName) {
         console.log('key selected');
         this.table.current.setState({groups:[]});
         // console.log(e.target);
         let {name, value} = e.target;
-        const primarykey = value;        
+        const primarykey = value;
         const scope = this;
-        
+
         console.log(primarykey);
-                
+
         let keyval;
         let database = {...this.state.database};
         let headers = {}
@@ -231,7 +231,7 @@ class Container extends React.Component {
         } else {
             headers = {...this.state.headers};
         }
-        let row;        
+        let row;
         for (let i = 0; i < this.state.data.length; i++) {
             row = this.state.data[i];
             if (primarykey != 'ordinal_index') {
@@ -247,31 +247,31 @@ class Container extends React.Component {
                 database[keyval] = { ordinal_index : i };
             }
             Object.keys(this.state.headers).map(field => {
-                if (row[field] != '' && row[field] != null && typeof row[field] != 'undefined' ) {
+                if (row[field] !== '' && row[field] !== null && typeof row[field] !== 'undefined' ) {
                     database[keyval][field] = row[field];
-                } else if (database[keyval][field] == null || typeof database[keyval][field] == 'undefined') {
+                } else if (database[keyval][field] === null || typeof database[keyval][field] === 'undefined') {
                     database[keyval][field] = '';
-                }                
-            });            
+                }
+            });
         }
-        
+
         this.recalculateDatabase(database, headers, primarykey);
-        $('.nav-item.calculated_column').show(); 
+        $('.nav-item.calculated_column').show();
         $('#key_div select').prop('disabled', true);
-    }    
-    
+    }
+
     handleRenameColumn(e) {
         e.preventDefault();
         const form = e.currentTarget;
         const oldField = form.elements["old_col_name"].value;
         let field = form.elements["col_name"].value;
         let headers = {...this.state.headers};
-        
+
         if (field in headers) {
             alert('FIELD NAME EXISTS');
             return 0;
         }
-        
+
         let blankIndex = 0;
         if (field.trim() == '') {
             while ( (('BLANK' + blankIndex) in headers)
@@ -280,44 +280,44 @@ class Container extends React.Component {
             }
             field = 'BLANK' + blankIndex++;
         }
-        
-        headers[field] = {...headers[oldField]};        
+
+        headers[field] = {...headers[oldField]};
         let database = {...this.state.database};
         Object.keys(database).map(key => {
             database[key][field] = database[key][oldField];
             delete database[key][oldField];
         });
         delete headers[oldField];
-        $('#rename_column').modal('toggle'); 
+        $('#rename_column').modal('toggle');
         this.setState({
-            database:database, 
+            database:database,
             headers:headers
         }, function(){this.table.current.resetGroups(database, headers, this.state.primarykey);});
     }
-    
+
     recalculateDatabase(database, headers, primarykey = this.state.primarykey) {
         let routineStr = '';
         let value;
-        let routineFunc;        
+        let routineFunc;
         let item;
-        
+
         const prevPrimarykey = this.state.prevPrimarykey;
-        
+
         if(prevPrimarykey != null) {
             Object.keys(database).map(keyval => {
-                if (database[keyval][primarykey] == '' 
-                || database[keyval][primarykey] == null 
+                if (database[keyval][primarykey] == ''
+                || database[keyval][primarykey] == null
                 || database[keyval][primarykey] == 'undefined') {
                     database[keyval][primarykey] = database[keyval][prevPrimarykey];
                 }
             });
         }
-        
+
         for (let field in headers) {
             if (headers[field].routine != 'protected') {
                 Object.keys(database).map((key, index) => {
                     item = database[key];
-                    routineStr = headers[field].routine.replace(/\(@([^\)]+)\)/g, 'item["$1"]');                    
+                    routineStr = headers[field].routine.replace(/\(@([^\)]+)\)/g, 'item["$1"]');
                     // console.log(routineStr);
                     routineFunc = new Function('item', 'index',  routineStr);
                     // console.log(routineFunc(item));
@@ -338,7 +338,7 @@ class Container extends React.Component {
             headers2:{}
         },  function(){this.table.current.resetGroups(database, headers, primarykey);});
     }
-    
+
     handleAddColumn(e) {
         e.preventDefault();
         const form = e.currentTarget;
@@ -361,22 +361,22 @@ class Container extends React.Component {
                 field = 'BLANK' + blankIndex++;
             }
             headers[field] = {'routine':routine}
-            $('#column_bin').modal('toggle'); 
+            $('#column_bin').modal('toggle');
             this.recalculateDatabase({...this.state.database}, headers);
         }
     }
-    
+
     handleRecalculateColumn(e) {
         e.preventDefault();
         const form = e.currentTarget;
         const routine = form.elements["column_routine"].value;
         const field = form.elements["calc_col_name"].value;
-        
+
         let headers = {...this.state.headers};
         headers[field] = {'routine':routine}
-        $('#recalculate_column_bin').modal('toggle'); 
+        $('#recalculate_column_bin').modal('toggle');
         this.recalculateDatabase({...this.state.database}, headers);
-        
+
     }
 
     handleQuery(e, queryItems) {
@@ -384,13 +384,13 @@ class Container extends React.Component {
         console.log(e);
         console.log(queryItems);
         let filter = 'true';
-        queryItems.map(query => {            
-            if (query.field == 'Show All') { 
+        queryItems.map(query => {
+            if (query.field == 'Show All') {
                 filter = 'true';
             } else {
                 filter += ' ' + query.conjunction +  ' (item["' + query.field + '"] ' + query.condition + ')';
             }
-            console.log(filter);            
+            console.log(filter);
         });
         $('#query_modal').modal('toggle');
         console.log(filter);
@@ -399,26 +399,26 @@ class Container extends React.Component {
         }, function(){
             $('#query_modal').modal('toggle');
             this.table.current.resetGroups(this.state.database, this.state.headers, this.state.primarykey);
-        }); 
+        });
     }
 
     // handleQuery(e, queryItems) {
     //     e.preventDefault();
     //     let filter;
-    //     queryItems.map(item => {            
-    //         if (item.field == 'Show All') { 
+    //     queryItems.map(item => {
+    //         if (item.field == 'Show All') {
     //             filter = 'true';
     //         } else {
     //             filter = 'item["' + item.field + '"]' + ' ' + item.condition;
     //         }
-    //         console.log(filter);            
+    //         console.log(filter);
     //     });
-    //     // $('.dropdown-menu.query').dropdown('toggle');                        
+    //     // $('.dropdown-menu.query').dropdown('toggle');
     //     this.setState({
     //         filter:filter,
-    //     }, function(){$('#query_modal').modal('toggle');this.table.current.resetGroups(this.state.database, this.state.headers, this.state.primarykey);}); 
+    //     }, function(){$('#query_modal').modal('toggle');this.table.current.resetGroups(this.state.database, this.state.headers, this.state.primarykey);});
     // }
-    
+
     handleScroll() {
         const height = this.offsetHeight;
         const scrollTop = this.scrollTop;
@@ -428,7 +428,7 @@ class Container extends React.Component {
             // console.log(scrollTop);
         }
     }
-    
+
     componentDidUpdate() {
         $('#table-container').scroll(this.handleScroll);
     }
@@ -442,7 +442,7 @@ class Container extends React.Component {
                     <Table ref={this.table} renamecolumn={this.renamecolumn} recalculatecolumn={this.recalculatecolumn} filter={this.state.filter} />
                 </div>
             </div>
-            <RenameColumnModal ref={this.renamecolumn} handlerenamecolumn={this.handleRenameColumn} /> 
+            <RenameColumnModal ref={this.renamecolumn} handlerenamecolumn={this.handleRenameColumn} />
             <RecalculateColumnModal ref={this.recalculatecolumn} headers={this.state.headers} handlerecalculatecolumn={this.handleRecalculateColumn} />
         </div>
         )
