@@ -51,7 +51,7 @@ class RecalculateColumnModal extends React.Component {
                     <form onSubmit={this.props.handlerecalculatecolumn}>
                         <div className="modal-header">
                             <h5 style={{display:'inline'}} className="modal-title">Calculate Column</h5>
-                            <input style={{display:'inline'}} className="form-control column_name" style={{fontFamily:'Courier'}} type="text" name="calc_col_name" defaultValue={field} readOnly/>
+                            <input style={{display:'inline'}} className="form-control column_name"  type="text" name="calc_col_name" defaultValue={field} readOnly/>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="field_reference" style={{padding:'10px'}}>
@@ -60,7 +60,7 @@ class RecalculateColumnModal extends React.Component {
                             )}
                         </div>
                         <div className="modal-body">
-                            <textarea style={{width:'100%',height:'25em',fontFamily:'Courier'}} id="column_routine"  name="column_routine" defaultValue={routine}></textarea>
+                            <textarea style={{width:'100%',height:'25em'}} id="column_routine"  name="column_routine" defaultValue={routine}></textarea>
                         </div>
                         <div className="modal-footer">
                             <button id="column_recalculate" type="submit" className="btn btn-primary" >Submit</button>
@@ -95,11 +95,11 @@ class RenameColumnModal extends React.Component {
                         <div className="modal-body">
                             <div className="row">
                                 <div className="col">
-                                    <input style={{display:'inline'}} className="form-control column_name" style={{fontFamily:'Courier'}} type="text" name="old_col_name" value={this.state.name} readOnly/>
+                                    <input style={{display:'inline'}} className="form-control column_name" type="text" name="old_col_name" value={this.state.name} readOnly/>
                                 </div>
                                 <div className="col" style={{textAlign:'center',marginTop:'10px'}}><i className="bi bi-arrow-right"></i></div>
                                 <div className="col">
-                                    <input style={{display:'inline'}} className="form-control column_name" style={{fontFamily:'Courier'}} type="text" name="col_name"/>
+                                    <input style={{display:'inline'}} className="form-control column_name" type="text" name="col_name"/>
                                 </div>
                             </div>
                         </div>
@@ -159,7 +159,7 @@ class AddColumnModal extends React.Component {
                             )}
                         </div>
                         <div className="modal-body">
-                            <textarea style={{width:'100%',height:'25em',fontFamily:'Courier'}} className="column_routine"  name="column_routine" ></textarea>
+                            <textarea style={{width:'100%',height:'25em'}} className="column_routine"  name="column_routine" ></textarea>
                         </div>
                         <div className="modal-footer">
                             <button id="column_submit" type="submit" className="btn btn-primary" >Submit</button>
@@ -253,6 +253,7 @@ class CheckBoxes extends React.Component {
     componentDidMount() {
         new Sortable(this.sortableRef.current, {
             animation: 150,
+            filter: '.no-sort'
         });
     }
 
@@ -262,7 +263,7 @@ class CheckBoxes extends React.Component {
             {Object.keys(this.props.headers).map((field, index) => {
                 return <FieldCheckBox headers={this.props.headers}  key={field} field={field} handlecheckboxes={this.handleCheckboxes} />
             })}
-            <button className="btn btn-outline-secondary btn-sm ms-2" onClick={this.props.reorderheaders}>Reorder</button>
+            <button className="btn btn-outline-secondary btn-sm ms-2 no-sort" onClick={this.props.reorderheaders}>Reorder</button>
         </div>
         );
     }

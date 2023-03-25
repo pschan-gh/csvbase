@@ -2,7 +2,7 @@ class CsvPasteModal extends React.Component {
     constructor(props) {
         super(props);
     }
-    
+
     render() {
         return (
             <div id="pastebin" className="modal" tabIndex="-1" role="dialog" aria-labelledby="pastebinlabel" aria-hidden="true">
@@ -14,7 +14,7 @@ class CsvPasteModal extends React.Component {
                         </div>
                         <form onSubmit={this.props.csvpastehandler}>
                             <div className="modal-body"  >
-                                <textarea style={{width:'100%',height:'25em',fontFamily:'Courier'}} id="fields" name="csv" ></textarea>
+                                <textarea style={{width:'100%',height:'25em'}} id="fields" name="csv" ></textarea>
                             </div>
                             <div className="modal-footer">
                                 <button id="csv_submit" type="submit" className="btn btn-primary" >Submit</button>
@@ -29,10 +29,10 @@ class CsvPasteModal extends React.Component {
 
 class Key extends React.Component {
     constructor(props) {
-        super(props);        
+        super(props);
     }
-    
-    render() {        
+
+    render() {
         return (
         <select name={this.props.name} className="form-control form-control-sm key" title="Set Key" onChange={this.props.keyhandler}>
             <option value="default">Select Key...</option>
@@ -47,9 +47,9 @@ class Key extends React.Component {
 
 class CsvInput extends React.Component {
     constructor(props) {
-        super(props);        
+        super(props);
     }
-    
+
     render() {
         return (
         <label className="dropdown-item" >
@@ -73,11 +73,11 @@ class Nav extends React.Component {
     constructor(props){
         super(props);
     }
-    componentDidUpdate(props) {        
-        
+    componentDidUpdate(props) {
+
         var $chkboxes = $('.field_checkbox');
         var lastChecked = null;
-        
+
         $chkboxes.click(function(e) {
             if (!lastChecked) {
                 lastChecked = this;
@@ -86,17 +86,17 @@ class Nav extends React.Component {
             if (e.shiftKey) {
                 var start = $chkboxes.index(this);
                 var end = $chkboxes.index(lastChecked);
-                
+
                 $chkboxes.slice(Math.min(start,end), Math.max(start,end)+ 1).each(function() {
                     // if (this.checked != lastChecked.checked) {
                     //     this.click();
                     // }
                     this.checked = lastChecked.checked
                 });
-                
-            }            
-            lastChecked = this;            
-        });        
+
+            }
+            lastChecked = this;
+        });
     }
     render() {
         return (
@@ -151,7 +151,7 @@ class Nav extends React.Component {
         </div>
         <CsvPasteModal csvpastehandler={this.props.csvpastehandler} />
         <AddColumnModal headers={this.props.headers} handleaddcolumn={this.props.handleaddcolumn} />
-        </nav> 
+        </nav>
         )
     }
 }
