@@ -181,8 +181,8 @@ class FieldCheckBox extends React.Component {
 
     render() {
         return (
-            <a className="dropdown-item field list-group-item" key={this.props.field}>
-            <input className='field_checkbox' defaultChecked={true} type='checkbox' data-field={this.props.field} name={this.props.field} onClick={this.props.handlecheckboxes} /><span>{this.props.field}</span>
+            <a className="dropdown-item field " key={this.props.field}>
+            <input className='field_checkbox' defaultChecked={true} type='checkbox' data-field={this.props.field} name={this.props.field} onClick={this.props.handlecheckboxes} /><span className="no-sort">{this.props.field}</span>
             </a>
         );
     }
@@ -194,39 +194,9 @@ class CheckBoxes extends React.Component {
         this.state = {
             visible:{},
         }
+        this.sortableRef = React.createRef();
         this.handleCheckboxes = this.handleCheckboxes.bind(this);
     }
-
-    // handleCheckboxes(e) {
-    //     const target = event.target;
-    //
-    //     let updated = Object.keys({...this.props.headers});
-    //     let scope = this;
-    //     $('.field_checkbox').each(function() {
-    //         let checked = this.checked;
-    //         let name = $(this).attr('name');
-    //         if (!checked) {
-    //             updated = updated.filter(field => field != name);
-    //         } else {
-    //             if (!updated.includes(name)) {
-    //                 updated.push(name);
-    //             }
-    //         }
-    //         console.log(updated);
-    //
-    //     });
-    //     this.setState({visible:updated}, () => {
-    //         Object.keys(this.props.headers).map(field => {
-    //             if(scope.state.visible.includes(field)) {
-    //                 $('th[data-field="' + field + '"], td[data-field="' + field + '"]').show();
-    //             } else {
-    //                 $('th[data-field="' + field + '"], td[data-field="' + field + '"]').hide();
-    //             }
-    //         });
-    //         let widths = computeColWidths(this.props.headers);
-    //         updateTableWidth(widths);
-    //     });
-    // }
 
     handleCheckboxes(e) {
         const target = e.target;
@@ -263,12 +233,6 @@ class CheckBoxes extends React.Component {
     }
 
     componentDidUpdate() {
-        // $(".freezeCol").remove();
-        // $('<a id="freezeCol" class="dropdown-item freezeCol" key="freezeCol"><hr/></a>').insertAfter($('.sortable a.field').eq(this.props.freezecolindex));
-        // $( function() {
-        //     $( ".sortable" ).sortable();
-        //     $( ".sortable" ).disableSelection();
-        // } );
         document.querySelectorAll('.freezeCol').forEach(function(element) {
             element.remove();
         });
@@ -279,41 +243,22 @@ class CheckBoxes extends React.Component {
         newLink.setAttribute('key', 'freezeCol');
         newLink.innerHTML = '<hr/>';
         let sortableLinks = document.querySelectorAll('.sortable a.field');
-        let insertIndex = this.props.freezecolindex + 1;
+        let insertIndex = this.props.freezecolindex;
         if (insertIndex >= sortableLinks.length) {
             insertIndex = sortableLinks.length - 1;
         }
         sortableLinks[insertIndex].insertAdjacentElement('afterend', newLink);
+    }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('vanilla sortable');
-            let sortable = document.querySelector('.sortable');
-            console.log(sortable);
-            sortable.querySelectorAll('.field span').forEach( ( el ) => {
-                el.addEventListener('mousedown', function(e) {
-                    e.preventDefault();
-                });
-            });
-            let sortableItems = sortable.querySelectorAll('a.field');
-            new Sortable(sortable, {
-                items: sortableItems,
-                disabled: false,
-                handle: '.field',
-                ghostClass: 'sortable-ghost',
-                chosenClass: 'sortable-chosen',
-                dragClass: 'sortable-drag',
-                animation: 150,
-                onStart: function(evt) {
-                    evt.preventDefault();
-                    evt.stopPropagation();
-                },
-            });
-        }); // stuck!
+    componentDidMount() {
+        new Sortable(this.sortableRef.current, {
+            animation: 150,
+        });
     }
 
     render() {
         return (
-        <div className="dropdown-menu sortable" id="columns_menu" aria-labelledby="dropdownMenuButton">
+        <div className="dropdown-menu sortable" id="columns_menu" aria-labelledby="dropdownMenuButton" ref={this.sortableRef}>
             {Object.keys(this.props.headers).map((field, index) => {
                 return <FieldCheckBox headers={this.props.headers}  key={field} field={field} handlecheckboxes={this.handleCheckboxes} />
             })}
