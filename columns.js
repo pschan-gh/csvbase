@@ -39,6 +39,7 @@ class RecalculateColumnModal extends React.Component {
             };
             menu.addEventListener('click', menu.handler);
         });
+        // end chatgpt
     }
     render() {
         const field = this.state.field == null ? '' : this.state.field;
@@ -124,12 +125,21 @@ class AddColumnModal extends React.Component {
         super(props);
     }
     componentDidUpdate(props) {
-        $('.field_reference button.field').off();
-        $('.field_reference button.field').click(function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            // console.log(e);
-            insertAtCursor($(this).closest('.modal').find('textarea')[0], '+(@' + $(this).text() + ')');
+        // $('.field_reference button.field').off();
+        // $('.field_reference button.field').click(function(e) {
+        //     e.preventDefault();
+        //     e.stopPropagation();
+        //     // console.log(e);
+        //     insertAtCursor($(this).closest('.modal').find('textarea')[0], '+(@' + $(this).text() + ')');
+        // });
+        document.querySelectorAll('.field_reference button.field').forEach(button => {
+            button.removeEventListener('click', button.handler);
+            button.handler = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                insertAtCursor(button.closest('.modal').querySelector('textarea'), '+(@' + button.textContent + ')');
+            };
+            button.addEventListener('click', button.handler);
         });
     }
     render() {
@@ -171,7 +181,7 @@ class FieldCheckBox extends React.Component {
 
     render() {
         return (
-            <a className="dropdown-item field" key={this.props.field}>
+            <a className="dropdown-item field list-group-item" key={this.props.field}>
             <input className='field_checkbox' defaultChecked={true} type='checkbox' data-field={this.props.field} name={this.props.field} onClick={this.props.handlecheckboxes} /><span>{this.props.field}</span>
             </a>
         );
@@ -187,30 +197,64 @@ class CheckBoxes extends React.Component {
         this.handleCheckboxes = this.handleCheckboxes.bind(this);
     }
 
+    // handleCheckboxes(e) {
+    //     const target = event.target;
+    //
+    //     let updated = Object.keys({...this.props.headers});
+    //     let scope = this;
+    //     $('.field_checkbox').each(function() {
+    //         let checked = this.checked;
+    //         let name = $(this).attr('name');
+    //         if (!checked) {
+    //             updated = updated.filter(field => field != name);
+    //         } else {
+    //             if (!updated.includes(name)) {
+    //                 updated.push(name);
+    //             }
+    //         }
+    //         console.log(updated);
+    //
+    //     });
+    //     this.setState({visible:updated}, () => {
+    //         Object.keys(this.props.headers).map(field => {
+    //             if(scope.state.visible.includes(field)) {
+    //                 $('th[data-field="' + field + '"], td[data-field="' + field + '"]').show();
+    //             } else {
+    //                 $('th[data-field="' + field + '"], td[data-field="' + field + '"]').hide();
+    //             }
+    //         });
+    //         let widths = computeColWidths(this.props.headers);
+    //         updateTableWidth(widths);
+    //     });
+    // }
+
     handleCheckboxes(e) {
-        const target = event.target;
+        const target = e.target;
 
         let updated = Object.keys({...this.props.headers});
         let scope = this;
-        $('.field_checkbox').each(function() {
-            let checked = this.checked;
-            let name = $(this).attr('name');
+        document.querySelectorAll('.field_checkbox').forEach(function(checkbox) {
+            let checked = checkbox.checked;
+            let name = checkbox.getAttribute('name');
             if (!checked) {
-                updated = updated.filter(field => field != name);
+                updated = updated.filter(field => field !== name);
             } else {
                 if (!updated.includes(name)) {
                     updated.push(name);
                 }
             }
             console.log(updated);
-
         });
         this.setState({visible:updated}, () => {
             Object.keys(this.props.headers).map(field => {
                 if(scope.state.visible.includes(field)) {
-                    $('th[data-field="' + field + '"], td[data-field="' + field + '"]').show();
+                    document.querySelectorAll('th[data-field="' + field + '"], td[data-field="' + field + '"]').forEach(function(element) {
+                        element.style.display = '';
+                    });
                 } else {
-                    $('th[data-field="' + field + '"], td[data-field="' + field + '"]').hide();
+                    document.querySelectorAll('th[data-field="' + field + '"], td[data-field="' + field + '"]').forEach(function(element) {
+                        element.style.display = 'none';
+                    });
                 }
             });
             let widths = computeColWidths(this.props.headers);
@@ -219,13 +263,52 @@ class CheckBoxes extends React.Component {
     }
 
     componentDidUpdate() {
-        console.log(this.props.freezecolindex);
-        $(".freezeCol").remove();
-        $('<a id="freezeCol" class="dropdown-item freezeCol" key="freezeCol"><hr/></a>').insertAfter($('.sortable a.field').eq(this.props.freezecolindex));
-        $( function() {
-            $( ".sortable" ).sortable();
-            $( ".sortable" ).disableSelection();
-        } );
+        // $(".freezeCol").remove();
+        // $('<a id="freezeCol" class="dropdown-item freezeCol" key="freezeCol"><hr/></a>').insertAfter($('.sortable a.field').eq(this.props.freezecolindex));
+        // $( function() {
+        //     $( ".sortable" ).sortable();
+        //     $( ".sortable" ).disableSelection();
+        // } );
+        document.querySelectorAll('.freezeCol').forEach(function(element) {
+            element.remove();
+        });
+
+        let newLink = document.createElement('a');
+        newLink.id = 'freezeCol';
+        newLink.classList.add('dropdown-item', 'freezeCol');
+        newLink.setAttribute('key', 'freezeCol');
+        newLink.innerHTML = '<hr/>';
+        let sortableLinks = document.querySelectorAll('.sortable a.field');
+        let insertIndex = this.props.freezecolindex + 1;
+        if (insertIndex >= sortableLinks.length) {
+            insertIndex = sortableLinks.length - 1;
+        }
+        sortableLinks[insertIndex].insertAdjacentElement('afterend', newLink);
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('vanilla sortable');
+            let sortable = document.querySelector('.sortable');
+            console.log(sortable);
+            sortable.querySelectorAll('.field span').forEach( ( el ) => {
+                el.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                });
+            });
+            let sortableItems = sortable.querySelectorAll('a.field');
+            new Sortable(sortable, {
+                items: sortableItems,
+                disabled: false,
+                handle: '.field',
+                ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                dragClass: 'sortable-drag',
+                animation: 150,
+                onStart: function(evt) {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                },
+            });
+        }); // stuck!
     }
 
     render() {
