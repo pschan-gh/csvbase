@@ -22,11 +22,11 @@ function TableRow(props) {
     return (
         <tr data-group-index={props.groupindex}>
         <td key='count' data-field='count' className='col_count' data-count={props.count}><div className="count-number" style={{float:'left'}}>{props.count}</div><div style={{float:'right'}} className="expandcollapse">+</div></td>
-        <td key='rank' data-field='rank' className='col_rank' >{rank}</td>        
+        <td key='rank' data-field='rank' className='col_rank' >{rank}</td>
         {Object.keys(props.headers).filter(field => field != 'rank' && field != 'count').map((field, index) => {
             return <td key={field} data-field={field}><span>{props.row[field]}</span></td>;
-        })}                            
-        </tr>    
+        })}
+        </tr>
     );
 }
 
@@ -42,11 +42,11 @@ function RecalculateColumn(props) {
 
 class Header extends React.Component {
     constructor(props) {
-        super(props); 
+        super(props);
         this.StatisticsHandler = this.StatisticsHandler.bind(this);
-        
-    }    
-    
+
+    }
+
     StatisticsHandler(field) {
         let table = [];
         this.props.groups.forEach(group => {
@@ -57,20 +57,20 @@ class Header extends React.Component {
         let values = table.map(item => {return item[field];});
         statistics(values, field);
     }
-    
+
     handleRename(field) {
         this.props.renamecolumn.current.setState({
             name:field,
         });
         $('#rename_column input[name="old_col_name"]').val(field);
     }
-    
+
     render() {
         return(
             <thead>
                 <tr id="header_row" className="table-secondary">
                     <th key='count' data-field='count' className='col_count'><a>Count</a></th>
-                    <th key='rank' data-field='rank' className='col_rank'><a>Rank</a></th>                    
+                    <th key='rank' data-field='rank' className='col_rank'><a>Rank</a></th>
                     {Object.keys(this.props.headers).filter(field => {return (field != 'rank' && field != 'count');}).map((field, i) => {
                         let groupby = this.props.groupfield == field ? 'groupby' : '';
                         return (
@@ -80,7 +80,7 @@ class Header extends React.Component {
                                     <a className="dropdown-item rename" data-bs-toggle="modal" data-bs-target="#rename_column" onClick={() => {this.handleRename(field);}} href="#">Rename</a>
                                     <RecalculateColumn recalculatecolumn={this.props.recalculatecolumn} headers={this.props.headers} field={field} />
                                     <a className="dropdown-item group_by" data-field={field} href="#"  onClick={() => this.props.grouphandler(field)}>Group by</a>
-                                    <a className="dropdown-item fields statistics" data-field={field} href="#" data-bs-toggle="modal" data-bs-target="#statistics" onClick={() => this.StatisticsHandler(field)}>Statistics</a>                        
+                                    <a className="dropdown-item fields statistics" data-field={field} href="#" data-bs-toggle="modal" data-bs-target="#statistics" onClick={() => this.StatisticsHandler(field)}>Statistics</a>
                                 </div>
                                 <Sort handlesort={this.props.handlesort} sort={this.props.headers[field].sort} field={field} />
                             </th>
@@ -94,48 +94,87 @@ class Header extends React.Component {
 
 class Tbody extends React.Component {
     constructor(props) {
-        super(props); 
-    }    
+        super(props);
+    }
     componentDidUpdate() {
         console.log('tbody did update');
-        
+
         const groupField = this.props.groupfield;
         const primaryKey = this.props.primarykey;
-        
-        // $(function() {
-        $('tbody tr').off();
-        $('td.col_count').off();
-        $('tbody tr').click(function() {
-            $('td').css('color', '');
-            $(this).find('td').css('color', 'red');
-        });
-        // if (groupField != primaryKey && groupField != '') {
-        if (this.props.groups.length > 1) {
-            let groupCount = $('tbody').attr('data-group-count');
-            for (let i = 1; i <= groupCount; i++) {            
-                $('tbody tr[data-group-index=' + i + ']').not(":eq(0)").hide();
-                $('tbody tr[data-group-index="' + i + '"] div.expandcollapse').text('+');
-                $('tbody tr[data-group-index="' + i + '"] td.col_count').click(() => {
-                    if ($('tbody tr[data-group-index="' + i + '"]').length > 1) {
-                        if ($('tbody tr[data-group-index="' + i + '"]:eq(1)').is(":visible")) {
-                            $('tbody tr[data-group-index="' + i + '"]:not(:first)').hide();
-                            $('tbody tr[data-group-index="' + i + '"] div.expandcollapse').text('+');
-                            $('tbody tr[data-group-index="' + i + '"]').css('background-color', '');
-                        } else {
-                            $('tbody tr[data-group-index="' + i + '"]').show();
-                            $('tbody tr[data-group-index="' + i + '"] div.expandcollapse').text('-');
-                            let bgcolor = 'hsl(' + (i * 150) % 360 + ', 55%, 95%)';
-                            $('tbody tr[data-group-index="' + i + '"]').css('background-color', bgcolor);
-                        }
-                    }
+
+        const trClickHandler = function() {
+            document.querySelectorAll('td').forEach(td => td.style.color = '');
+            this.querySelectorAll('td').forEach(td => td.style.color = 'red');
+        };
+
+        const colCountClickHandler = function(trs) {
+            if (trs.length > 1) {
+              if (trs[1].style.display === 'table-row') {
+                trs.forEach((tr, index) => {
+                  if (index !== 0) {
+                    tr.style.display = 'none';
+                    tr.querySelector('div.expandcollapse').textContent = '+';
+                    tr.style.backgroundColor = '';
+                  }
                 });
+              } else {
+                trs.forEach((tr, index) => {
+                  tr.style.display = 'table-row';
+                  tr.querySelector('div.expandcollapse').textContent = '-';
+                  const bgcolor = `hsl(${(i * 150) % 360}, 55%, 95%)`;
+                  tr.style.backgroundColor = bgcolor;
+                });
+              }
             }
+        };
+
+        document.querySelectorAll('tbody tr').forEach(tr => tr.removeEventListener('click', trClickHandler));
+        // document.querySelectorAll('td.col_count').forEach(td => td.removeEventListener('click'));
+        document.querySelectorAll('tbody tr').forEach(tr => {
+            tr.addEventListener('click', trClickHandler);
+        });
+
+        document.querySelectorAll('td.col_count').forEach(td => {
+            const clonedTd = td.cloneNode(true);
+            td.parentNode.replaceChild(clonedTd, td);
+        });
+
+        if (this.props.groups.length > 1) {
+          const groupCount = document.querySelector('tbody').getAttribute('data-group-count');
+          for (let i = 1; i <= groupCount; i++) {
+            const trs = document.querySelectorAll(`tbody tr[data-group-index="${i}"]`);
+            trs.forEach((tr, index) => {
+              if (index !== 0) {
+                tr.style.display = 'none';
+                tr.querySelector('div.expandcollapse').textContent = '+';
+              }
+              tr.querySelector('td.col_count').addEventListener('click', () => {
+                if (trs.length > 1) {
+                  if (trs[1].style.display === 'table-row') {
+                    trs.forEach((tr, index) => {
+                      if (index !== 0) {
+                        tr.style.display = 'none';
+                        tr.querySelector('div.expandcollapse').textContent = '+';
+                        tr.style.backgroundColor = '';
+                      }
+                    });
+                  } else {
+                    trs.forEach((tr, index) => {
+                      tr.style.display = 'table-row';
+                      tr.querySelector('div.expandcollapse').textContent = '-';
+                      const bgcolor = `hsl(${(i * 150) % 360}, 55%, 95%)`;
+                      tr.style.backgroundColor = bgcolor;
+                    });
+                  }
+                }
+              });
+            });
+          }
         } else {
-            $('div.expandcollapse').hide();
+          document.querySelectorAll('div.expandcollapse').forEach(div => div.style.display = 'none');
         }
-        // });
     }
-    
+
     render() {
         return (
             <tbody data-group-count={this.props.groups.length}>
@@ -149,12 +188,12 @@ class Tbody extends React.Component {
             </tbody>
         );
     }
-    
+
 }
 
 class Table extends React.Component {
     constructor(props) {
-        super(props); 
+        super(props);
         this.state = {
             // sortArray:{},
             sortField:'',
@@ -171,20 +210,20 @@ class Table extends React.Component {
         this.updateTable = this.updateTable.bind(this);
         this.updateDisplay = this.updateDisplay.bind(this);
         // this.GroupHandler = this.GroupHandler.bind(this);
-    }    
+    }
 
     updateDisplay() {
         let displayedGroups;
         if (this.state.groups.length == 1) {
             displayedGroups = this.state.displayedGroups.slice();
-            displayedGroups.push(this.state.groups[0].slice(this.state.displayedGroups.length, this.state.displayedGroups.length + 50));            
+            displayedGroups.push(this.state.groups[0].slice(this.state.displayedGroups.length, this.state.displayedGroups.length + 50));
         } else {
             displayedGroups = this.state.groups;
         }
-        
+
         displayedGroups = this.state.groups;
         console.log(displayedGroups);
-        
+
         this.setState({
             displayedGroups:displayedGroups
         });
@@ -197,9 +236,9 @@ class Table extends React.Component {
         let datalist = [];
         let datum;
         // const database = this.props.database;
-        // const headers = this.props.headers;        
+        // const headers = this.props.headers;
         const filterFunc =  new Function('item', 'return ' + this.props.filter);
-        
+
         for (let key in database) {
             datum = {};
             Object.keys(headers).map(field => {
@@ -214,41 +253,41 @@ class Table extends React.Component {
         // Object.keys(headers).map(field => {
         //     sortArray[field] = 0;
         // });
-        
+
         let updatedHeaders = {...headers}
         Object.keys(updatedHeaders).map(field => {
             updatedHeaders[field].sort = 0;
         });
-        
-        this.updateTable(primarykey, this.state.sortField, datalist.filter(filterFunc), updatedHeaders, primarykey);     
+
+        this.updateTable(primarykey, this.state.sortField, datalist.filter(filterFunc), updatedHeaders, primarykey);
     }
 
     updateTable(
-        gf = this.state.groupField, 
-        sortField = this.state.sortField, 
-        datalist = this.state.datalist.slice(), 
+        gf = this.state.groupField,
+        sortField = this.state.sortField,
+        datalist = this.state.datalist.slice(),
         headers = this.state.headers,
         primarykey = this.state.primarykey
-    ) {        
+    ) {
         console.log('updating table');
-        
+
         const groupField = gf == '' ? primarykey : gf;
-    
+
         let values = datalist.map(item => {
             return item[groupField];
         });
-        
+
         let unique = values.filter((value, index, self) => { return self.indexOf(value) === index; });
         // let clicked = sortArray[groupField];
         let clicked = headers[groupField].sort;
-        let uniqueSorted = unique.sort((a, b) => {                
+        let uniqueSorted = unique.sort((a, b) => {
             if (!(isNaN(parseFloat(a)) || isNaN(parseFloat(b)))) {
                 return clicked*(parseFloat(a) - parseFloat(b));
             } else {
-                return clicked*a.localeCompare(b); 
+                return clicked*a.localeCompare(b);
             }
-        });            
-    
+        });
+
         // let filterFunc =  new Function('item', 'return ' + filter);
         let datum;
         let updatedGroups;
@@ -264,7 +303,7 @@ class Table extends React.Component {
                     if (item[groupField] != value && groupField != primarykey) {
                         continue;
                     }
-                    datum = {};                
+                    datum = {};
                     for (let field in headers) {
                         if (item[field] == null || typeof item[field] == 'undefined') {
                             datum[field] = '';
@@ -279,10 +318,10 @@ class Table extends React.Component {
                 return table.sort((a, b) => {return this.sortByField(headers, a, b, sortField);});
             });
             datalist = [].concat.apply([], updatedGroups);
-        }        
-        
+        }
+
         let displayedGroups = [];
-        if (updatedGroups.length == 1) {            
+        if (updatedGroups.length == 1) {
             displayedGroups.push(updatedGroups[0].slice(this.state.displayedGroups.length, this.state.displayedGroups.length + 50));
         } else {
             displayedGroups = updatedGroups;
@@ -315,36 +354,36 @@ class Table extends React.Component {
         if (field == '') {
             return true;
         }
-        
+
         let clicked = sortArray[field];
-        
+
         let diff;
         if (!(isNaN(a[field]) || isNaN(b[field]))) {
             diff =  clicked*(+a[field] - +b[field]);
         } else {
-            diff = clicked*a[field].toString().localeCompare(b[field].toString()); 
+            diff = clicked*a[field].toString().localeCompare(b[field].toString());
         }
-        
+
         return diff;
     }
-    
+
     sortByField(headers, a, b, field) {
         if (field == '') {
             return true;
         }
-        
+
         let clicked = headers[field].sort;
-        
+
         let diff;
         if (!(isNaN(a[field]) || isNaN(b[field]))) {
             diff =  clicked*(+a[field] - +b[field]);
         } else {
-            diff = clicked*a[field].toString().localeCompare(b[field].toString()); 
+            diff = clicked*a[field].toString().localeCompare(b[field].toString());
         }
-        
+
         return diff;
     }
-    
+
     componentDidUpdate() {
         console.log('table.js did update');
         // const sortArray = {...this.state.sortArray};
@@ -353,13 +392,13 @@ class Table extends React.Component {
         // Object.keys(this.props.headers).map(field => {
         //     if ( sortArray[field] == null || typeof sortArray[field] == 'undefined') {
         //         sortArray[field] = 1;
-        //     }            
+        //     }
         // });
-        
+
         // $(function() {
             $('.field_checkbox').each(function() {
                 let field = $(this).attr('data-field');
-                if(this.checked) {                
+                if(this.checked) {
                     $('th[data-field="' + field + '"], td[data-field="' + field + '"]').show();
                 } else {
                     $('th[data-field="' + field + '"], td[data-field="' + field + '"]').hide();
@@ -368,10 +407,25 @@ class Table extends React.Component {
             let widths = computeColWidths(headers);
             updateTableWidth(widths);
             freezeColumns(widths);
-        // });        
+        // });
+        // document.querySelectorAll('.field_checkbox').forEach(fieldCheckbox => {
+        //     const field = fieldCheckbox.dataset.field;
+        //     if (fieldCheckbox.checked) {
+        //         document.querySelectorAll(`th[data-field="${field}"], td[data-field="${field}"]`).forEach(col => {
+        //             col.style.display = 'table-cell';
+        //         });
+        //     } else {
+        //         document.querySelectorAll(`th[data-field="${field}"], td[data-field="${field}"]`).forEach(col => {
+        //             col.style.display = 'none';
+        //         });
+        //     }
+        // });
+        // let widths = computeColWidths(headers);
+        // updateTableWidth(widths);
+        // freezeColumns(widths);
     }
 
-    render() {        
+    render() {
         return(
             <table id="mainTable" className="table table-bordered table-hover">
             <Header groups={this.state.groups} headers={this.state.headers} renamecolumn={this.props.renamecolumn} recalculatecolumn={this.props.recalculatecolumn} grouphandler={this.updateTable} groupfield={this.state.groupField} handlesort={this.handleSort} />
