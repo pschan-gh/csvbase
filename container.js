@@ -98,30 +98,15 @@ class Container extends React.Component {
     }
 
     ExportHandler() {
-        // $('th .triangle').html('');
-
-        const table = document.querySelector('#mainTable');
-        const csv = table.table2csv('return', {
+        table2csv('download', {
             "separator": ",",
             "newline": "\n",
             "quoteFields": true,
             "excludeColumns": ".col_count, .col_rank",
             "excludeRows": "",
             "trimContent": true,
-            "filename": "table.csv"
-        });
-
-        // csv = csv.replace(/RenameGroup byStatistics/g, '');
-
-        // https://stackoverflow.com/questions/42462764/javascript-export-csv-encoding-utf-8-issue/42466254
-        const universalBOM = "\uFEFF";
-        const a = document.createElement('a');
-        a.setAttribute('href', 'data:text/csv;charset=UTF-8,'
-        + encodeURIComponent(universalBOM + csv));
-        a.setAttribute('download', 'untitled.csv');
-        a.click()
-        // window.location.href = 'data:text/csv;charset=UTF-8,' + encodeURIComponent(universalBOM + csv);
-        // $('th .triangle').html('&#x25ba;');
+            "filename": "untitled.csv"
+        }, document.querySelector('#mainTable'));
     }
 
     CsvPasteHandler(e) {
@@ -414,7 +399,6 @@ class Container extends React.Component {
 
         let headers = {...this.state.headers};
         headers[field] = {'routine':routine}
-        // $('#recalculate_column_bin').modal('toggle');
         const recalculateColumnBinModal = document.querySelector('#recalculate_column_bin');
         recalculateColumnBinModal.classList.toggle('show');
         this.recalculateDatabase({...this.state.database}, headers);
@@ -445,23 +429,6 @@ class Container extends React.Component {
             this.table.current.resetGroups(this.state.database, this.state.headers, this.state.primarykey);
         });
     }
-
-    // handleQuery(e, queryItems) {
-    //     e.preventDefault();
-    //     let filter;
-    //     queryItems.map(item => {
-    //         if (item.field == 'Show All') {
-    //             filter = 'true';
-    //         } else {
-    //             filter = 'item["' + item.field + '"]' + ' ' + item.condition;
-    //         }
-    //         console.log(filter);
-    //     });
-    //     // $('.dropdown-menu.query').dropdown('toggle');
-    //     this.setState({
-    //         filter:filter,
-    //     }, function(){$('#query_modal').modal('toggle');this.table.current.resetGroups(this.state.database, this.state.headers, this.state.primarykey);});
-    // }
 
     handleScroll() {
         const height = this.offsetHeight;

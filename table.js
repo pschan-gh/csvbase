@@ -328,7 +328,7 @@ class Table extends React.Component {
             displayedGroups = updatedGroups;
         }
         displayedGroups = updatedGroups;
-        console.log(displayedGroups);
+        // console.log(displayedGroups); BIG LOG OUTPUT!
         this.setState({
             groups:updatedGroups,
             groupField:groupField,

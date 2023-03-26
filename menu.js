@@ -75,27 +75,48 @@ class Nav extends React.Component {
     }
     componentDidUpdate(props) {
 
-        var $chkboxes = $('.field_checkbox');
-        var lastChecked = null;
+        // var $chkboxes = $('.field_checkbox');
+        // var lastChecked = null;
+        //
+        // $chkboxes.click(function(e) {
+        //     if (!lastChecked) {
+        //         lastChecked = this;
+        //         return;
+        //     }
+        //     if (e.shiftKey) {
+        //         var start = $chkboxes.index(this);
+        //         var end = $chkboxes.index(lastChecked);
+        //
+        //         $chkboxes.slice(Math.min(start,end), Math.max(start,end)+ 1).each(function() {
+        //             // if (this.checked != lastChecked.checked) {
+        //             //     this.click();
+        //             // }
+        //             this.checked = lastChecked.checked
+        //         });
+        //
+        //     }
+        //     lastChecked = this;
+        // });
 
-        $chkboxes.click(function(e) {
-            if (!lastChecked) {
+        const chkboxes = document.querySelectorAll('.field_checkbox');
+        let lastChecked = null;
+
+        chkboxes.forEach(checkbox => {
+            checkbox.addEventListener('click', function(e) {
+                if (!lastChecked) {
+                    lastChecked = this;
+                    return;
+                }
+                if (e.shiftKey) {
+                    const start = Array.from(chkboxes).indexOf(this);
+                    const end = Array.from(chkboxes).indexOf(lastChecked);
+
+                    Array.from(chkboxes).slice(Math.min(start, end), Math.max(start, end) + 1).forEach(checkbox => {
+                        checkbox.checked = lastChecked.checked;
+                    });
+                }
                 lastChecked = this;
-                return;
-            }
-            if (e.shiftKey) {
-                var start = $chkboxes.index(this);
-                var end = $chkboxes.index(lastChecked);
-
-                $chkboxes.slice(Math.min(start,end), Math.max(start,end)+ 1).each(function() {
-                    // if (this.checked != lastChecked.checked) {
-                    //     this.click();
-                    // }
-                    this.checked = lastChecked.checked
-                });
-
-            }
-            lastChecked = this;
+            });
         });
     }
     render() {
