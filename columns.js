@@ -213,7 +213,7 @@ class CheckBoxes extends React.Component {
                     updated.push(name);
                 }
             }
-            console.log(updated);
+            // console.log(updated);
         });
         this.setState({visible:updated}, () => {
             Object.keys(this.props.headers).map(field => {
