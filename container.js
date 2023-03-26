@@ -98,7 +98,7 @@ class Container extends React.Component {
     }
 
     ExportHandler() {
-        table2csv('download', {
+        let csv = table2csv('return', {
             "separator": ",",
             "newline": "\n",
             "quoteFields": true,
@@ -107,6 +107,9 @@ class Container extends React.Component {
             "trimContent": true,
             "filename": "untitled.csv"
         }, document.querySelector('#mainTable'));
+
+        csv = csv.replace(/RenameGroup byStatistics/g, '');
+        download('untitled.csv', csv);
     }
 
     CsvPasteHandler(e) {
