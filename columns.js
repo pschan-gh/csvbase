@@ -251,6 +251,7 @@ class CheckBoxes extends React.Component {
     }
 
     componentDidMount() {
+        console.log('sortable');
         new Sortable(this.sortableRef.current, {
             animation: 150,
             filter: '.no-sort'

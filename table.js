@@ -62,7 +62,7 @@ class Header extends React.Component {
         this.props.renamecolumn.current.setState({
             name:field,
         });
-        $('#rename_column input[name="old_col_name"]').val(field);
+        document.querySelector('#rename_column input[name="old_col_name"]').value = field;
     }
 
     render() {
@@ -140,7 +140,8 @@ class Tbody extends React.Component {
         });
 
         if (this.props.groups.length > 1) {
-          const groupCount = document.querySelector('tbody').getAttribute('data-group-count');
+          // const groupCount = document.querySelector('tbody').getAttribute('data-group-count');
+          const groupCount = document.querySelector('tbody').dataset.groupCount;
           for (let i = 1; i <= groupCount; i++) {
             const trs = document.querySelectorAll(`tbody tr[data-group-index="${i}"]`);
             trs.forEach((tr, index) => {
@@ -341,10 +342,6 @@ class Table extends React.Component {
     }
 
     handleSort(field) {
-        console.log(field);
-        // let sortArray = {...this.state.sortArray};
-        // sortArray[field] = this.state.sortArray[field] == 1 ? -1 : 1;
-        // this.updateTable(this.state.groupField, sortArray, field);
         let headers = {...this.state.headers};
         headers[field].sort = headers[field].sort == 1 ? -1 : 1;
         this.updateTable(this.state.groupField, field, this.state.datalist.slice(), headers);
@@ -385,44 +382,24 @@ class Table extends React.Component {
     }
 
     componentDidUpdate() {
-        console.log('table.js did update');
-        // const sortArray = {...this.state.sortArray};
         let colWidths = {}
         const headers = this.state.headers;
-        // Object.keys(this.props.headers).map(field => {
-        //     if ( sortArray[field] == null || typeof sortArray[field] == 'undefined') {
-        //         sortArray[field] = 1;
-        //     }
-        // });
 
-        // $(function() {
-            $('.field_checkbox').each(function() {
-                let field = $(this).attr('data-field');
-                if(this.checked) {
-                    $('th[data-field="' + field + '"], td[data-field="' + field + '"]').show();
-                } else {
-                    $('th[data-field="' + field + '"], td[data-field="' + field + '"]').hide();
-                }
-            });
-            let widths = computeColWidths(headers);
-            updateTableWidth(widths);
-            freezeColumns(widths);
-        // });
-        // document.querySelectorAll('.field_checkbox').forEach(fieldCheckbox => {
-        //     const field = fieldCheckbox.dataset.field;
-        //     if (fieldCheckbox.checked) {
-        //         document.querySelectorAll(`th[data-field="${field}"], td[data-field="${field}"]`).forEach(col => {
-        //             col.style.display = 'table-cell';
-        //         });
-        //     } else {
-        //         document.querySelectorAll(`th[data-field="${field}"], td[data-field="${field}"]`).forEach(col => {
-        //             col.style.display = 'none';
-        //         });
-        //     }
-        // });
-        // let widths = computeColWidths(headers);
-        // updateTableWidth(widths);
-        // freezeColumns(widths);
+        document.querySelectorAll('.field_checkbox').forEach(fieldCheckbox => {
+            const field = fieldCheckbox.dataset.field;
+            if (fieldCheckbox.checked) {
+                document.querySelectorAll(`th[data-field="${field}"], td[data-field="${field}"]`).forEach(col => {
+                    col.style.display = 'table-cell';
+                });
+            } else {
+                document.querySelectorAll(`th[data-field="${field}"], td[data-field="${field}"]`).forEach(col => {
+                    col.style.display = 'none';
+                });
+            }
+        });
+        let widths = computeColWidths(headers);
+        updateTableWidth(widths);
+        freezeColumns(widths);
     }
 
     render() {
