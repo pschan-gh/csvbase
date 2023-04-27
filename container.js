@@ -151,7 +151,7 @@ class Container extends React.Component {
         const reader = new FileReader();
         const scope = this;
         reader.onload = function(e) {
-            let plaintextDB = e.target.result;
+            let plaintextDB = e.target.result.replace(/\r\n/g, "\n"); // Convert Windows line endings to Unix line endings
 
             let results = scope.sanitizeDB(plaintextDB, scope.state.headers);
 
