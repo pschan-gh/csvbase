@@ -243,7 +243,7 @@ class Table extends React.Component {
         for (let key in database) {
             datum = {};
             Object.keys(headers).map(field => {
-                if (database[key][field] == null || typeof database[key][field] == 'undefined') {
+                if (database[key][field] === null || typeof database[key][field] === 'undefined') {
                     datum[field] = '';
                 } else {
                     datum[field] = database[key][field];
@@ -306,7 +306,7 @@ class Table extends React.Component {
                     }
                     datum = {};
                     for (let field in headers) {
-                        if (item[field] == null || typeof item[field] == 'undefined') {
+                        if (item[field] === null || typeof item[field] === 'undefined') {
                             datum[field] = '';
                         } else {
                             datum[field] = item[field];
